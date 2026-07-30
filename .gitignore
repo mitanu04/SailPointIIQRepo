@@ -12,6 +12,7 @@ base/ap/
 
 # Secrets — environment credentials must never be committed
 build.properties
+servers.properties
 *.target.properties
 *.iiq.properties
 *.target.secret.properties
