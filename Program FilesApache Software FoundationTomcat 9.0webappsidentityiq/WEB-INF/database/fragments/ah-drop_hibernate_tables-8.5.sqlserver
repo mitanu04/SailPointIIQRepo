@@ -1,0 +1,132 @@
+
+    alter table identityiqah.spt_hist_accounts 
+       drop constraint FK605klb45cwnh86urs1aw07cue;
+    GO
+
+    alter table identityiqah.spt_hist_assigned_roles 
+       drop constraint FK57arq9l8c10fbrtbixsryavgg;
+    GO
+
+    alter table identityiqah.spt_hist_detected_roles 
+       drop constraint FKsvem4m5n0f7dqasy8pht1m0dj;
+    GO
+
+    alter table identityiqah.spt_hist_entitlements 
+       drop constraint FKslsba39xq240608yr2vc59rn3;
+    GO
+
+    alter table identityiqah.spt_hist_policy_violation_remediation_bundle_ids 
+       drop constraint FKitaxnoflkhnq6ijo5yqmh29jc;
+    GO
+
+    alter table identityiqah.spt_hist_policy_violation_remediation_entitlements 
+       drop constraint FKjie8pn4nfhcfi3t92br291fc1;
+    GO
+
+    alter table identityiqah.spt_hist_policy_violations 
+       drop constraint FK431cy516ss4k08rgrpq20x1wb;
+    GO
+
+    alter table identityiqah.spt_hist_role_remediation_entitlements 
+       drop constraint FKhvwj97ncucp9u2flf5llenlcs;
+    GO
+
+    alter table identityiqah.spt_hist_identity_req_item_capture 
+       drop constraint FK6dn4yl1mqiub2ejxsgms1vex8;
+    GO
+
+    drop table identityiqah.spt_hist_accounts;
+    GO
+
+    drop table identityiqah.spt_hist_assigned_roles;
+    GO
+
+    drop table identityiqah.spt_hist_detected_roles;
+    GO
+
+    drop table identityiqah.spt_hist_entitlements;
+    GO
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_bundle_ids;
+    GO
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_entitlements;
+    GO
+
+    drop table identityiqah.spt_hist_policy_violations;
+    GO
+
+    drop table identityiqah.spt_hist_role_remediation_entitlements;
+    GO
+
+    drop table identityiqah.spt_hist_account_capture;
+    GO
+
+    drop table identityiqah.spt_hist_capability;
+    GO
+
+    drop table identityiqah.spt_hist_capability_capture;
+    GO
+
+    drop table identityiqah.spt_hist_cert_remediation_capture;
+    GO
+
+    drop table identityiqah.spt_hist_certification;
+    GO
+
+    drop table identityiqah.spt_hist_database_version;
+    GO
+
+    drop table identityiqah.spt_hist_entitlement_capture;
+    GO
+
+    drop table identityiqah.spt_hist_identity;
+    GO
+
+    drop table identityiqah.spt_hist_identity_capture;
+    GO
+
+    drop table identityiqah.spt_hist_identity_event;
+    GO
+
+    drop table identityiqah.spt_hist_identity_req_capture;
+    GO
+
+    drop table identityiqah.spt_hist_identity_req_item_capture;
+    GO
+
+    drop table identityiqah.spt_hist_mattr;
+    GO
+
+    drop table identityiqah.spt_hist_mattr_capture;
+    GO
+
+    drop table identityiqah.spt_hist_mattr_event;
+    GO
+
+    drop table identityiqah.spt_hist_object_config_capture;
+    GO
+
+    drop table identityiqah.spt_hist_policy_violation_capture;
+    GO
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_capture;
+    GO
+
+    drop table identityiqah.spt_hist_role;
+    GO
+
+    drop table identityiqah.spt_hist_role_capture;
+    GO
+
+    drop table identityiqah.spt_hist_role_event;
+    GO
+
+    drop table identityiqah.spt_hist_workgroup;
+    GO
+
+    drop table identityiqah.spt_hist_workgroup_capture;
+    GO
+
+    drop table identityiqah.spt_hist_workgroup_event;
+    GO

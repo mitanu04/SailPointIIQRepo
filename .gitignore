@@ -1,0 +1,30 @@
+# Build output — regenerated every build, never commit
+build/
+dependency-check-reports/
+dependency-check-data/
+
+# Product binaries — re-downloadable from Compass (remove these 3 lines if you want them tracked)
+base/ga/
+base/patch/
+base/efix/
+base/ap/
+
+# Secrets — environment credentials must never be committed
+build.properties
+*.target.properties
+*.iiq.properties
+*.target.secret.properties
+dev.iiq.cfg
+dev.iiq.dat
+*.iiq.cfg
+*.iiq.dat
+
+# Exported jar of custom Java (rebuilt from src/)
+**/identityiqCustomizations.*.jar
+
+# OS / IDE noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

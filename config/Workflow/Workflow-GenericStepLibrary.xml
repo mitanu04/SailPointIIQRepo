@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow created="1785394252732" id="c0a801899fb11942819fb1ca4bbc01bd" name="Generic Step Library" template="true" type="StepLibrary">
+  <Step icon="Default" name="Generic Step"/>
+  <Step icon="Start" name="Start"/>
+  <Step icon="Stop" name="Stop"/>
+</Workflow>

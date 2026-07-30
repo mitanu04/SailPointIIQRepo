@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter"
+               featuresString="SEARCH, PROVISIONING, ENABLE, PASSWORD" icon="internetIcon" name="Workiva"
+               type="Workiva">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.workiva.WorkivaConnector"/>
+        <entry key="encrypted" value="password,access_token,apiToken"/>
+        <entry key="formPath" value="WorkivaConfigForm.xhtml"/>
+        <entry key="operationDelayForProvisioning" value="5" />
+        <entry key="customTimeout" value="1" />
+        <entry key="restrictSchemaUpdate_account" value="true"/>
+        <entry key="restrictSchemaUpdate_group" value="true"/>
+        <entry key="host"/>
+        <entry key="password"/>
+        <entry key="user"/>
+        <entry key="oauthBearerToken"/>
+        <entry key="relaxConfiguration">
+          <value>
+            <Boolean>true</Boolean>  
+          </value>
+        </entry>
+        <entry key="usePatch">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="jsonPathMapping">
+          <value>
+            <Map>
+              <entry key="id" value="id"/>
+              <entry key="userName" value="userName"/>
+              <entry key="name.familyName" value="name.familyName"/>
+              <entry key="name.formatted" value="name.formatted"/>
+              <entry key="name.givenName" value="name.givenName"/>
+              <entry key="displayName" value="displayName"/>
+              <entry key="title" value="title"/>
+              <entry key="active" value="active"/>
+              <entry key="email" value="email"/>
+              <entry key="emails.home.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="emails.other.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;other&apos;)].value"/>
+              <entry key="emails.work.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="emails.home.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="emails.other.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;other&apos;)].value"/>
+              <entry key="emails.work.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="emails.work.primary.display"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;work&apos;)].display"/>
+              <entry key="emails.work.secondary.display"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;work&apos;)].display"/>
+              <entry key="emails.work.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="emails.work.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="emails.home.primary.display"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;home&apos;)].display"/>
+              <entry key="emails.home.secondary.display"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;home&apos;)].display"/>
+              <entry key="emails.home.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="emails.home.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="emails.other.primary.display"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;other&apos;)].display"/>
+              <entry key="emails.other.secondary.display"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;other&apos;)].display"/>
+              <entry key="emails.other.primary.value"
+                     value="emails[*][?(@.primary==true)][?(@.type==&apos;other&apos;)].value"/>
+              <entry key="emails.other.secondary.value"
+                     value="emails[*][?(@.primary==false)][?(@.type==&apos;other&apos;)].value"/>
+              <entry key="phoneNumbers.home.primary.value"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="phoneNumbers.home.secondary.value"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;home&apos;)].value"/>
+              <entry key="phoneNumbers.home.primary.display"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;home&apos;)].display"/>
+              <entry key="phoneNumbers.home.secondary.display"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;home&apos;)].display"/>
+              <entry key="phoneNumbers.mobile.primary.value"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;mobile&apos;)].value"/>
+              <entry key="phoneNumbers.mobile.secondary.value"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;mobile&apos;)].value"/>
+              <entry key="phoneNumbers.mobile.primary.display"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;mobile&apos;)].display"/>
+              <entry key="phoneNumbers.mobile.secondary.display"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;mobile&apos;)].display"/>
+              <entry key="phoneNumbers.work.primary.value"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="phoneNumbers.work.secondary.value"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;work&apos;)].value"/>
+              <entry key="phoneNumbers.work.primary.display"
+                     value="phoneNumbers[*][?(@.primary==true)][?(@.type==&apos;work&apos;)].display"/>
+              <entry key="phoneNumbers.work.secondary.display"
+                     value="phoneNumbers[*][?(@.primary==false)][?(@.type==&apos;work&apos;)].display"/>
+              <entry key="description" value="description"/>
+              <entry key="groups" value="groups[*].value"/>
+              <entry key="locale" value="locale"/>
+              <entry key="members.value" value="members[*].value"/>
+              <entry key="nickName" value="nickName"/>
+              <entry key="preferredLanguage" value="preferredLanguage"/>
+              <entry key="created" value="meta.created"/>
+              <entry key="lastModified" value="meta.lastModified"/>
+              <entry key="location" value="meta.location" />
+            </Map>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="userName" identityAttribute="id" nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="id" remediationModificationType="None" required="true" type="string">
+          <Description>Unique Zoom User ID</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="active" remediationModificationType="None" required="true" type="boolean">
+          <Description>A Boolean value indicating the User's administrative status.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="displayName" remediationModificationType="None" required="true" type="string">
+          <Description>The name of the User, suitable for display to end-users. The name SHOULD be the full name of the
+            User being described if known.
+          </Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.work.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.work.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.work.primary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.work.secondary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.home.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.home.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.home.primary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.home.secondary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.other.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.other.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.other.primary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="emails.other.secondary.value" type="string">
+          <Description>Email address value.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="groups" remediationModificationType="None" entitlement="true" multi="true"
+                             managed="true" schemaObjectType="group" required="true" type="string">
+          <Description>A list of groups that the user belongs to, either thorough direct membership, nested groups, or
+            dynamically calculated.
+          </Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="locale" remediationModificationType="None" required="true" type="string">
+          <Description>Used to indicate the User's default location for purposes of localizing items such as currency,
+            date time format, numerical representations, etc.
+          </Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name.formatted" type="string">
+          <Description>The full name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name.familyName" type="string">
+          <Description>The family name of the User</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name.givenName" type="string">
+          <Description>The given name of the User</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nickName" remediationModificationType="None" required="true" type="string">
+          <Description>The casual way to address the user in real life.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.work.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.work.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.work.primary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.work.secondary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.home.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.home.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.home.primary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.home.secondary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.mobile.primary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.mobile.secondary.display" type="string">
+          <Description>A human-readable name, primarily used for display purposes.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.mobile.primary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="phoneNumbers.mobile.secondary.value" type="string">
+          <Description>Phone number of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="preferredLanguage" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates the User's preferred written or spoken language.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="timezone" remediationModificationType="None" required="true" type="string">
+          <Description>The User's time zone in the 'Olson' timezone database format.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="title" remediationModificationType="None" required="true" type="string">
+          <Description>The user's title, such as \"Vice President\".</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="userName" remediationModificationType="None" required="true" type="string">
+          <Description>Unique identifier for the User typically used by the user to directly authenticate to the service
+            provider.
+          </Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="created" remediationModificationType="None" required="true" type="string">
+          <Description>The creation date of User Account.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="lastModified" remediationModificationType="None" required="true" type="string">
+          <Description>The last modified date of User Account.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="location" remediationModificationType="None" required="true" type="string">
+          <Description>URL of User.</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="displayName" identityAttribute="id" nativeObjectType="group" objectType="group">
+        <AttributeDefinition name="id" remediationModificationType="None" required="true" type="string">
+          <Description>Unique identifier of the Group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="displayName" remediationModificationType="None" required="true" type="string">
+          <Description>A human-readable name for the Group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="members.value" remediationModificationType="None" required="true" type="string"
+                             multi="true">
+          <Description>A list of members of the Group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="location" remediationModificationType="None" required="true" type="string"
+                             multi="true">
+          <Description>URL of Group.</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_form_workiva_first_name" helpKey="help_form_workiva_first_name" name="name.givenName"
+               required="true" reviewRequired="true" type="string">
+          <Script>
+            <Source>
+              return identity.getFirstname();
+            </Source>
+          </Script>
+        </Field>
+        <Field displayName="con_form_workiva_last_name" helpKey="help_form_workiva_last_name" name="name.familyName"
+               required="true"
+               reviewRequired="true" type="string">
+          <Script>
+            <Source>
+              return identity.getLastname();
+            </Source>
+          </Script>
+        </Field>
+        <Field displayName="con_form_workiva_username" helpKey="help_form_workiva_username" name="userName"
+               required="true"
+               reviewRequired="true" type="string">
+          <Script>
+            <Source>
+
+            </Source>
+          </Script>
+        </Field>
+        <Field displayName="con_form_workiva_email" helpKey="help_form_workiva_email" name="emails.work.primary.value"
+               required="true"
+               reviewRequired="true" type="string">
+          <Script>
+            <Source>
+
+            </Source>
+          </Script>
+        </Field>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies","Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='Workiva' connectorName="Workiva"
+	type="SourceConfig" directConnect="true" status="released">
+
+	<Menu name="Connection Settings" label="con_form_workiva_account_config">
+		<Section name="Connection Settings" label="con_form_workiva_account_config">
+			<Field name="host" displayName="con_form_workiva_account_url" required="true" type="text" helpKey="help_con_form_workiva_account_url" />
+			<Field name="authType" displayName="con_form_workiva_auth_type" type="radio" defaultValue="basic" helpKey="help_con_workiva_auth_type">
+				<AllowedValues>
+					<Option label="con_form_workiva_basic" value="basic" />
+					<Option label="con_form_workiva_api_token" value="oauthBearer" />
+				</AllowedValues>
+			</Field>
+
+			<!-- authType - basic -->
+			<Field name="user" displayName="con_form_workiva_username" type="text" required="true"
+				parentKey="authType" parentValue="basic" helpKey="help_con_workiva_username" />
+			<Field name="password" displayName="con_form_workiva_password" type="secret" required="true"
+				parentKey="authType" parentValue="basic" helpKey="help_con_workiva_password" />
+
+			<!-- authType - oauthBearer -->
+			<Field name="oauthBearerToken" displayName="con_form_workiva_api_token" type="secret" required="true"
+				parentKey="authType" parentValue="oauthBearer" helpKey="help_con_form_workiva_api_token" />
+
+			<Field name="customTimeout" displayName="con_form_workiva_connection_timeout" type="number"
+				defaultValue="1" helpKey="help_con_form_workiva_connection_timeout" />
+		</Section>
+	</Menu>
+	<Menu name="Aggregation Settings" label="con_form_workiva_aggregation_settings">
+		<Section name="Aggregation Settings" label="con_form_workiva_aggregation_settings">
+			<Field name="userFilter" displayName="con_form_workiva_account_filter" type="text"
+				helpKey="help_con_form_workiva_account_filter" />
+			<Field name="groupFilter" displayName="con_form_workiva_group_filter" type="text"
+				helpKey="help_con_form_workiva_group_filter" />
+		</Section>
+	</Menu>
+	<Menu name="Provisioning Settings" label="con_form_workiva_provisioning_settings">
+		<Section name="Provisioning Settings" label="con_form_workiva_provisioning_settings">
+			<Field name="forceAddUserToWorkspace" displayName="con_form_forcefully_add_user_to_workspace" type="checkbox"
+				helpKey="help_con_form_forcefully_add_user_to_workspace" />
+			<Field name="operationDelayForProvisioning" displayName="con_form_workiva_provisioning_delay" type="number"
+				helpKey="help_con_form_workiva_connection_timeout" defaultValue="5" />
+		</Section>
+	</Menu>
+
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

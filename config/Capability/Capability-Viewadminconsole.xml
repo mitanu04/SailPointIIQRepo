@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247918" displayName="capability_view_admin_console" id="c0a801899fb11942819fb1ca38ee00e9" name="ViewAdminConsole">
+  <Description>capability_desc_view_admin_console</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca366c00c5" name="ViewTaskManagement"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca364800be" name="ViewProvisioningTransaction"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca367400c7" name="ViewEnvironmentMonitoring"/>
+  </RightRefs>
+</Capability>

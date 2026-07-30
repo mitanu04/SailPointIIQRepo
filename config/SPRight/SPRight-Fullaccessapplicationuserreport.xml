@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246626" displayName="right_application_user_report" id="c0a801899fb11942819fb1ca33e2004a" name="FullAccessApplicationUserReport">
+  <Description>right_desc_application_user_report</Description>
+</SPRight>

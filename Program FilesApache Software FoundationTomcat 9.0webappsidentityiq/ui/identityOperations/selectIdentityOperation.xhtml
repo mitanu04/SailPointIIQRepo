@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:sp="http://sailpoint.com/ui">
+<sp:loadBundle basename="sailpoint.web.messages.iiqMessages" var="msgs"/>
+
+<h:body>
+
+  <div id="notificationDiv" class="sr-only" role="alert" aria-live="assertive"></div>
+  <sp-notification sp-triggerable="true"/>
+  <div sp-fit-container="{ top: '#spHeaderPanelDiv', bottom: '#bodyDivFooter' }">
+    <div class="access identity-operation" ng-controller="IdentityOperationFlowCtrl as flowCtrl">
+      <div class="access-body bg-light lt">
+        <header class="panel-heading bg-white no-radius hidden-xs">
+          <div class="row">
+            <div class="col-xs-12">
+              <h2 class="text font-thin m-t-xs m-b-xs">
+                {{'ui_identity_operations_title' | spTranslate}}
+              </h2>
+            </div>
+          </div>
+        </header>
+    
+        <!-- HEADER -->
+        <section class="container-fluid progress-nav bg-light lt">
+          <div class="btn-group btn-group-progress">
+              <span class="btn-table-cell">
+                <button id="flowSelectIdentitiessBtn"
+                        ui-sref="identityOperations.selectIdentities"
+                        sp-space-bar-click=""
+                        type="button"
+                        ui-sref-active="progress-active"
+                        class="btn btn-progress"
+                        aria-label="{{flowCtrl.getSelectIdentitiesTabAriaLabel()}}">
+                  <span class="hidden-xs number">1</span>
+                  <span class="hidden-xs title">{{'ui_identity_operations_select_identities' | spTranslate}}</span>
+                  <span class="hidden-xs subtitle">{{'ui_identity_operations_select_identities_subtitle' | spTranslate}}</span>
+                  <span class="visible-xs-inline">{{'ui_identity_operations_select' | spTranslate}}</span>
+                  <span class="sr-only"
+                        ng-if="'identityOperations.selectIdentities' | includedByState">{{'ui_identity_operations_selected' | spTranslate}}</span>
+                </button>
+              </span>
+              <span class="btn-table-cell">
+                <button id="flowChooseOperationBtn"
+                        ui-sref="identityOperations.chooseOperation"
+                        sp-space-bar-click=""
+                        type="button"
+                        class="btn btn-progress"
+                        ng-class="{ 'progress-active': flowCtrl.isChooseOperationTabSelected() }"
+                        ng-disabled="!flowCtrl.isChooseOperationTabEnabled()"
+                        aria-disabled="{{ !flowCtrl.isChooseOperationTabEnabled() }}"
+                        aria-label="{{flowCtrl.getChooseOperationTabAriaLabel()}}">
+                  <span class="hidden-xs number">2</span>
+                  <span class="hidden-xs title">{{'ui_identity_operations_choose_operation' | spTranslate}}</span>
+                  <span class="hidden-xs subtitle">{{'ui_identity_operations_choose_operation_subtitle' | spTranslate}}</span>
+                  <span class="visible-xs-inline">{{'ui_identity_operations_choose' | spTranslate}}</span>
+                  <span class="sr-only"
+                        ng-if="'identityOperations.chooseOperation' | includedByState">{{'ui_identity_operations_selected' | spTranslate}}</span>
+  
+                </button>
+              </span>
+              <span class="btn-table-cell">
+                <button id="flowReviewBtn"
+                        ui-sref="identityOperations.review"
+                        sp-space-bar-click=""
+                        type="button"
+                        ui-sref-active="progress-active"
+                        class="btn btn-progress"
+                        ng-disabled="!flowCtrl.isReviewTabEnabled()"
+                        aria-disabled="{{ !flowCtrl.isReviewTabEnabled() }}"
+                        aria-label="{{ flowCtrl.getAriaLabelForReviewTab(false) }}">
+                  <span class="hidden-xs number">3</span>
+                  <span class="title hidden-xs">{{'ui_identity_operations_review' | spTranslate}}</span>
+                  <span class="visible-xs title">{{'ui_identity_operations_review_xs' | spTranslate}}</span>
+                  <span class="hidden-xs subtitle">{{'ui_identity_operations_review_subtitle' | spTranslate}}</span>
+                  <span class="sr-only"
+                        ng-if="'identityOperations.review' | includedByState">{{'ui_identity_operations_selected' | spTranslate}}</span>
+                </button>
+          </span>
+          </div>
+  
+          <sp-refresh-warning sp-ignore-warning="!flowCtrl.isDirty()"/>
+  
+          <div ui-view=""/>
+              
+        </section>
+      </div>
+
+      <nav class="footer footer-action-bar navbar navbar-default sp-animate fade-in-up fade-out-down" ng-if="flowCtrl.isShowActionBar()" ng-controller="IdentityOperationReviewCtrl as reviewCtrl">
+        <div class="footer-bar-padding container-fluid text-center padder-v">
+          <button id="identityOperationFooterPreviousBtn"
+                  class="btn btn-s-sm btn-white"
+                  type="button"
+                  ng-if="flowCtrl.isChooseOperationTabSelected()"
+                  ui-sref="identityOperations.selectIdentities">
+            <span>{{'ui_previous' | spTranslate}}</span>
+          </button>
+    
+          <button id="identityOperationFooterNextBtn"
+                  class="btn btn-s-sm btn-info"
+                  type="button"
+                  ng-if="!flowCtrl.isReviewTabSelected()"
+                  ng-disabled="!flowCtrl.isNextEnabled()"
+                  ng-click="flowCtrl.next()">
+            <span>{{ 'ui_next' | spTranslate }}</span>
+          </button>
+
+          <button id="previousBtn" class="btn btn-s-sm btn-white" type="button"
+                  ng-if="flowCtrl.isReviewTabSelected()"
+                  ng-click="reviewCtrl.goPrevious()">{{'ui_previous' | spTranslate}}
+          </button>
+          <button id="cancelBtn" class="btn btn-s-sm btn-white" type="button"
+                  ng-if="flowCtrl.isReviewTabSelected()"
+                  ng-click="reviewCtrl.cancelIdentityOperation()">{{'ui_identity_operations_cancel' | spTranslate}}
+          </button>
+          <button id="submitBtn" class="btn btn-s-sm btn-primary" type="button"
+                  ng-if="flowCtrl.isReviewTabSelected()"
+                  ng-disabled="reviewCtrl.getSubmitDisabled()" ng-click="reviewCtrl.submit()">{{'ui_identity_operations_submit' | spTranslate}}
+          </button>
+  
+        </div>
+      </nav>
+  
+      <script>
+        SailPoint.configData.ACCESS_REQUEST_MAX_IDENTITY_SELECT = parseInt('#{sp:getSystemConfigurationValue('lcmMobileMaxSelectableUsers', 100)}');
+      </script>
+    </div>
+  </div>
+
+</h:body>
+</html>

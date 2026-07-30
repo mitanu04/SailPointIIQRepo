@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+
+<ui:composition>
+    <table class="spTable" cellspacing="1">
+        <tr>
+            <th>#{msgs.application}</th>
+            <th>#{msgs.label_operation}</th>
+            <ui:fragment rendered="#{(event.attributes.noAccountAttributesLayout ne null)}">
+                <th>#{msgs.label_account}</th>
+            </ui:fragment>
+            <ui:fragment rendered="#{(event.attributes.noAccountAttributesLayout eq null)}">
+                <th>#{msgs.attribute}</th>
+                <th>#{msgs.approvalitem_values}</th>
+            </ui:fragment>
+        </tr>
+        <ui:repeat var="accountRequests" value="#{event.attributes.accountRequests}">
+            <tr>
+                <td><h:outputText value="#{accountRequests.application}"/></td>
+                <ui:fragment rendered="#{(event.attributes.noAccountAttributesLayout ne null)}">
+                    <td><h:outputText value="#{accountRequests.operation}"/></td>
+                    <td><h:outputText value="#{accountRequests.displayName}"/></td>
+                </ui:fragment>
+                <ui:fragment rendered="#{(event.attributes.noAccountAttributesLayout eq null)}">
+                    <ui:repeat var="attributeRequests" value="#{accountRequests.attributeRequests}">
+                        <td><h:outputText value="#{attributeRequests.operation}"/></td>
+                        <td><h:outputText value="#{attributeRequests.name}"/></td>
+                        <td><h:outputText value="#{attributeRequests.value}"/></td>
+                    </ui:repeat>
+                </ui:fragment>
+            </tr>
+        </ui:repeat>
+    </table>
+</ui:composition>
+
+</body>
+</html>
+

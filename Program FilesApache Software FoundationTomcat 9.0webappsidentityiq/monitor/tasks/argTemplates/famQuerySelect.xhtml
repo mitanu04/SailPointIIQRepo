@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+  <h:selectOneMenu id="#{argVal.argument.name}_select" value="#{argVal.value}" required="#{argVal.argument.required}" >
+    <f:selectItem itemLabel="#{msgs.task_in_select_one}" itemValue="Permission"/>
+    <f:selectItem itemLabel="#{msgs.task_in_fam_classification_query_type_permission}" itemValue="Permission"/>
+    <f:selectItem itemLabel="#{msgs.task_in_fam_classification_query_type_group}" itemValue="Group"/>
+  </h:selectOneMenu>        
+</ui:composition>
+
+</body>
+</html>

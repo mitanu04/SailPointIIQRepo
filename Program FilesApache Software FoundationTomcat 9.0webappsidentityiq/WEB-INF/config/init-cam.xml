@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<!--
+  Initialization file for SailPoint CAM integration with IdentityIQ.
+-->
+<sailpoint>
+
+    <!-- 
+      Declare the CAM Services module
+    -->
+    <Module name="CAMServices" description="ui_cam_module_desc">
+        <Attributes>
+            <Map>
+                <entry key="healthCheckClass" value="sailpoint.cam.CAMHealthChecker"/>
+                <entry key="enabledConfigKey" value="camEnabled"/>
+            </Map>
+        </Attributes>
+    </Module>
+
+    <!--  Rights and Capabilities -->
+    <ImportAction name="include" value="WEB-INF/config/cam/authorization-cam.xml"/>
+
+    <Configuration name="CAMConfiguration">
+      <Attributes>
+        <Map>
+          <entry key="doInitialization" value="false"/>
+          <entry key="healthCheckEndpoint" value="/v1/resources/healthStatus"/>
+          <entry key="groupsEndpoint" value="/v1/resources/groups"/>
+          <entry key="rolesEndpoint" value="/v1/resources/roles"/>
+          <entry key="scopesEndpoint" value="/v1/resources/scopes"/>
+          <entry key="servicesEndpoint" value="/v1/resources/services"/>
+          <entry key="subscribersEndpoint" value="/tqr/v1/subscribers"/>
+          <entry key="subscriptionsEndpoint" value="/tqr/v1/subscriptions"/>
+          <entry key="messagesEndpoint" value="/tqr/v1/messages"/>
+          <entry key="eventAcknowledgeEndpoint" value="/tqr/v1/messages/acknowledge"/>
+          <entry key="eventGroupId" value="iiq"/>
+          <entry key="eventInitializationEndpoint" value="/graph-querymgr/v1/resources/publish"/>
+          <entry key="supportedAppTypes" >
+            <value>
+              <Map>
+                <entry key="Azure Active Directory" >
+                  <value>
+                      <Map>
+                        <entry key="cloudType" value="AZURE" />
+                        <entry key="label" value="cam_cloudtype_label_azure" />
+                      </Map>
+                  </value>
+                </entry>
+                <entry key="AWS" >
+                  <value>
+                    <Map>
+                      <entry key="cloudType" value="AWS" />
+                      <entry key="label" value="cam_cloudtype_label_aws" />
+                    </Map>
+                  </value>
+                </entry>
+                <!-- Okta has not yet been fully-tested -->
+                <!--
+                <entry key="Okta" >
+                  <value>
+                    <Map>
+                      <entry key="cloudType" value="IDP_OKTA" />
+                      <entry key="label" value="cam_cloudtype_label_okta" />
+                    </Map>
+                  </value>
+                </entry>
+                -->
+                <!-- G Suite has not yet been fully-tested -->
+                <!--
+                <entry key="G Suite" >
+                  <value>
+                    <Map>
+                      <entry key="cloudType" value="GCP" />
+                      <entry key="label" value="cam_cloudtype_label_gcp" />
+                    </Map>
+                  </value>
+                </entry>
+                -->
+              </Map>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Configuration>
+
+    <!--
+      By setting camEnabled, we enable the configuration and use of CAM integration.
+    -->
+    <ImportAction name="merge">
+        <Configuration name="SystemConfiguration">
+            <Attributes>
+                <Map>
+                    <entry key="camEnabled" value="true" />
+                    <entry key='searchInputDefinitions'>
+                        <value>
+                            <List>
+                                <SearchInputDefinition description="label_camuri" excludeDisplayFields="true" headerKey="cloudUri" ignoreCase="true"
+                                  matchMode="START" inputType="Like" filterBuilder="sailpoint.search.CloudAccessUriFilterBuilder"  name="accountGroup.camuri" propertyName="cam.uri" propertyType="String" searchType="AccountGroup"/>
+                                <SearchInputDefinition description="label_camname" excludeDisplayFields="true" headerKey="cloudDisplayName" ignoreCase="true"
+                                  matchMode="START" inputType="Like" filterBuilder="sailpoint.search.CloudAccessDisplayNameFilterBuilder" name="accountGroup.camname" propertyName="cam.name" propertyType="String" searchType="AccountGroup"/>
+                                <SearchInputDefinition description="ui_filter_cloud_label" excludeDisplayFields="true"
+                                                       headerKey="cloudProvider" inputType="Equal"
+                                                       filterBuilder="sailpoint.search.CloudProviderFilterBuilder"
+                                                       name="accountGroup.cloudType" propertyName="cloud.type"
+                                                       propertyType="StringList" searchType="AccountGroup"/>
+                            </List>
+                        </value>
+                    </entry>
+                </Map>
+            </Attributes>
+        </Configuration>
+    </ImportAction>
+
+    <!--
+    Update full text search to support new CAM fields
+    -->
+    <ImportAction name="merge">
+      <FullTextIndex name="BundleManagedAttribute">
+        <Attributes>
+          <Map>
+            <entry key="fields">
+              <value>
+                <List>
+                  <!-- Cloud access fields -->
+                  <FullTextField name="cloudAccessGroup.uri" indexed="true" analyzed="true" />
+                  <FullTextField name="cloudAccessGroup.displayName" indexed="true" analyzed="true"/>
+                  <FullTextField name="cloudAccessGroup.cloudType" indexed="true" analyzed="true"/>
+                  <FullTextField name="cloudAccessRole.uri" indexed="true" analyzed="true"  />
+                  <FullTextField name="cloudAccessRole.displayName" indexed="true" analyzed="true"/>
+                  <FullTextField name="cloudAccessRole.cloudType" indexed="true" analyzed="true"/>
+                  <FullTextField name="cloudAccessScope.uri" indexed="true" analyzed="true"  />
+                  <FullTextField name="cloudAccessScope.displayName" indexed="true" analyzed="true"/>
+                </List>
+              </value>
+            </entry>
+          </Map>
+        </Attributes>
+      </FullTextIndex>
+    </ImportAction>
+
+    <ImportAction name='execute' value='sailpoint.cam.CAMMonitoringConfigUpdater'/>
+
+    <ServiceDefinition name="CAMSync" hosts='global' interval='60' >
+        <Description>
+            Service definition for the CAM synchronization service.
+        </Description>
+        <Attributes>
+            <Map>
+                <entry key="lockTimeout" >
+                    <value>
+                        <Integer>300</Integer>
+                    </value>
+                </entry>
+                <entry key="cycleSeconds" >
+                    <value>
+                        <Integer>10</Integer>
+                    </value>
+                </entry>
+            </Map>
+        </Attributes>
+    </ServiceDefinition>
+
+    <!-- Classifications -->
+    <Classification displayName="AWS" name="AWS" type="cloud" origin="CAM"/>
+    <Classification displayName="Azure" name="AZURE" type="cloud" origin="CAM"/>
+    <Classification displayName="Google" name="GCP" type="cloud" origin="CAM"/>
+    <Classification displayName="Okta IdP" name="IDP_OKTA" type="cloud" origin="CAM"/>
+
+</sailpoint>

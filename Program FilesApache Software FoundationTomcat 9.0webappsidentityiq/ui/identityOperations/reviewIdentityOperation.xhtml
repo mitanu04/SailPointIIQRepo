@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:sp="http://sailpoint.com/ui">
+<sp:loadBundle basename="sailpoint.web.messages.iiqMessages" var="msgs"/>
+
+<h:body>
+  <div id="notificationDiv" class="sr-only" role="alert" aria-live="assertive"></div>
+  <sp-notification />
+  <section sp-loading-mask="reviewCtrl.isPageReady()">
+    <div class="panel m bg-white choose-operation-panel">
+      <div class="panel-body choose-operation-panel-body">
+        <h4 class="text font-thin font-italic m-b">
+          {{'ui_identity_operations_review_confirm' | spTranslate}}
+        </h4>
+        <div class="m">
+          <h5>        
+            <i ng-if="reviewCtrl.isTerminate()"
+               class="fa fa-exclamation-triangle status-indicator text-warning"
+               role="presentation"></i>
+            <strong>{{reviewCtrl.getOperationLabel() | spTranslate}}</strong>
+          </h5>
+          <div class="panel bg-white">
+            <div class="panel-body m-5">
+               <div class="row">
+                 {{'ui_identity_operations_full_name' | spTranslate}} : {{reviewCtrl.getIdentity().displayableName}}
+               </div>
+               <div class="row">
+                 {{'ui_identity_operations_manager' | spTranslate}} : {{reviewCtrl.getIdentity().managerName}}
+               </div>
+               <div class="row">
+                 {{'ui_identity_operations_email' | spTranslate}} : {{reviewCtrl.getIdentity().attributes.email}}
+               </div>
+               <div class="row scrollbox">
+                 {{'ui_identity_operations_reason_label' | spTranslate}} : {{reviewCtrl.identityOperation.reason}}
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</h:body>
+</html>      

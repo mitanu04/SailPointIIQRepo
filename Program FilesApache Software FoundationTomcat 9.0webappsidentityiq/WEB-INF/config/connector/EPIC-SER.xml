@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!-- (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved. -->
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, ENABLE, NO_RANDOM_ACCESS, DIRECT_PERMISSIONS" icon="internetIcon" name="EPIC-SER" type="EPIC-SER">
+    <Attributes>
+      <Map>
+        <entry key="CAConnector" value="true" />
+        <entry key="connectorClass" value="openconnector.connector.epicser.EPICSERConnector" />
+        <entry key="formPath" value="EPICSERAttributesForm.xhtml" />
+        <entry key="isUpdateContactComment" value="true" />
+        <entry key="encrypted" value="password,passphrase,apiPassword,serClientId" />
+        <entry key="importDataLogAPI" value="/api/epic/2016/Core/DataUtility/GetImportDataLog/GetImportLog" />
+        <entry key="importDataAPI" value="/api/epic/2019/Core/DataUtility/ImportData/ImportData" />
+        <entry key="practitionerAPI" value="/api/FHIR/STU3/Practitioner"/>
+        <entry key="importSpecificationID" value="SER,1000"/>
+        <entry key="importSpecificationIDType" value="EXTERNAL"/>
+        <entry key="providerTypeName" value="SAILPOINT"/>
+        <entry key="blueprintUpdateMode" value="force"/>
+        <entry key="fileHeaderToSchemaMap">
+          <value>
+            <Map>
+              <entry key="Prov ID" value="providerId" />
+              <entry key="NPI" value="npi" />
+              <entry key="Provider" value="name" />
+              <entry key="Prov First Nm" value="firstName" />
+              <entry key="Prov Middle Nm" value="middleName" />
+              <entry key="Prov Last Nm" value="lastName" />
+              <entry key="Clinician Title" value="clinicalTitle" />
+              <entry key="Verified?" value="isVerified" />
+              <entry key="Type of Resrc" value="resourceType" />
+              <entry key="Status" value="status" />
+              <entry key="Rfl Src Type" value="referralSourceType" />
+              <entry key="Prov Src" value="providerSource" />
+              <entry key="Data Source" value="sourceOfData" />
+              <entry key="Provider Type" value="providerType" />
+              <entry key="Specialties" value="specialties" />
+              <entry key="Doctor's Degree" value="doctorsDegree" />
+              <entry key="Resident?" value="isResident" />
+              <entry key="Staff Pager Number" value="pagerNumber" />
+              <entry key="DEA #" value="drugEnforcementAdministration" />
+              <entry key="Sex" value="sex" />
+              <entry key="Prov DOB" value="dateOfBirth" />
+              <entry key="Medical Staff Type" value="staffType" />
+              <entry key="UPIN" value="upin" />
+              <entry key="License For Display" value="displayLicense" />
+              <entry key="Results Recipient Type" value="recipientType" />
+              <entry key="Meds Auth?" value="isMedsAuth" />
+              <entry key="Orders Auth?" value="isOrdersAuth" />
+              <entry key="Communication Preference" value="communicationPreference" />
+              <entry key="Prov Tax ID" value="taxId" />
+              <entry key="IP Ord Prov?" value="isInPatientOrderProvider" />
+              <entry key="OP Ord Prov?" value="isOutPatientOrderProvider" />
+              <entry key="Rpt Grp One" value="reportGrouperOne" />
+              <entry key="Rpt Grp Two" value="reportGrouperTwo" />
+              <entry key="Rpt Grp Three" value="reportGrouperThree" />
+              <entry key="Rpt Grp Four" value="reportGrouperFour" />
+              <entry key="Rpt Grp Five" value="reportGrouperFive" />
+              <entry key="Rpt Grp Six" value="reportGrouperSix" />
+              <entry key="Rpt Grp Seven" value="reportGrouperSeven" />
+              <entry key="Rpt Grp Eight" value="reportGrouperEight" />
+              <entry key="Rpt Grp Nine" value="reportGrouperNine" />
+              <entry key="Rpt Grp Ten" value="reportGrouperTen" />
+              <entry key="Rpt Grp Eleven" value="reportGrouperEleven" />
+              <entry key="Rpt Grp Twelve" value="reportGrouperTwelve" />
+              <entry key="Most Recent Blueprint ID" value="blueprint" />
+            </Map>
+          </value>
+        </entry>
+        <entry key="bpFileHeaderToSchemaMap">
+          <value>
+            <Map>
+              <entry key="ID" value="id" />
+              <entry key="Provider name" value="name" />
+              <entry key="Clinician/Title" value="clinicalTitle" />
+              <entry key="Abbreviation" value="abbreviation" />
+              <entry key="Ref source type" value="referralSourceType" />
+            </Map>
+          </value>
+        </entry>
+        <entry key="schemaToItemNumberMap">
+          <value>
+            <Map>
+              <entry key="providerId" value="1" />
+              <entry key="name" value="2" />
+              <entry key="clinicalTitle" value="5" />
+              <entry key="isVerified" value="6" />
+              <entry key="resourceType" value="30" />
+              <entry key="blueprint" value="33" />
+              <!--confusion in resourceType and providerType, staffType-->
+              <entry key="status" value="35" />
+              <entry key="contactComment" value="38" />
+              <entry key="referralSourceType" value="45" />
+              <entry key="specialties" value="1050" />
+              <entry key="doctorsDegree" value="1060" />
+              <entry key="sex" value="1340" />
+              <entry key="displayLicense" value="6000" />
+              <entry key="isMedsAuth" value="8210" />
+              <entry key="isOrdersAuth" value="8220" />
+              <entry key="isInPatientOrderProvider" value="34920" />
+              <entry key="isOutPatientOrderProvider" value="34921" />
+              <entry key="communicationPreference" value="8350" />
+              <entry key="reportGrouperOne" value="2900" />
+              <entry key="reportGrouperTwo" value="2901" />
+              <entry key="reportGrouperSix" value="2905" />
+            </Map>
+          </value>
+        </entry>
+        <entry key="delimiter" value="|"/>
+        <entry key="delimiterInner" value=","/>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="name" identityAttribute="providerId" includePermissions="true" nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="providerId" remediationModificationType="None" type="string">
+          <Description>Unique identifier of an account</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="npi" remediationModificationType="None" type="string">
+          <Description>National Provider Identifier of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" remediationModificationType="None" type="string">
+          <Description>Name of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="firstName" remediationModificationType="None" type="string">
+          <Description>First name of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="middleName" remediationModificationType="None" type="string">
+          <Description>Middle name of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="lastName" remediationModificationType="None" type="string">
+          <Description>Last name of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="clinicalTitle" remediationModificationType="None" type="string">
+          <Description>Clinical Title of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isVerified" remediationModificationType="None" type="string">
+          <Description>Is the provider verified</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="resourceType" remediationModificationType="None" type="string">
+          <Description>Resource Type</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="status" remediationModificationType="None" type="string">
+          <Description>Status of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="referralSourceType" remediationModificationType="None" type="string">
+          <Description>Referral Source Type</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="providerSource" remediationModificationType="None" type="string">
+          <Description>Source of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="sourceOfData" remediationModificationType="None" type="string">
+          <Description>Data Source for the provider record</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="providerType" remediationModificationType="None" type="string">
+          <Description>Type of the provider record</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="specialties" remediationModificationType="None" type="string">
+          <Description>Specialties of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="doctorsDegree" remediationModificationType="None" type="string">
+          <Description>Degree of the Doctor</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isResident" remediationModificationType="None" type="string">
+          <Description>Is the provider a resident</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="pagerNumber" remediationModificationType="None" type="string">
+          <Description>Page number of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="drugEnforcementAdministration" remediationModificationType="None" type="string">
+          <Description>DEA of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="sex" remediationModificationType="None" type="string">
+          <Description>Sex of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="dateOfBirth" remediationModificationType="None" type="string">
+          <Description>Date Of Birth of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="staffType" remediationModificationType="None" type="string">
+          <Description>Type of staff</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="upin" remediationModificationType="None" type="string">
+          <Description>Provider Unique Physician Identification Number (UPIN)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="displayLicense" remediationModificationType="None" type="string">
+          <Description>Display License of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="recipientType" remediationModificationType="None" type="string">
+          <Description>Recipient Type</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isMedsAuth" remediationModificationType="None" type="string">
+          <Description>Is authorised to give medicine</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isOrdersAuth" remediationModificationType="None" type="string">
+          <Description>Is authorised to give orders</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="communicationPreference" remediationModificationType="None" type="string">
+          <Description>Communication preference for the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="taxId" remediationModificationType="None" type="string">
+          <Description>Tax ID of the provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isInPatientOrderProvider" remediationModificationType="None" type="string">
+          <Description>Is in patient order provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isOutPatientOrderProvider" remediationModificationType="None" type="string">
+          <Description>Is out patient order provider</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperOne" remediationModificationType="None" type="string">
+          <Description>Report Grouper One</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperTwo" remediationModificationType="None" type="string">
+          <Description>Report Grouper Two</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperThree" remediationModificationType="None" type="string">
+          <Description>Report Grouper Three</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperFour" remediationModificationType="None" type="string">
+          <Description>Report Grouper Four</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperFive" remediationModificationType="None" type="string">
+          <Description>Report Grouper Five</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperSix" remediationModificationType="None" type="string">
+          <Description>Report Grouper Six</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperSeven" remediationModificationType="None" type="string">
+          <Description>Report Grouper Seven</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperEight" remediationModificationType="None" type="string">
+          <Description>Report Grouper Eight</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperNine" remediationModificationType="None" type="string">
+          <Description>Report Grouper Nine</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperTen" remediationModificationType="None" type="string">
+          <Description>Report Grouper Ten</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperEleven" remediationModificationType="None" type="string">
+          <Description>Report Grouper Eleven</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="reportGrouperTwelve" remediationModificationType="None" type="string">
+          <Description>Report Grouper Twelve</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="blueprint" remediationModificationType="None" type="string" entitlement="true" schemaObjectType="group" managed="true">
+          <Description>The applied blueprint</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="name" identityAttribute="id" nativeObjectType="group" objectType="group">
+        <AttributeDefinition name="id" remediationModificationType="None" type="string">
+          <Description>The blueprint identifier</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" remediationModificationType="None" type="string">
+          <Description>The blueprint name / the provider name applied by the blueprint</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="clinicalTitle" remediationModificationType="None" type="string">
+          <Description>The 'Clinician / Title' applied by the blueprint</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="abbreviation" remediationModificationType="None" type="string">
+          <Description>The 'Abbreviation' applied by the blueprint</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="referralSourceType" remediationModificationType="None" type="string">
+          <Description>The 'Referral Source Type' applied by the blueprint</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <ProvisioningForms>
+      <Form name="Create Account" objectType="account" type="Create">
+        <Attributes>
+          <Map>
+            <entry key="pageTitle" value="Create Account" />
+          </Map>
+        </Attributes>
+        <Section>
+          <Field displayName="con_prov_policy_ser_name" name="name" helpKey="help_con_prov_policy_ser_name" required="true" reviewRequired="true" type="string" />
+          <Field displayName="con_prov_policy_ser_refResourceType" name="referralSourceType" helpKey="help_con_prov_policy_ser_refResourceType" required="true" reviewRequired="true" type="string" />
+          <Field displayName="con_prov_policy_ser_status" name="status" helpKey="help_con_prov_policy_ser_status" required="false" reviewRequired="false" type="string" />
+          <Field displayName="con_prov_policy_ser_contact_comment" name="contactComment" helpKey="help_con_prov_policy_ser_contact_comment" required="false" reviewRequired="false" type="string" />
+          <Field displayName="con_prov_policy_ser_blueprint" name="blueprint" helpKey="help_con_prov_policy_ser_blueprint" required="false" reviewRequired="false" type="string" />
+        </Section>
+      </Form>
+    </ProvisioningForms>
+    <ProvisioningConfig>
+      <ManagedResource>
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="Procurement_System"/>
+        </ApplicationRef>
+      </ManagedResource>
+      <PlanInitializerScript>
+        <Source>
+          <![CDATA[
+                import sailpoint.api.SailPointContext;
+                import sailpoint.object.Identity;
+                import sailpoint.object.Link;
+                import sailpoint.object.IntegrationConfig;
+                import sailpoint.object.Application;
+                import org.apache.commons.logging.Log;
+                import org.apache.commons.logging.LogFactory;
+                import sailpoint.object.ProvisioningPlan;
+                import sailpoint.object.Schema;
+                import sailpoint.tools.GeneralException;
+
+                Log log = LogFactory.getLog("openconnector.connector.epicser.MultivalueProvisioningPlanInitializer");
+                String logPrefix = "MultivaluedUpdate - ";
+
+                private Application getApp() {
+                    String appName = integration.getName();
+                    if (appName == null) {
+                        log.warn(logPrefix + " appName is null");
+                        return null;
+                    }
+                    log.debug(logPrefix + " appName is " + appName);
+                    try {
+                        return context.getObjectByName(Application.class, appName);
+                    } catch (GeneralException e) {
+                        log.warn(logPrefix + "exception thrown while getting application: " + appName);
+                        return null;
+                    }
+                }
+
+                private Link getLink(Identity identity, String appName) {
+                    List links = identity.getLinks();
+                    if (links == null) return null;
+                    log.trace(logPrefix + "links size: " + links.size());
+                    for (Object obj : links) {
+                        if (obj == null) continue;
+                        Link link = (Link) obj;
+                        if (link.getApplicationName() != null && link.getApplicationName().equals(appName)){
+                            return link;
+                        }
+                    }
+                    return null;
+                }
+
+                private List objectToList(Object obj) {
+                    if (obj instanceof Collection) {
+                        return new ArrayList((Collection) obj);
+                    } else {
+                        return new ArrayList(Collections.singletonList(obj));
+                    }
+                }
+
+                ////////////////////////////////////////////////////////////////
+                // Main
+                ////////////////////////////////////////////////////////////////
+
+                log.trace(logPrefix + "enter");
+                if (plan == null || plan.getAccountRequests() == null || integration == null || context == null || identity == null) return;
+                log.trace(logPrefix + "Account requests size: " + plan.getAccountRequests().size());
+
+                for (ProvisioningPlan.AccountRequest accountRequest : plan.getAccountRequests()) {
+                    if (accountRequest.getOp().equals(ProvisioningPlan.ObjectOperation.Create)) continue;
+                    if (accountRequest.getOp().equals(ProvisioningPlan.ObjectOperation.Delete)) continue;
+                    if (accountRequest.getAttributeRequests() == null) continue;
+
+                    log.trace(logPrefix + "Attribute requests size: " + accountRequest.getAttributeRequests().size());
+
+                    for (ProvisioningPlan.AttributeRequest attributeRequest : accountRequest.getAttributeRequests()) {
+                        if (attributeRequest.getOp() == null || attributeRequest.getName() == null || attributeRequest.getValue() == null) {
+                            log.debug(logPrefix + "Attribute request is missing op, name, or value..");
+                            continue;
+                        }
+                        log.trace(logPrefix + "attribute request name: " + attributeRequest.getName() +
+                                ", value: " + attributeRequest.getValue() + ", operation: " + attributeRequest.getOp());
+
+                        if (!attributeRequest.getOp().equals(ProvisioningPlan.Operation.Add) &&
+                                !attributeRequest.getOp().equals(ProvisioningPlan.Operation.Remove)) continue;
+
+                        //"setup" could be outside the loops. However, I figure the majority of provisioning plans will not be
+                        //adding / removing multivalued field vals and those that do likely won't be changing more than one or
+                        //two multivalued attrs
+                        long setupStart = System.currentTimeMillis();
+                        Application application = getApp();
+                        if (application == null || application.getName() == null) {
+                            log.warn(logPrefix + " application or app name is null");
+                            return;
+                        }
+                        Schema schema = application.getSchema("account");
+                        if (schema == null) {
+                            log.warn(logPrefix + "Could not get account schema. Exiting.");
+                            return;
+                        }
+                        Link link = getLink(identity, application.getName());
+                        if (link == null) {
+                            log.warn(logPrefix + "link is null. exiting");
+                            return;
+                        }
+                        long setupDur = System.currentTimeMillis() - setupStart;
+                        log.debug(logPrefix + "set up duration " + setupDur);
+
+                        if (!schema.isMultiValued(attributeRequest.getName())) {
+                            log.trace(logPrefix + attributeRequest.getName() + " is not multivalued. skipping.");
+                            continue;
+                        }
+
+                        final Object rawExistingVals = link.getAttribute(attributeRequest.getName());
+                        if (rawExistingVals == null) {
+                            log.debug(logPrefix + "Existing account attribute value is null for  " + attributeRequest.getName() + ". Nothing to do.");
+                            continue;
+                        }
+
+                        log.trace(logPrefix + "Raw existing values class: " + rawExistingVals.getClass());
+                        List targetValues = objectToList(rawExistingVals);
+                        log.debug(logPrefix + "existing vals: " + targetValues);
+
+                        final Object rawChangeVals = attributeRequest.getValue();
+                        log.trace(logPrefix + "Attribute Request values class: " + rawChangeVals.getClass());
+                        List changeVals = objectToList(rawChangeVals);
+                        log.debug(logPrefix + "request vals: " + changeVals);
+
+                        if (attributeRequest.getOp().equals(ProvisioningPlan.Operation.Add)) {
+                            log.debug(logPrefix + "AttributeRequest with ADD operation found name: " + attributeRequest.getName());
+                            targetValues.addAll(changeVals);
+                            attributeRequest.setValue(targetValues);
+                            log.debug(logPrefix + "Changing operation from \"Add\" to \"Set\"");
+                            attributeRequest.setOp(ProvisioningPlan.Operation.Set);
+                            log.debug(logPrefix + "Resulting target values: " + targetValues);
+                        } else if (attributeRequest.getOp().equals(ProvisioningPlan.Operation.Remove)) {
+                            log.debug(logPrefix + "AttributeRequest with REMOVE operation found name: " + attributeRequest.getName());
+                            targetValues.removeAll(changeVals);
+                            attributeRequest.setValue(targetValues);
+                            log.debug(logPrefix + "Changing operation from \"Remove\" to \"Set\"");
+                            attributeRequest.setOp(ProvisioningPlan.Operation.Set);
+                            log.debug(logPrefix + "Resulting target values: " + targetValues);
+                        }
+                    }
+                }
+                log.trace(logPrefix + "exit");
+            ]]>
+        </Source>
+      </PlanInitializerScript>
+    </ProvisioningConfig>
+  </Application>
+</ImportAction>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:sp="http://sailpoint.com/ui">
+<sp:loadBundle basename="sailpoint.web.messages.iiqMessages" var="msgs"/>
+
+<h:body>
+  <div id="notificationDiv" class="sr-only" role="alert" aria-live="assertive"></div>
+  <sp-notification />
+  <div class="panel m bg-white choose-operation-panel" ng-controller="IdentityOperationChooseOperationCtrl as ctrl">
+    <div class="panel-body choose-operation-panel-body">
+      <h4 class="text font-thin font-italic m-b">
+        {{'ui_identity_operations_choose_option' | spTranslate}}
+      </h4>
+      <div role="radiogroup">
+        <div class="radio m-b" ng-show="#{sp:hasRight(facesContext, 'FullAccessTerminateIdentity')}">
+          <label for="radioTerminate">
+            <input type="radio" name="operationType" value="Terminate" id="radioTerminate" ng-model="ctrl.identityOperation.operation" class="radio-margin"/>
+              <strong class="h5">{{'ui_identity_operations_terminate' | spTranslate}}</strong>
+          </label>
+        </div>
+      </div>
+      <div ng-show="ctrl.operationSelected()">
+        <div class="line line-lg pull-in"></div>
+        <label for="reasonTextArea">{{ 'ui_identity_operations_reason_label' | spTranslate }}
+          <span class="text-danger" aria-label="({{ 'ui_required' | spTranslate }})">*</span>
+        </label>
+        <textarea id="reasonTextArea" ng-model="ctrl.identityOperation.reason" class="form-control" rows="5" aria-label="{{'ui_identity_operations_reason_placeholder' | spTranslate}}"
+                  ng-attr-placeholder="{{'ui_identity_operations_reason_placeholder' | spTranslate}}"></textarea>
+      </div>
+    </div>
+  </div>
+</h:body>
+</html>

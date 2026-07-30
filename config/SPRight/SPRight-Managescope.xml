@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246814" displayName="right_manage_scope" id="c0a801899fb11942819fb1ca349e006d" name="ManageScope">
+  <Description>right_desc_manage_scope</Description>
+</SPRight>

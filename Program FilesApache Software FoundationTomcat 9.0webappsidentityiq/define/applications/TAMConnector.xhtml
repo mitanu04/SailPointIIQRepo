@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        function togglePartitioning() {
+            var pdiv = Ext.getDom('partitionsRow_');
+            
+            // If the checkbox is enabled show the div for partitions
+            var partitioningEnabled = Ext.getDom('editForm:partitionMode_');
+            if ( partitioningEnabled && partitioningEnabled.checked == true) {
+                if ( pdiv ) {                   
+                    pdiv.style.display = "";
+                }               
+            } else {               
+                pdiv.style.display = "none";
+            }
+            
+            //
+            // Must resize the mainpanel because the hidden div
+            // has a big old text area on it
+            //
+            var mainPanel = Ext.getCmp("mainPanel");
+            if ( mainPanel ) {
+                mainPanel.doLayout();
+            }
+         }
+        
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+
+            document.getElementById('authTypeRow').style.display = 'none';
+            var version = '#{applicationObject.attributes['version']}';
+            
+            if (version == "V2") {
+              document.getElementById('configFileRow').style.display = 'none';
+            } else {
+              document.getElementById('hostName').style.display = 'none'; 
+              document.getElementById('configFileRow').style.display = '';
+              document.getElementById('restUserRow').style.display = 'none'; 
+              document.getElementById('restPswRow').style.display = 'none'; 
+            }
+            
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                  var version = '#{applicationObject.attributes['version']}';
+                 
+                   var adminName = getFieldValue('editForm:admin_name');
+                   Validator.validateNonBlankString(adminName, "Administrator name is required.");
+
+                   var adminPassword = getFieldValue('editForm:admin_password');
+                   Validator.validateNonBlankString(adminPassword, "Administrator password is required.");
+
+                   if (version == "" || version == " " || version == "V1") {
+                      var configURL = getFieldValue('editForm:config_url');
+                              Validator.validateNonBlankString(configURL, "Configuration URL cannot be null!");
+                   }
+                   
+                   if (version == "V2") {
+                     var Host = getFieldValue('editForm:host');
+                     Validator.validateNonBlankString(Host, "#{msgs.con_form_TAM_err_message_host_null}");
+                   
+                     var LMIUser = getFieldValue('editForm:lmi_user_name');
+                     Validator.validateNonBlankString(LMIUser, "#{msgs.con_form_TAM_err_message_limiuser_name_null}");
+                     
+                     var LMIUserPsw = getFieldValue('editForm:lmi_user_password');
+                     Validator.validateNonBlankString(LMIUserPsw, "#{msgs.con_form_TAM_err_message_limiuser_psw_null}");
+                   }
+                   
+                   // Validate the partition data is non null and that there aren't any lines 
+                   // in the partition line that evaluate to null.
+                   var partitioningEnabled = Ext.getDom('editForm:partitionMode_');
+                   if ( partitioningEnabled && partitioningEnabled.checked == true) {
+                     var partitions = getFieldValue('editForm:partitions_');
+                     // Split partitions "string" on new lines so we can look for empty
+                     var lines = partitions.split(/\r\n|\r|\n/g);
+                     var partitionsNew = '';
+                     if ( lines ) {
+                       for ( var i=0; i<lines.length ; i++ ) {
+                         var line = lines[i];
+                         if ( line && line.length > 0 ) {
+                           partitionsNew += line + '\n';
+                         } 
+                       }
+                     }
+                     Ext.getDom('editForm:partitions_').value = partitionsNew;
+                     Validator.validateNonBlankString(partitionsNew, "#{msgs.con_form_TAM_err_message_partitions_null}");
+                   }
+
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+               //return false will kill cancel the save
+               return true;
+           });
+
+           togglePartitioning(); });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_TAM_settings}"/><br/><br/>
+
+
+      <div id="accountSettings" class='spContent'>
+        <table class="spTable" style="border:0px" cellspacing="0">
+          <!-- New host name -->
+          <tr id="hostName">
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_host_name}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpHost" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{msgs.help_con_tam_host}"/>
+
+            </td>
+            <td valign="center">
+              <h:inputText id="host"
+                           value="#{applicationObject.attributes['host']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <!-- End of host name -->
+
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_admin}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpAdminName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="ID of Tivoli Access Manager Admin"/>
+
+            </td>
+            <td valign="center">
+              <h:inputText id="admin_name"
+                           value="#{applicationObject.attributes['admin_name']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_admin_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAdminPassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="Password for Tivoli Access Manager Admin"/>
+            </td>
+            <td>
+                <sp:inputSecret id="admin_password"
+                                value="#{applicationObject.attributes['admin_password']}" redisplay="true"
+                                size="20" autocomplete="off"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>          
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_domain}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpdomain" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="Domain for Tivoli Access Manager"/>
+            </td>
+            <td>
+              <h:inputText id="domain"
+                           value="#{applicationObject.attributes['domain']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <!-- New UI. -->
+          <tr id="restUserRow">
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_API_User}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpApiUserName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{msgs.help_con_tam_lmi_user_name}"/>
+
+            </td>
+            <td valign="center">
+              <h:inputText id="lmi_user_name"
+                           value="#{applicationObject.attributes['lmi_user_name']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr id="restPswRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_API_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpRestPassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{msgs.help_con_tam_lmi_user_psw}"/>
+            </td>
+            <td>
+              <sp:inputSecret id="lmi_user_password"
+                              value="#{applicationObject.attributes['lmi_user_password']}" redisplay="true"
+                              size="20" autocomplete="off"
+                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <!-- New UI End -->
+          <tr id="configFileRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_TAM_config_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpConfigUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="e.g c:\configfile. URL formatted location of configuration file created via svrsslcfg"/>
+            </td>
+            <td>
+              <h:inputText id="config_url"
+                       value="#{applicationObject.attributes['config_url']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr id="authTypeRow">
+            <td class='titleColumn certScheduleTitleCol'><h:outputText
+                    style='padding:5px'
+                    value="#{msgs.con_form_TAM_authentication}" /></td>
+            <td class="certScheduleHelpCol"><h:graphicImage
+                    id="imgHlpauthtype" styleClass="helpIcon"
+                    url="/images/icons/dashboard_help_16.png"
+                    alt="#{help.help_con_servicenow_auth_type}" /></td>
+            <td><h:selectOneMenu id="authType"
+                                 value="#{applicationObject.attributes['authtype']}"
+                                 redisplay="true"
+                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+              <f:selectItem itemValue="Basic"
+                            itemLabel="Basic" />
+            </h:selectOneMenu>
+            </td>
+          </tr>
+        </table>
+        <ui:fragment>
+          <!--  Partitioning Config -->
+          <br/><h:outputText styleClass="sectionHeader" value="#{msgs.con_form_delimited_partitioning}"/><br/>
+          <table class="spTable" style="border:0px" cellspacing="0">
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_partitioningMode}"/>
+              </td>
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpPartitioningMode_" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                                alt="#{msgs.help_con_form_jdbc_partitionEnable}"/>
+              </td>
+              <td width="100%">
+                <h:selectBooleanCheckbox id='partitionMode_' onclick='togglePartitioning()'
+                                         value="#{applicationObject.attributes['partitionMode']}"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+              </td>
+            </tr>
+              <tr id='partitionsRow_'>
+                <td class='titleColumn certScheduleTitleCol'>
+                  <h:outputText style='padding:5px' value="#{msgs.con_form_jdbc_partition_statements}"/>
+                </td>
+                <td class="certScheduleHelpCol">
+                  <h:graphicImage id="imgHlpPartitioningStatements_" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                                  alt="#{msgs.help_con_form_erp_partitions}"/>
+                </td>
+                <td>              
+                  <h:inputTextarea id='partitions_'
+                                   converter="NewLineList"
+                                   value="#{applicationObject.attributes['partitionStatements']}"
+                                   rows="5" cols="10"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                </td>
+              </tr>
+
+          </table>
+        </ui:fragment>
+      </div>
+
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

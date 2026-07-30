@@ -1,0 +1,100 @@
+
+    alter table identityiqah.spt_hist_accounts 
+       drop 
+       foreign key FK605klb45cwnh86urs1aw07cue;
+
+    alter table identityiqah.spt_hist_assigned_roles 
+       drop 
+       foreign key FK57arq9l8c10fbrtbixsryavgg;
+
+    alter table identityiqah.spt_hist_detected_roles 
+       drop 
+       foreign key FKsvem4m5n0f7dqasy8pht1m0dj;
+
+    alter table identityiqah.spt_hist_entitlements 
+       drop 
+       foreign key FKslsba39xq240608yr2vc59rn3;
+
+    alter table identityiqah.spt_hist_policy_violation_remediation_bundle_ids 
+       drop 
+       foreign key FKitaxnoflkhnq6ijo5yqmh29jc;
+
+    alter table identityiqah.spt_hist_policy_violation_remediation_entitlements 
+       drop 
+       foreign key FKjie8pn4nfhcfi3t92br291fc1;
+
+    alter table identityiqah.spt_hist_policy_violations 
+       drop 
+       foreign key FK431cy516ss4k08rgrpq20x1wb;
+
+    alter table identityiqah.spt_hist_role_remediation_entitlements 
+       drop 
+       foreign key FKhvwj97ncucp9u2flf5llenlcs;
+
+    alter table identityiqah.spt_hist_identity_req_item_capture 
+       drop 
+       foreign key FK6dn4yl1mqiub2ejxsgms1vex8;
+
+    drop table if exists identityiqah.spt_hist_accounts;
+
+    drop table if exists identityiqah.spt_hist_assigned_roles;
+
+    drop table if exists identityiqah.spt_hist_detected_roles;
+
+    drop table if exists identityiqah.spt_hist_entitlements;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_bundle_ids;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_entitlements;
+
+    drop table if exists identityiqah.spt_hist_policy_violations;
+
+    drop table if exists identityiqah.spt_hist_role_remediation_entitlements;
+
+    drop table if exists identityiqah.spt_hist_account_capture;
+
+    drop table if exists identityiqah.spt_hist_capability;
+
+    drop table if exists identityiqah.spt_hist_capability_capture;
+
+    drop table if exists identityiqah.spt_hist_cert_remediation_capture;
+
+    drop table if exists identityiqah.spt_hist_certification;
+
+    drop table if exists identityiqah.spt_hist_database_version;
+
+    drop table if exists identityiqah.spt_hist_entitlement_capture;
+
+    drop table if exists identityiqah.spt_hist_identity;
+
+    drop table if exists identityiqah.spt_hist_identity_capture;
+
+    drop table if exists identityiqah.spt_hist_identity_event;
+
+    drop table if exists identityiqah.spt_hist_identity_req_capture;
+
+    drop table if exists identityiqah.spt_hist_identity_req_item_capture;
+
+    drop table if exists identityiqah.spt_hist_mattr;
+
+    drop table if exists identityiqah.spt_hist_mattr_capture;
+
+    drop table if exists identityiqah.spt_hist_mattr_event;
+
+    drop table if exists identityiqah.spt_hist_object_config_capture;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_capture;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_capture;
+
+    drop table if exists identityiqah.spt_hist_role;
+
+    drop table if exists identityiqah.spt_hist_role_capture;
+
+    drop table if exists identityiqah.spt_hist_role_event;
+
+    drop table if exists identityiqah.spt_hist_workgroup;
+
+    drop table if exists identityiqah.spt_hist_workgroup_capture;
+
+    drop table if exists identityiqah.spt_hist_workgroup_event;

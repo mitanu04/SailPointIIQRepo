@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2023 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(fieldname) {
+            var val = null;
+            var field = Ext.getDom(fieldname);
+            if ( field ) {
+                val = field.value;
+            }
+            return val;
+        }
+
+        function toggleCredentials(authType) {
+            var grantTypeRow = Ext.get('grantTypeRow');
+            var tokenUrlRow=  Ext.get('tokenUrlRow');
+            var usernameRow=  Ext.get('usernameRow');
+            var passwordRow=  Ext.get('passwordRow');
+            var clientIdRow = Ext.get('clientIdRow');
+            var clientSecretRow = Ext.get('clientSecretRow');
+            var refreshTokenRow = Ext.get('refreshTokenRow');
+
+            if (authType == "") {
+                authType = "OAuth2";
+            }
+
+            if (authType == "OAuth2") {
+                grantTypeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                grantTypeRow.show();
+                tokenUrlRow.setVisibilityMode(Ext.Element.DISPLAY);
+                tokenUrlRow.show();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.show();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.show();
+                clientIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientIdRow.show();
+                clientSecretRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecretRow.show();
+                toggleGrantType(Ext.getDom('editForm:grant_type').value);
+            }
+        }
+
+        function toggleGrantType(grantType) {
+            var clientIdRow = Ext.get('clientIdRow');
+            var clientSecretRow = Ext.get('clientSecretRow');
+            var usernameRow = Ext.get('usernameRow');
+            var passwordRow = Ext.get('passwordRow');
+            var refreshTokenRow = Ext.get('refreshTokenRow');
+            if (grantType == "") {
+                grantType = "REFRESH_TOKEN";
+            }
+
+            if (grantType == "REFRESH_TOKEN") {
+                clientIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientIdRow.show();
+                refreshTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshTokenRow.show();
+                clientSecretRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecretRow.show();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.hide();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.hide();
+            } else if (grantType == "PASSWORD") {
+                clientIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientIdRow.show();
+                clientSecretRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecretRow.show();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.show();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.show();
+                refreshTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshTokenRow.hide();
+            }
+        }
+
+        function validateParams(){
+            var url = getFieldValue('editForm:url');
+            Validator.validateNonBlankString(url, "#{msgs.con_form_ivanti_cherwell_api_url_null}");
+
+            var authType = getFieldValue('editForm:authType');
+            if (authType == "OAuth2") {
+                var grant_type = getFieldValue('editForm:grant_type');
+                var token_url = getFieldValue('editForm:token_url');
+                var client_id = getFieldValue('editForm:client_id');
+                var client_secret = getFieldValue('editForm:client_secret');
+                var username = getFieldValue('editForm:username');
+                var password = getFieldValue('editForm:password');
+
+                if (grant_type == "PASSWORD") {
+                    Validator.validateNonBlankString(token_url, "#{msgs.con_form_ivanti_cherwell_token_url_null}");
+                    Validator.validateNonBlankString(client_id, "#{msgs.con_form_ivanti_cherwell_client_id_null}");
+                    Validator.validateNonBlankString(username, "#{msgs.con_form_ivanti_cherwell_username_null}");
+                    Validator.validateNonBlankString(password, "#{msgs.con_form_ivanti_cherwell_password_null}");
+                } else if (grant_type == "REFRESH_TOKEN") {
+                    var refresh_token = getFieldValue('editForm:refresh_token');
+                    Validator.validateNonBlankString(token_url, "#{msgs.con_form_ivanti_cherwell_token_url_null}");
+                    Validator.validateNonBlankString(client_id, "#{msgs.con_form_ivanti_cherwell_client_id_null}");
+                    Validator.validateNonBlankString(refresh_token, "#{msgs.con_form_ivanti_cherwell_refresh_token_null}");
+                }
+            }
+
+            var accountLoginIdFilter = getFieldValue('editForm:accountLoginIdFilter');
+            Validator.validateNonBlankString(accountLoginIdFilter, "#{msgs.con_form_ivanti_cherwell_account_login_id_filter_null}");
+
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            toggleCredentials('#{applicationObject.attributes["authType"]}');
+            // This is our validation hook
+            Page.on('beforeSave', function() {
+                if (!hasCredentialConfiguration()) {
+                    validateParams();
+                    var errors = Validator.getErrors();
+                    if (errors && errors.length > 0) {
+                        Validator.displayErrors('appErrorsTop');
+                        return false;
+                    }
+                }
+                return true;
+            });
+        });
+
+        //--><!]]>
+    </script>
+
+    <f:view>
+        <div id="accountSettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_ivanti_connection_settings}" />
+            <table class="spTable" style="border: 0px" cellspacing="0">
+
+                <!-- Field for rendering API URL view -->
+                <tr id="ivantiCherwellAPIURLRow">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_base_url}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_api_url}"/>
+                    </td>
+                    <td valign="center">
+                        <sp:inputText id="url"
+                                      value="#{applicationObject.attributes['url']}" size="120" redisplay="true"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Auth Type view -->
+                <tr id="authTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_auth_type}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_auth_type}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="authType" value="#{applicationObject.attributes['authType']}"
+                                         redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleCredentials(this.value)">
+                            <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_ivanti_cherwell_oauth2}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Grant Type view -->
+                <tr id="grantTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_grant_type}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_grant_type}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="grant_type"  value="#{applicationObject.attributes['grant_type']}"
+                                         redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleGrantType(this.value)">
+                            <f:selectItem itemValue="REFRESH_TOKEN" itemLabel="#{msgs.con_form_ivanti_cherwell_grant_type_refresh_token}" />
+                            <f:selectItem itemValue="PASSWORD" itemLabel="#{msgs.con_form_ivanti_cherwell_grant_type_password}" />
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Token URL view -->
+                <tr id="tokenUrlRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_token_url}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpTokenUrl" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_token_url}" />
+                    </td>
+                    <td>
+                        <h:inputText id="token_url" value="#{applicationObject.attributes['token_url']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Client ID view -->
+                <tr id="clientIdRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_client_id}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAudience" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_client_id}" />
+                    </td>
+                    <td>
+                        <h:inputText id="client_id" value="#{applicationObject.attributes['client_id']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Client Secret view -->
+                <tr id="clientSecretRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_client_secret}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpIssuer" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_client_secret}" />
+                    </td>
+                    <td>
+                        <sp:inputSecret id="client_secret" value="#{applicationObject.attributes['client_secret']}" size="20"
+                                        redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Username view -->
+                <tr id="usernameRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_username}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpUser" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_username}" />
+                    </td>
+                    <td>
+                        <h:inputText id="username" value="#{applicationObject.attributes['username']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Password view -->
+                <tr id="passwordRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_password}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPassword" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_password}" />
+                    </td>
+                    <td>
+                        <sp:inputSecret id="password" value="#{applicationObject.attributes['password']}" size="20"
+                                        redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <!-- Field for rendering Refresh Token view -->
+                <tr id="refreshTokenRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_refresh_token}"/>
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpPrivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_refresh_token}"/>
+                    </td>
+                    <td>
+                        <sp:inputSecret id="refresh_token" value="#{applicationObject.attributes['refresh_token']}" size="20"
+                                        redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="manageAccounts">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_account_type}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpManageAccounts" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_user_type}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="manageUserType"  value="#{applicationObject.attributes['manageUserType']}"
+                                         redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleGrantType(this.value)">
+                            <f:selectItem itemValue="Users" itemLabel="#{msgs.con_form_ivanti_cherwell_user_type_users}" />
+                            <f:selectItem itemValue="Customers" itemLabel="#{msgs.con_form_ivanti_cherwell_user_type_customers}" />
+                            <f:selectItem itemValue="Both" itemLabel="#{msgs.con_form_ivanti_cherwell_user_type_both}" />
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div id="filterSettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_ivanti_cherwell_filter_attribute_account}" />
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="accountFilterRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ivanti_cherwell_account_login_id_filter}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAccountFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ivanti_cherwell_account_login_filter}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="accountLoginIdFilter"  value="#{applicationObject.attributes['accountLoginIdFilter']}"
+                                         redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleGrantType(this.value)">
+                            <f:selectItem itemValue="Both" itemLabel="#{msgs.con_form_ivanti_cherwell_account_filter_both}" />
+                            <f:selectItem itemValue="Internal" itemLabel="#{msgs.con_form_ivanti_cherwell_account_filter_internal}" />
+                            <f:selectItem itemValue="Windows" itemLabel="#{msgs.con_form_ivanti_cherwell_account_filter_windows}" />
+
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </f:view>
+
+</ui:composition>
+
+</body>
+</html>

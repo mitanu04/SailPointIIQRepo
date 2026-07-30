@@ -1,0 +1,90 @@
+/*******************************
+/** Account Groups/Entitlement Catalog
+/******************************/
+
+.categorizedField {
+  padding-left:4px;
+}
+
+#acctGroupsGrid .x-grid-header-ct {
+  border-top-width: 1px !important;
+}
+
+.classification-icon .fa-folder {
+  color: #0074D9;
+}
+
+/* Match the padding rule in the angular version of the data table */
+.classification-icon .fa-exclamation {
+    padding-top: 1px;
+}
+
+select {
+  height: 30px;
+  width: 200px;
+  padding: 5px;
+  border: 1px solid #b5b8c8;
+}
+
+select[multiple=multiple] {
+  height: 100% !important;
+}
+
+.styledSelect select {
+  background: #ffffff;
+  height: 30px;
+  width: 223px;
+  padding: 5px 5px 5px 0 !important;
+  line-height: 1;
+  border: 0 !important;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+.styledSelect {
+  height: 30px;
+  width: 200px;
+  overflow: hidden;
+  border-top: 1px solid #b5b8c8;
+  border-bottom: 1px solid #b5b8c8;
+  border-left: 1px solid #b5b8c8;
+  position: relative;
+}
+
+/* Smaller version of styled selects */
+.styledSelect.smallSelect select {
+  width: 143px !important;
+}
+
+.styledSelect.smallSelect {
+  width: 120px;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.smallSelect .styledTrigger {
+  border-right: none !important;
+}
+
+.styledSmallSelect {
+  width: 120px;
+}
+
+.styledTrigger {
+  background-image: none;
+  background: #fafafa;
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"); /* fallback */
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eeeeee)); /* Saf4+, Chrome */
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"), -webkit-linear-gradient(top, #ffffff, #eeeeee); /* Chrome 10+, Saf5.1+ */
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"), -moz-linear-gradient(top, #ffffff, #eeeeee); /* FF3.6+ */
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"), -ms-linear-gradient(top, #ffffff, #eeeeee); /* IE10 */
+  background-image: url("../../../../../scripts/ext-4.1.0/resources/images/form/BlkArrowDown.png"), linear-gradient(top, #ffffff, #eeeeee); /* W3C */
+  background-position: 4px 0 !important;
+  border-left: 1px solid #b5b8c8;
+  border-right: 1px solid #b5b8c8;
+  height: 30px;
+  width: 36px;
+  right: 0;
+  position: absolute;
+  pointer-events: none;
+}

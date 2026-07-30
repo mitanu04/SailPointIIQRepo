@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="SEARCH, PROVISIONING" icon="internetIcon" name="Workday" type="Workday">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.WorkDay"/>
+        <entry key="formPath" value="WorkdayForm.xhtml"/>
+        <entry key="encrypted" value="refreshToken,clientSecret,refreshTokenDummy,clientSecretDummy,provisioningPassword,oauth_token_info,http.proxyPassword,https.proxyPassword"/>
+        <entry key="primary_Work_Phone_Type" value="telephone"/> 
+        <entry key="primary_Home_Phone_Type" value="telephone"/>
+        <entry key="version" value="39.1"/>
+        <entry key="aggregationThreadSize" value="4"/>
+        <entry key="Past_Termination_Offset" value="60"/>
+        <entry key="pastRescindedOffset" value="60"/>
+        <entry key="FetchWorkersByOrganization">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="fetchLatestTerminatedWorkersRecord">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="deleteAllPhoneRecord">
+          <value>
+            <Boolean>false</Boolean>
+          </value>
+        </entry>
+        <entry key="deleteAllEmailRecord">
+          <value>
+            <Boolean>false</Boolean>
+          </value>
+        </entry>
+        <entry key="useChangeContactInfoAPI">
+            <value>
+                <Boolean>true</Boolean>
+            </value>
+        </entry>
+        <entry key="Configure_Response_Group">
+        <value>
+          <Map>
+            <entry key="Exclude_Companies" value="false"/>
+            <entry key="Exclude_Company_Hierarchies" value="true"/>
+            <entry key="Exclude_Contingent_Workers" value="false"/>
+            <entry key="Exclude_Cost_Center_Hierarchies" value="false"/>
+            <entry key="Exclude_Cost_Centers" value="false"/>
+            <entry key="Exclude_Custom_Organizations" value="false"/>
+            <entry key="Exclude_Employees" value="false"/>
+            <entry key="Exclude_Location_Hierarchies" value="true"/>
+            <entry key="Exclude_Matrix_Organizations" value="true"/>
+            <entry key="Exclude_Organization_Support_Role_Data" value="true"/>
+            <entry key="Exclude_Pay_Groups" value="true"/>
+            <entry key="Exclude_Region_Hierarchies" value="true"/>
+            <entry key="Exclude_Regions" value="true"/>
+            <entry key="Exclude_Supervisory_Organizations" value="true"/>
+            <entry key="Exclude_Teams" value="true"/>
+            <entry key="Include_Account_Provisioning" value="false"/>
+            <entry key="Include_Background_Check_Data" value="false"/>
+            <entry key="Include_Benefit_Eligibility" value="false"/>
+            <entry key="Include_Benefit_Enrollments" value="false"/>
+            <entry key="Include_Career" value="false"/>
+            <entry key="Include_Compensation" value="false"/>
+            <entry key="Include_Development_Items" value="false"/>
+            <entry key="Include_Employee_Contract_Data" value="false"/>
+            <entry key="Include_Employee_Review" value="false"/>
+            <entry key="Include_Employment_Information" value="true"/>
+            <entry key="Include_Feedback_Received" value="false"/>
+            <entry key="Include_Goals" value="false"/>
+            <entry key="Include_Management_Chain_Data" value="true"/>
+            <entry key="Include_Organizations" value="true"/>
+            <entry key="Include_Personal_Information" value="true"/>
+            <entry key="Include_Qualifications" value="false"/>
+            <entry key="Include_Reference" value="true"/>
+            <entry key="Include_Related_Persons" value="false"/>
+            <entry key="Include_Roles" value="false"/>
+            <entry key="Include_Skills" value="false"/>
+            <entry key="Include_Succession_Profile" value="false"/>
+            <entry key="Include_Talent_Assessment" value="false"/>
+            <entry key="Include_User_Account" value="false"/>
+            <entry key="Include_Worker_Documents" value="false"/>
+            <entry key="Include_Benefit_Eligibility" value="false"/>
+            <entry key="Include_Additional_Jobs" value="false"/>
+            <entry key="Include_Multiple_Managers_in_Management_Chain_Data" value="false"/>
+            <entry key="Include_Subevents_for_Corrected_Transaction" value="false"/>
+            <entry key="Include_Subevents_for_Rescinded_Transaction" value="false"/>
+            <entry key="Include_Collective_Agreement_Data" value="false"/>
+            <entry key="Include_Probation_Period_Data" value="false"/>
+            <entry key="Include_Extended_Employee_Contract_Details" value="false"/>
+            <entry key="Include_Contingent_Worker_Tax_Authority_Form_Information" value="false"/>
+            <entry key="Exclude_Funds" value="true"/>
+            <entry key="Exclude_Fund_Hierarchies" value="true"/>
+            <entry key="Exclude_Grants" value="true"/>
+            <entry key="Exclude_Grant_Hierarchies" value="true"/>
+            <entry key="Exclude_Business_Units" value="true"/>
+            <entry key="Exclude_Business_Unit_Hierarchies" value="true"/>
+            <entry key="Exclude_Programs" value="true"/>
+            <entry key="Exclude_Program_Hierarchies" value="true"/>
+            <entry key="Exclude_Gifts" value="true"/>
+            <entry key="Exclude_Gift_Hierarchies" value="true"/>
+            <entry key="Include_Contracts_for_Terminated_Workers" value="false"/>
+          </Map>
+        </value>
+      </entry>
+	  <entry key="Configure_Response_Group_Prehire">
+			<value>
+				<Map>
+					<entry key="Include_Reference" value="true"/>
+					<entry key="Include_Personal_Information" value="true"/>
+					<entry key="Show_All_Personal_Information" value="false"/>
+					<entry key="Include_Recruiting_Information" value="true"/>
+					<entry key="Include_Qualification_Profile" value="false"/>
+					<entry key="Include_Resume" value="false"/>
+					<entry key="Include_Background_Check" value="false"/>
+					<entry key="Include_External_Integration_ID_Data" value="false"/>
+				</Map>
+			</value>
+		</entry>
+        <entry key="XpathAttributesMap">
+	<value>
+		<Map>
+			<entry key="ORGANIZATION_NAME"  value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[@ns1:Descriptor ='Business Unit']]/ns1:Organization_Name"/>
+			<entry key="CLASS" value="concat(ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Position_Title,ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Position_Time_Type_Reference/ns1:ID[@ns1:type='Position_Time_Type_ID'],ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Employee_Type_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Position_Title,ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Position_Time_Type_Reference/ns1:ID[@ns1:type='Position_Time_Type_ID'],ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Employee_Type_ID'])"/>
+			<entry key="WORKER_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Preferred_Name_Data/ns1:Name_Detail_Data/@ns1:Formatted_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Preferred_Name_Data/ns1:Name_Detail_Data/@ns1:Formatted_Name"/>
+			<entry key="POSITION" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Position_Title | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Position_Title"/>
+			<entry key="COUNTRY" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Country_Reference/ns1:ID[@ns1:type='ISO_3166-1_Alpha-3_Code'] | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Country_Reference/ns1:ID[@ns1:type='ISO_3166-1_Alpha-3_Code']"/>
+			<entry key="JOBCODE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Job_Profile_Summary_Data/ns1:Job_Profile_Reference/ns1:ID[@ns1:type='Job_Profile_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Job_Profile_Summary_Data/ns1:Job_Profile_Reference/ns1:ID[@ns1:type='Job_Profile_ID']"/>
+			<entry key="USERID" value="ns1:Worker_Data/ns1:User_ID"/>
+			<entry key="ADDRESS_LINE_1" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Address_Data/ns1:Address_Line_Data[@ns1:Type = 'ADDRESS_LINE_1'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Address_Data/ns1:Address_Line_Data[@ns1:Type = 'ADDRESS_LINE_1']"/>
+			<entry key="LEGAL_MIDDLE_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Middle_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Middle_Name"/>
+			<entry key="CHECK_LATEST_WORKER_RECORD" value="ns1:Worker_Data/ns1:Integration_Field_Override_Data[ns1:Field_Reference[ns1:ID[@ns1:type='Integration_Document_Field_Name']='LATEST_WORKER_RECORD']]"/>
+			<entry key="DEPARTMENT" value="concat(ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference/ns1:ID[@ns1:type='Organization_Type_ID'] ='COST_CENTER']/ns1:Organization_Code | ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference/ns1:ID[@ns1:type='Organization_Type_ID'] ='Cost_Center']/ns1:Organization_Code,'  ',ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference/ns1:ID[@ns1:type='Organization_Type_ID'] ='COST_CENTER']/ns1:Organization_Name | ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference/ns1:ID[@ns1:type='Organization_Type_ID'] ='Cost_Center']/ns1:Organization_Name)"/>
+			<entry key="FILENUMBER" value="ns1:Worker_Data/ns1:Worker_ID | ns1:Applicant_Reference/ns1:ID[@ns1:type='WID']"/>
+			<entry key="MANAGER_ID" value="ns1:Worker_Data/ns1:Management_Chain_Data/ns1:Worker_Supervisory_Management_Chain_Data/ns1:Management_Chain_Data[last()]/ns1:Manager/ns1:Worker_Reference/ns1:ID[@ns1:type='Employee_ID'] | ns1:Worker_Data/ns1:Management_Chain_Data/ns1:Worker_Supervisory_Management_Chain_Data/ns1:Management_Chain_Data[last()]/ns1:Manager/ns1:Worker_Reference/ns1:ID[@ns1:type='Contingent_Worker_ID']"/>
+			<entry key="EMPLOYEE_TYPE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Employee_Type_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Contingent_Worker_Type_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Employee_Type_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Worker_Type_Reference/ns1:ID[@ns1:type='Contingent_Worker_Type_ID']"/>
+			<entry key="COMPANY_NAME" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference/ns1:ID [@ns1:type='Organization_Type_ID']='COMPANY']/ns1:Organization_Name"/>
+			<entry key="TERMINATION_DATE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Status_Data/ns1:Termination_Date"/>
+			<entry key="WORKER_DESCRIPTOR" value="ns1:Worker_Descriptor | ns1:Worker_Reference/@ns1:Descriptor"/>
+			<entry key="COST_CENTER_REFERENCE_ID" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[ns1:ID[@ns1:type='Organization_Type_ID']='COST_CENTER']]/ns1:Organization_Reference_ID | ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[ns1:ID[@ns1:type='Organization_Type_ID']='Cost_Center']]/ns1:Organization_Reference_ID"/>
+			<entry key="ADDRESS_WORK" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/@ns1:Formatted_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/@ns1:Formatted_Address"/>
+			<entry key="ADDITIONAL_EMAIL_ADDRESS_HOME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='false']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/ns1:Email_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='false']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/ns1:Email_Address"/>
+			<entry key="ON_LEAVE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Status_Data/ns1:Leave_Status_Data/ns1:On_Leave | ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Status_Data/ns1:Leave_Status_Date[1]/@ns1:On_Leave"/>
+			<entry key="FUTURE_ACTION" value="ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data/ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Hire Employee']/ns1:ID[@ns1:type='Business_Process_Type'] |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data/ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Contract Contingent Worker']/ns1:ID[@ns1:type='Business_Process_Type'] | ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data/ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Terminate Employee']/ns1:ID[@ns1:type='Business_Process_Type'] |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data/ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Onboarding']/ns1:ID[@ns1:type='Business_Process_Type'] |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data/ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='End Contingent Worker Contract']/ns1:ID[@ns1:type='Business_Process_Type']"/>
+			<entry key="JOBTITLE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Title | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Business_Title"/>
+			<entry key="LOCATION" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Name | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Name"/>
+			<entry key="STATE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Address_Data/ns1:Country_Region_Reference/ns1:ID[@ns1:type='Country_Region_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Address_Data/ns1:Country_Region_Reference/ns1:ID[@ns1:type='Country_Region_ID']"/>
+			<entry key="COST_CENTER" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[ns1:ID[@ns1:type='Organization_Type_ID']='COST_CENTER']]/ns1:Organization_Name | ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[ns1:ID[@ns1:type='Organization_Type_ID']='Cost_Center']]/ns1:Organization_Name"/>
+			<entry key="LAST_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Last_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Last_Name"/>
+			<entry key="FIRST_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:First_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:First_Name"/>
+			<entry key="DIVISION" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[@ns1:Descriptor='Sales Channel']]/ns1:Organization_Name"/>
+			<entry key="FUTURE_DATE" value="ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data[ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Hire Employee']]/ns1:Transaction_Effective_Moment |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data[ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Contract Contingent Worker']]/ns1:Transaction_Effective_Moment  |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data[ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Terminate Employee']]/ns1:Transaction_Effective_Moment |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data[ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='Onboarding']]/ns1:Transaction_Effective_Moment |ns1:Worker_Data/ns1:Transaction_Log_Entry_Data/ns1:Transaction_Log_Entry/ns1:Transaction_Log_Data[ns1:Transaction_Log_Type_Reference[ns1:ID[@ns1:type='Business_Process_Type']='End Contingent Worker Contract']]/ns1:Transaction_Effective_Moment"/>
+			<entry key="COST_CENTER_HIERARCHY" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[ns1:ID[@ns1:type='Organization_Type_ID']='COST_CENTER_HIERARCHY']]/ns1:Organization_Name"/>
+			<entry key="EMAIL_ADDRESS_HOME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/ns1:Email_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/ns1:Email_Address"/>
+			<entry key="POSTAL_CODE" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Postal_Code | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Postal_Code"/>
+			<entry key="MIDDLE_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Middle_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Middle_Name"/>
+			<entry key="EMAIL_ADDRESS_WORK" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Email_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Email_Address"/>
+			<entry key="FULLPARTTIME" value="concat(ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Position_Title,' ',ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Position_Time_Type_Reference/ns1:ID[@ns1:type='Position_Time_Type_ID'] | ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Position_Title,' ',ns1:Worker_Data/ns1:Employment_Data/ns1:Position_Data/ns1:Position_Time_Type_Reference/ns1:ID[@ns1:type='Position_Time_Type_ID'])"/>
+			<entry key="ADDITIONAL_EMAIL_ADDRESS_WORK" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='false']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Email_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Email_Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='false']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Email_Address"/>
+			<entry key="CITY" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Municipality | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data[@ns1:Public='true']/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='WORK']/ns1:Municipality"/>
+			<entry key="LAST_DAY_OF_WORK" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Status_Data/ns1:Termination_Last_Day_of_Work"/>
+			<entry key="ADDRESS_HOME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/@ns1:Formatted_Address | ns1:Applicant_Data/ns1:Personal_Data/ns1:Contact_Data/ns1:Address_Data[ns1:Usage_Data/ns1:Type_Data[@ns1:Primary='true']/ns1:Type_Reference/ns1:ID[@ns1:type='Communication_Usage_Type_ID'] ='HOME']/@ns1:Formatted_Address"/>
+			<entry key="HIREDATE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Status_Data/ns1:Hire_Date"/>
+			<entry key="TEAM" value="ns1:Worker_Data/ns1:Organization_Data/ns1:Worker_Organization_Data/ns1:Organization_Data[ns1:Organization_Type_Reference[@ns1:Descriptor='TEAM']]/ns1:Organization_Name"/>
+			<entry key="CONTRACT_END_DATE" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Contract_Data/ns1:Contract_End_Date"/>
+			<entry key="PREFIX" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Prefix_Data/ns1:Title_Descriptor | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Prefix_Data/ns1:Title_Descriptor"/>
+			<entry key="SUFFIX" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Suffix_Data/ns1:Social_Suffix_Descriptor | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Legal_Name_Data/ns1:Name_Detail_Data/ns1:Suffix_Data/ns1:Social_Suffix_Descriptor"/>
+			<entry key="PREFERRED_FIRST_NAME" value="ns1:Worker_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Preferred_Name_Data/ns1:Name_Detail_Data/ns1:First_Name | ns1:Applicant_Data/ns1:Personal_Data/ns1:Name_Data/ns1:Preferred_Name_Data/ns1:Name_Detail_Data/ns1:First_Name"/>
+			<entry key="LOCALE_ID" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Local_Reference/ns1:ID[@ns1:type='Locale_ID']"/>
+			<entry key="Time_Profile_ID" value="ns1:Worker_Data/ns1:Employment_Data/ns1:Worker_Job_Data/ns1:Position_Data/ns1:Business_Site_Summary_Data/ns1:Time_Profile_Reference/ns1:ID[@ns1:type='Time_Profile_ID']"/>
+			<entry key="PRE_HIRE_ID" value="ns1:Applicant_Data/ns1:Applicant_ID"/>
+			<entry key="COMMENT" value="ns1:Applicant_Data/ns1:Recruiting_Data/ns1:Applicant_Comments"/>
+			<entry key="DATE_PRE_HIRE_ADDED_TO_SYSTEM" value="ns1:Applicant_Data/ns1:Recruiting_Data/ns1:Applicant_Entered_Date"/>
+			<entry key="ELIGIBLE_FOR_HIRE" value="ns1:Applicant_Data/ns1:Recruiting_Data/ns1:Eligible_For_Hire_Reference/ns1:ID[@ns1:type='Yes_No_Type_ID']"/>
+			<entry key="REFFERED_BY" value="ns1:Applicant_Data/ns1:Recruiting_Data/ns1:Referred_by_Worker_Reference/ns1:ID[@ns1:type='Employee_ID']"/>
+			<entry key="SOURCE" value="ns1:Applicant_Data/ns1:Recruiting_Data/ns1:Applicant_Source_Reference/ns1:ID[@ns1:type='Applicant_Source_ID']"/>
+		</Map>
+	</value>
+</entry>
+        <entry key="Future_Hire_Events">
+         <value>
+          <List>
+            <String>Hire Employee</String>
+            <String>Onboarding</String>
+            <String>Contract Contingent Worker</String>
+          </List>
+         </value>
+        </entry>
+        <entry key="Future_Termination_Events">
+         <value>
+          <List>
+            <String>Terminate Employee</String>
+            <String>End Contingent Worker Contract</String>
+          </List>
+         </value>
+        </entry>
+        <entry key="Termination_Attributes"> 
+         <value> 
+          <List> 
+            <String>TERMINATION_DATE</String> 
+            <String>LAST_DAY_OF_WORK</String> 
+            <String>CONTRACT_END_DATE</String> 
+            <String>PRIMARY_TERMINATION_REASON_REFERENCE</String> 
+          </List> 
+         </value> 
+        </entry>
+        <entry key="Delta_Aggregation_Events">
+         <value>
+          <List>
+            <String>Change Personal Information</String>
+            <String>Contact Information Event</String>
+            <String>Change Job</String>
+            <String>Change Legal Name</String>
+            <String>Change Business Title</String>
+            <String>Add Retiree Status</String>
+            <String>Assign Organization Roles</String>
+            <String>Change Owner</String>
+            <String>Assign Superior</String>
+            <String>EMERGENCY_CONTACT_EVENT</String>
+            <String>Change Organization Assignments for Worker</String>
+            <String>Change Primary Address</String>
+            <String>Contract Contingent Worker</String>
+            <String>Create Change Order from Contingent Worker Contract</String>
+            <String>Create Primary Address</String>
+            <String>Edit Worker Additional Data</String>
+            <String>Maintain Employee Contracts</String>
+            <String>End Additional Job</String>
+            <String>Change Marital Status</String>
+            <String>Move to New Manager</String>
+            <String>Assign Worker</String>
+            <String>Move Workers Staffing</String>
+            <String>Assign Workers</String>
+            <String>New Hire Provisioning</String>
+            <String>Change Preferred Name</String>
+            <String>Request Worker</String>
+            <String>Submit Resignation</String>
+            <String>Transfer Contingent Worker</String>
+            <String>Transfer Employee</String>
+          </List>
+         </value>
+        </entry>
+        <entry key="Termination_Events"> 
+         <value> 
+          <List> 
+            <String>End Contingent Worker Contract</String> 
+            <String>Terminate Employee</String> 
+          </List> 
+         </value> 
+        </entry>
+        <entry key="retryErrors"> 
+         <value> 
+          <List> 
+            <String>Connection reset</String> 
+            <String>503 Service Unavailable</String> 
+          </List> 
+         </value> 
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+       <Schema displayAttribute="FILENUMBER" identityAttribute="FILENUMBER" nativeObjectType="account" objectType="account">
+          <AttributeDefinition name="USERID" remediationModificationType="None" required="true" type="string">
+            <Description>Worker ID</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="FILENUMBER" remediationModificationType="None" required="true" type="string">
+            <Description>Employee ID</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="MANAGER_ID" remediationModificationType="None" required="true" type="string">
+            <Description>Manager ID</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="EMAIL_ADDRESS_HOME" remediationModificationType="None" required="true" type="string">
+            <Description>Home email address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ADDITIONAL_EMAIL_ADDRESS_HOME" remediationModificationType="None" required="true" type="string">
+            <Description>Additional home email address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="EMAIL_ADDRESS_WORK" remediationModificationType="None" required="true" type="string">
+            <Description>Work email address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ADDITIONAL_EMAIL_ADDRESS_WORK" remediationModificationType="None" required="true" type="string">
+            <Description>Additional work email address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ADDRESS_HOME" remediationModificationType="None" required="true" type="string">
+            <Description>Home address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ADDRESS_WORK" remediationModificationType="None" required="true" type="string">
+            <Description>Work address of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="FIRST_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>First name</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="LAST_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>Last name</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="CLASS" remediationModificationType="None" required="true" type="string">
+            <Description>Combination of Position, Time Type and Employment Type</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="DEPARTMENT" remediationModificationType="None" required="true" type="string">
+            <Description>Cost center</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="JOBCODE" remediationModificationType="None" required="true" type="string">
+            <Description>Job profile</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="JOBTITLE" remediationModificationType="None" required="true" type="string">
+            <Description>Business title</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="LOCATION" remediationModificationType="None" required="true" type="string">
+            <Description>Work Location of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="COST_CENTER_HIERARCHY" remediationModificationType="None" required="true" type="string">
+            <Description>Cost center hierarchy of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="HIREDATE" remediationModificationType="None" required="true" type="string">
+            <Description>Hire date</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="FULLPARTTIME" remediationModificationType="None" required="true" type="string">
+            <Description>Type of employment full time or part time.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="TERMINATION_DATE" remediationModificationType="None" required="true" type="string">
+            <Description>Termination date</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="TEAM" remediationModificationType="None" required="true" type="string">
+            <Description>Team in the organization data of the worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="DIVISION" remediationModificationType="None" required="true" type="string">
+            <Description>Sales channel in the organization data of worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="POSTAL_CODE" remediationModificationType="None" required="true" type="string">
+            <Description>Postal Code</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="COUNTRY" remediationModificationType="None" required="true" type="string">
+            <Description>Business site's country of a worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="CITY" remediationModificationType="None" required="true" type="string">
+            <Description>Business site's city of a worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ON_LEAVE" remediationModificationType="None" required="true" type="string">
+            <Description>Leave status of the worker whether on leave</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="LEGAL_MIDDLE_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>Legal Middle Name</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="MIDDLE_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>Middle Name</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="WORKER_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>Worker Name</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="POSITION" remediationModificationType="None" required="true" type="string">
+            <Description>Position of the Worker</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="BUSINESS_SITE_LOCATION_ID" remediationModificationType="None" required="true" type="string">
+            <Description>Business site location ID</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="EMPLOYEE_TYPE" remediationModificationType="None" required="true" type="string">
+            <Description>Employee Type</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="CONTRACT_END_DATE" remediationModificationType="None" required="true" type="string">
+            <Description>Contract end date of worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ORGANIZATION_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>Business Unit Name.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="COMPANY_NAME" remediationModificationType="None" required="true" type="string">
+            <Description>The company under which worker belongs.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="LAST_DAY_OF_WORK" remediationModificationType="None" required="true" type="string">
+            <Description>Last working day of a worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="COST_CENTER_REFERENCE_ID" remediationModificationType="None" required="true" type="string">
+            <Description>Reference ID of organization type COST CENTER.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="ADDRESS_LINE_1" remediationModificationType="None" required="true" type="string">
+            <Description>Business site's Address_line_1 of worker.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="STATE" remediationModificationType="None" required="true" type="string">
+            <Description>Business site's state.</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="COST_CENTER" remediationModificationType="None" required="true" type="string">
+            <Description>Represent the organization name whose type is COST_CENTER</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="FUTURE_DATE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent date of hiring/termination/onboarding incase its in future </Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="FUTURE_ACTION" remediationModificationType="None" required="true" type="string">
+            <Description>Represent action for worker who will be getting hire/terminate/onboard in future. e.g Hire Employee</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="HOME_TELEPHONE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent home phone of the worker with device type telephone</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="HOME_MOBILE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent home phone of the worker with device type mobile</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="WORK_MOBILE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent work phone of the worker with device type mobile</Description>
+          </AttributeDefinition>
+          <AttributeDefinition name="WORK_TELEPHONE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent work phone of the worker with device type telephone</Description>
+          </AttributeDefinition>
+         <AttributeDefinition name="WORK_FAX" remediationModificationType="None" required="true" type="string">
+            <Description>Represent work phone of the worker with device type fax</Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="PRE_HIRE_ID" remediationModificationType="None" required="true" type="string">
+            <Description>Represent PRE_HIRE_ID of the worker </Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="COMMENT" remediationModificationType="None" required="true" type="string">
+            <Description>Represent COMMENT added for the PreHire</Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="DATE_PRE_HIRE_ADDED_TO_SYSTEM" remediationModificationType="None" required="true" type="string">
+            <Description>Represent date when PreHire is added in system </Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="ELIGIBLE_FOR_HIRE" remediationModificationType="None" required="true" type="string">
+            <Description>Represent whether Prehire is eligigle for hire or not </Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="PRE_HIRE_POOLS" remediationModificationType="None" required="true" type="string">
+            <Description>Represent Prehire pool</Description>
+          </AttributeDefinition>
+		  <AttributeDefinition name="REFFERED_BY" remediationModificationType="None" required="true" type="string">
+            <Description>Represent the worker who refered the Pre-Hire</Description>
+          </AttributeDefinition>
+       </Schema>
+    </Schemas>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+	  name='Workday' connectorName="Workday"
+	  type="SourceConfig" directConnect="true" status="released" fileUpload="false">
+
+	<Menu name="Workday Configuration" label="con_form_workday_config">
+        <Section name="Workday Configuration" label="con_form_workday_config" sectionInfo="sectionInfo_AuthenticationSettings" docLinkLabel="docLinkLabel_AuthenticationSettings" docLink="https://documentation.sailpoint.com/connectors/workday/help/integrating_workday/connection_settings.html">
+			<Field name="auth_type" displayName="con_form_workday_accounts_auth_type" type="radio" defaultValue="Basic"
+      helpKey="help_con_form_workday_accounts_auth_type">
+        <AllowedValues>
+          <Option label="con_form_workday_accounts_auth_type_basic" value="Basic"/>
+          <Option label="con_form_workday_accounts_auth_type_oauth2" value="OAuth2"/>
+        </AllowedValues>
+      </Field>
+
+	<Field name="url" displayName="con_form_workday_accounts_url" type="url" placeHolder="placeHolder_url" required="true"
+      helpKey="help_con_form_workday_accounts_url" />
+      
+		<!-- Fields for 'Basic' authentication -->
+      <Field name="user" displayName="con_form_workday_accounts_username" type="text" required="true"
+       helpKey="help_con_form_workday_accounts_username" parentKey="auth_type" parentValue="Basic"/>
+      <Field name="password" displayName="con_form_workday_accounts_password" type="secret" required="true" parentKey="auth_type" parentValue="Basic"
+      helpKey="help_con_form_workday_accounts_password" />
+
+		<!-- Fields for 'OAuth 2.0' authentication -->
+	  <Field name="grant_type" displayName="con_form_workday_accounts_grant_type" type="select" defaultValue="REFRESH_TOKEN"
+           parentKey="auth_type" parentValue="OAuth2"
+           help="help.help_con_form_workday_accounts_grant_type">
+        <AllowedValues>
+          <Option label="con_form_workday_grant_type_refresh_token" value="REFRESH_TOKEN"/>
+        </AllowedValues>
+          </Field>
+	  <Field name="token_url" displayName="con_form_workday_accounts_token_endpoint" type="url" required="true" placeHolder="placeHolder_token_url" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_tokenEndpoint" />
+	  <Field name="client_id" displayName="con_form_workday_accounts_clientId" type="text" required="true" parentKey="auth_type"  parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_clientId" />
+	  <Field name="client_secret" displayName="con_form_workday_accounts_clientSecret" type="secret" required="true" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_clientSecret" />
+	  <Field name="refresh_token" displayName="con_form_workday_accounts_refreshToken" type="secret" required="true" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_refreshToken" />
+	  
+	  
+	        <Field name="ChunkSize" displayName="con_form_workday_chunk_size"
+	         type="number" min="1" max="99999" required="false"
+	         helpKey="help_con_form_workday_chunk_size" saveAsString="true"/>
+			<Field name="customTimeOut" displayName="con_form_workday_custom_timeout"
+			 type="number" min="1" max="999" required="false" saveAsString="true"
+			 helpKey="help_con_form_workday_custom_timeout"/>
+			<Field name="CustomServerTimeZone" displayName="con_form_workday_effective_time_zone"
+			 type="text"
+			 helpKey="help_con_form_workday_effective_time_zone"/>
+		</Section>
+    </Menu>
+    
+    <Menu name="WorkdayProvisioningCredentialsConfiguration" label="con_form_workday_update_userinfo">
+		<Section name="WorkdayProvisioningCredentialsConfiguration" label="con_form_workday_update_userinfo"
+		 sectionInfo="con_form_workday_update_userinfo">
+		    <Field name="provisioningUser" displayName="con_form_workday_prov_admin" type="text" required="false"
+		    parentKey="auth_type" parentValue="Basic"
+		    helpKey="help_con_form_workday_update_username"/>
+			<Field name="provisioningPassword" displayName="con_form_workday_prov_pass" type="text" placeHolder="placeHolder_organizationReferenceID" required="false"
+			parentKey="auth_type" parentValue="Basic"
+			helpKey="help_con_form_workday_update_password"/>   
+		</Section> 	
+    </Menu>
+
+	<Menu name="FilterCriteria" label="con_form_workday_filter_criteria">
+        <Section name="FilterCriteria" label="con_form_workday_filter_criteria" sectionInfo="con_form_workday_filter_criteria"
+               docLinkLabel="docLinkLabel_AggregationFiltersSettings"
+               docLink="https://documentation.sailpoint.com/connectors/workday/help/integrating_workday/aggregation_settings.html">
+		    <Field name="EffectiveDateOffset" displayName="con_form_workday_effective_offset_date" type="text" required="false"
+		    helpKey="help_con_form_workday_effective_offset_date"/>
+		    
+			<Field name="Organization_Reference_ID" displayName="con_form_workday_organization_reference_id" type="text" placeHolder="placeHolder_organizationReferenceID" required="false" maxlength="99999"
+			helpKey="help_con_form_workday_organization_reference_id"/>
+			
+			<Field name="IntegrationSystemID" displayName="con_form_workday_integration_systen_id" type="text" required="false" maxlength="99999"
+			helpKey="help_con_form_workday_integration_systen_id"/>
+			
+			<Field name="Integration_Field_Override_Service" displayName="con_form_workday_integration_field_override_service" type="text" required="false"
+			helpKey="help_con_form_workday_integration_field_override_service"/>
+			
+			<Field name="Integration_Field" displayName="con_form_workday_integration_field" type="text" placeHolder="placeHolder_integrationField" required="false" maxlength="99999"
+			helpKey="help_con_form_workday_integration_field"/>
+			<Field name="Past_Termination_Offset" displayName="con_form_workday_past_termination_offset" type="number" defaultValue="60" min="0" max="99999" required="false"
+			helpKey="help_con_form_workday_past_termination_offset" saveAsString="true"/>
+			
+			<Field name="isInactiveWorkersAllowed" displayName="con_form_workday_dont_allow_terminated"
+			 type="checkbox" defaultValue="false" required="false"
+			 helpKey="help_con_form_workday_dont_allow_terminated"/>
+
+			<Field name="pullRescindedHiresPast" displayName="con_form_workday_aggregate_rescinded_hires_past" type="toggle" defaultValue="false" required="false"
+			helpKey="help_con_form_workday_aggregate_rescinded_hires_past"/>
+			
+			<Field name="pastRescindedOffset" displayName="con_form_workday_past_rescinded_offset_date" type="number" saveAsString="true" defaultValue="60" required="false" parentKey="pullRescindedHiresPast" parentValue="true"
+			helpKey="help_con_form_workday_past_offset_date"/>
+			
+			<Field name="pullRescindedHires" displayName="con_form_workday_aggregate_rescinded_hires" type="toggle" defaultValue="false" required="false"
+			helpKey="help_con_form_workday_aggregate_rescinded_hires"/>
+
+		</Section>
+    </Menu>
+    
+    
+    <Menu name="RESTClientAPIConfiguration" label="con_form_workday_rest_config">
+        <Section name="RESTClientAPIConfiguration" label="con_form_workday_rest_config" sectionInfo="con_form_workday_rest_config"
+               docLinkLabel="docLinkLabel_AggregationFiltersSettings"
+               docLink="https://documentation.sailpoint.com/connectors/workday/help/integrating_workday/aggregation_settings.html">
+    
+			 
+	<Field name="restEndpoint" displayName="con_form_workday_rest_endpoint" type="checkbox" defaultValue="false" required="false"
+	 placeHolder="placeHolder_token_url" parentKey="auth_type" parentValue="Basic"
+	  helpKey="help_con_form_workday_restEndpoint" />
+	  
+	  <Field name="client_id" displayName="con_form_workday_accounts_clientId" type="text" required="true" parentKey="isRestConfigEnabled" parentValue="true"
+	  helpKey="help_con_form_workday_accounts_clientId" />
+	  
+	  <Field name="tokenEndpoint" displayName="con_form_workday_token_endpoint" type="secret" required="true" parentKey="isRestConfigEnabled" parentValue="true"
+	  helpKey="help_con_form_workday_tokenEndpoint" />
+	  
+	  <Field name="client_id" displayName="con_form_workday_accounts_clientId" type="text" required="true" parentKey="isRestConfigEnabled" parentValue="true"
+	  helpKey="help_con_form_workday_accounts_clientId" />
+	  <Field name="client_secret" displayName="con_form_workday_accounts_clientSecret" type="secret" required="true" parentKey="isRestConfigEnabled" parentValue="true"
+	  helpKey="help_con_form_workday_accounts_clientSecret" />
+	  <Field name="refresh_token" displayName="con_form_workday_accounts_refreshToken" type="secret" required="true" parentKey="isRestConfigEnabled" parentValue="true"
+	  helpKey="help_con_form_workday_accounts_refreshToken" />
+
+		</Section>
+    </Menu>
+    
+    
+
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

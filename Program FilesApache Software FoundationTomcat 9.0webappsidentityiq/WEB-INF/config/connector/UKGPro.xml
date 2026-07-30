@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+	<Application connector="sailpoint.connector.OpenConnectorAdapter"
+		featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE, PASSWORD, UNLOCK" icon="internetIcon" name="UKG Pro Core HCM" type="UKG Pro Core HCM">
+		<Attributes>
+			<Map>
+				<entry key="connectorClass" value="openconnector.connector.ukgpro.UKGProConnector" />
+				<entry key="formPath" value="UKGProConfigForm.xhtml" />
+				<entry key="encrypted" value="password,customerApiKey" />
+				<entry key="pageSize" value="200"/>
+				<entry key="enabledEmployeeStatus" value="Active,Leave of absence,On strike"/>
+				<entry key="aggregationEmpStatusValues">
+					<value>
+						<List>
+							<String>Active</String>
+						</List>
+					</value>
+				</entry>
+				<entry key="aggregateFutureHires">
+					<value>
+						<Boolean>false</Boolean>
+					</value>
+				</entry>
+				<entry key="aggregateTerminated">
+					<value>
+						<Boolean>false</Boolean>
+					</value>
+				</entry>
+				<entry key="terminationOffset" value="30"/>
+				<entry key="futureOffset" value="30"/>
+				<entry key="conUKGProApiRetrySleepTimeSeconds" value="5"/>
+				<entry key="conUKGProApiRetryMaxAttempts" value="3"/>
+			</Map>
+		</Attributes>
+		<Schemas>
+			<Schema displayAttribute="firstName" identityAttribute="employeeId" nativeObjectType="account" objectType="account">
+				<AttributeDefinition name="firstName" remediationModificationType="None" type="string">
+                <Description>First name of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="lastName" remediationModificationType="None" type="string">
+                <Description>Last name of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="preferredName" remediationModificationType="None" type="string">
+                <Description>Preferred name of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="emailAddress" remediationModificationType="None" type="string">
+                <Description>Primary E-mail</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="countryCode" remediationModificationType="None" type="string">
+                <Description>Employee work location country code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="languageCode" remediationModificationType="None" type="string">
+                <Description>Employee work location language Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeNumber" remediationModificationType="None" type="string">
+                <Description>Employee Number</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeId" remediationModificationType="None" type="string">
+                <Description>Employee ID</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="personId" remediationModificationType="None" type="string">
+                <Description>Person ID of a person data associated with an Employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="userIntegrationKey" remediationModificationType="None" type="string">
+                <Description>User Integration Key</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="companyName" remediationModificationType="None" type="string">
+                <Description>Employee home company name</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="companyId" remediationModificationType="None" type="string">
+                <Description>Employee home company ID</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="supervisorId" remediationModificationType="None" type="string">
+                <Description>Supervisor ID of an Employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="salaryOrHourly" remediationModificationType="None" type="string">
+                <Description>Indicates the pay category for an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="fullTimeOrPartTime" remediationModificationType="None" type="string">
+                <Description>Indicates the work category for an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="isActive" remediationModificationType="None" type="boolean">
+                <Description>Indicates if an employee is active in the system</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="workLocationCode" remediationModificationType="None" type="string">
+                <Description>Employee work location Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="jobCode" remediationModificationType="None" type="string">
+                <Description>Employee primary job code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="projectCode" remediationModificationType="None" type="string">
+                <Description>Employee assigned project Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="orgLevel1Code" remediationModificationType="None" type="string">
+                <Description>Organization Level 1 Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="orgLevel2Code" remediationModificationType="None" type="string">
+                <Description>Organization Level 2 Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="orgLevel3Code" remediationModificationType="None" type="string">
+                <Description>Organization Level 3 Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="orgLevel4Code" remediationModificationType="None" type="string">
+                <Description>Organization Level 4 Code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="middleName" remediationModificationType="None" type="string">
+                <Description>Middle name of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="workPhone" remediationModificationType="None" type="string">
+                <Description>Work phone number</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="homePhone" remediationModificationType="None" type="string">
+                <Description>Home phone number</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeAddress1" remediationModificationType="None" type="string">
+                <Description>Employee work location address line 1</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeAddress2" remediationModificationType="None" type="string">
+                <Description>Employee work location address line 2</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="city" remediationModificationType="None" type="string">
+                <Description>Employee work location city</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="state" remediationModificationType="None" type="string">
+                <Description>Employee work location state</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="zipCode" remediationModificationType="None" type="string">
+                <Description>Employee work location zip code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="terminationDate" remediationModificationType="None" type="string">
+                <Description>Termination date of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="hireDate" remediationModificationType="None" type="string">
+                <Description>Hiring date of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="supervisorName" remediationModificationType="None" type="string">
+                <Description>Supervisor name of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="suffix" remediationModificationType="None" type="string">
+                <Description>Employee name suffix</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="prefix" remediationModificationType="None" type="string">
+                <Description>Employee name prefix</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="alternateEmailAddress" remediationModificationType="None" type="string">
+                <Description>Alternate E-mail</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="gender" remediationModificationType="None" type="string">
+                <Description>Gender</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeStatus" remediationModificationType="None" type="string">
+                <Description>Employment status of an employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="employeeType" remediationModificationType="None" type="string">
+                <Description>Employment type of employee</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="emplStatusStartDate" remediationModificationType="None" type="string">
+                <Description>Effective date from which employee status got changed</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="dateInJob" remediationModificationType="None" type="string">
+                <Description>Effective date in job</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="dateOfLastHire" remediationModificationType="None" type="string">
+                <Description>Date on which employee was last hired</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="jobGroupCode" remediationModificationType="None" type="string">
+                <Description>Employee primary job group code</Description>
+            </AttributeDefinition>
+            <AttributeDefinition name="alternateJobTitle" remediationModificationType="None" type="string">
+                <Description>Alternate job title of an employee</Description>
+            </AttributeDefinition>
+			</Schema>
+		</Schemas>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2022 SailPoint Technologies, Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+      name='UKG Pro Core HCM' connectorName="UKG Pro Core HCM"
+      shortDesc="ShortDesc" type="SourceConfig" directConnect="true" status="released">
+    <Menu name="UKG Pro Core HCM Connection Settings" label="con_form_ukgpro_config">
+        <Section name="UKG Pro Core HCM Connection Settings"
+                 label="con_form_ukgpro_config"
+                 sectionInfo="con_form_ukgpro_config"
+                 docLinkLabel="docLinkLabel_ConnectionSettings"
+                 docLink="https://documentation.sailpoint.com/connectors/ukgpro/help/integrating_ukgpro/connection_settings.html">
+            <Field name="url" displayName="con_form_ukgpro_url" type="url" required="true" placeHolder="placeHolder_url"
+            helpKey="help_con_form_ukgpro_url"/>
+            <Field name="authtype" displayName="con_form_ukgpro_auth_type" type="select" defaultValue="BasicAuthentication"
+            helpKey="help_con_form_ukgpro_auth_type">
+                <AllowedValues>
+                    <Option label="con_form_ukgpro_basic_auth" value="BasicAuthentication"/>
+                </AllowedValues>
+            </Field>
+            <!-- Fields for 'BasicAuthentication -->
+            <Field name="username" displayName="con_form_ukgpro_username" type="text" required="true"
+            helpKey="help_con_form_ukgpro_username"/>
+            <Field name="password" displayName="con_form_ukgpro_password" type="secret" required="true"
+            helpKey="help_con_form_ukgpro_password"/>
+            <Field name="customerApiKey" displayName="con_form_ukgpro_customer_api_key" type="secret" required="true"
+            helpKey="help_con_form_ukgpro_customer_api_key"/>
+            <Field name="pageSize" displayName="con_form_ukgpro_page_size" type="number" min="1"
+            helpKey="help_con_form_ukgpro_page_size"  saveAsString="true" defaultValue="200" />
+        </Section>
+    </Menu>
+
+    <Menu name="filterCriteriaEmployee" label="con_form_ukgpro_filter_criteria_employees">
+
+        <Section name="filterCriteriaEmployee" label="con_form_ukgpro_filter_criteria_employees" sectionInfo="con_form_ukgpro_filter_criteria_employees">
+            
+            <Field name="aggregationEmpStatusValues" displayName="con_form_ukgpro_filter_criteria_employee_status" type="select-multiple" required="false" defaultValue="Active"
+            helpKey="help_con_form_ukgpro_filter_criteria_employee_status">
+	        	<AllowedValues>
+		          	<Option label="con_form_ukgpro_select_leave_of_absence" value="Leave of absence"/>
+		          	<Option label="con_form_ukgpro_select_on_strike" value="On strike"/>
+		          	
+		          	<Option label="con_form_ukgpro_select_released_laid" value="Released/laid off"/>
+		          	<Option label="con_form_ukgpro_select_suspended" value="Suspended"/>
+	        	</AllowedValues>
+      		</Field>
+      
+      
+            <Field name="aggregateFutureHires" type="checkbox" displayName="con_form_ukgpro_aggregate_future_hires" defaultValue="false"
+            helpKey="help_con_form_ukgpro_aggregate_future_hires"/>
+            <Field name="futureOffset" type="number" displayName="con_form_ukgpro_future_hire_offset" defaultValue="30" parentKey="aggregateFutureHires" parentValue="true"
+            helpKey="help_con_form_ukgpro_futureOffset"  saveAsString="true" />
+            <Field name="aggregateTerminated" type="checkbox" displayName="con_form_ukgpro_aggregate_terminated_employees" defaultValue="false"
+            helpKey="help_con_form_ukgpro_aggregate_terminated_employees"/>
+            <Field name="terminationOffset" type="number" displayName="con_form_ukgpro_terminated_emp_offset" defaultValue="30"  parentKey="aggregateTerminated" parentValue="true"
+            helpKey="help_con_form_ukgpro_terminationOffset"  saveAsString="true" />
+        </Section>
+    </Menu>
+
+</Form>]]>
+    </Settings>
+	</Application>
+</ImportAction>

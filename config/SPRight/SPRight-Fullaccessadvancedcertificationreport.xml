@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246601" displayName="right_advanced_certification_report" id="c0a801899fb11942819fb1ca33c90045" name="FullAccessAdvancedCertificationReport">
+  <Description>right_desc_advanced_certification_report</Description>
+</SPRight>

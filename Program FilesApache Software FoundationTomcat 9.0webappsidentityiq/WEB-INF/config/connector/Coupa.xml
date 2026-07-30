@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE, SEARCH" icon="internetIcon" name="Coupa" type="Coupa">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.coupa.CoupaConnector"/>
+        <entry key="formPath" value="Coupa.xhtml"/>
+        <entry key="encrypted" value="client_secret,oauth_token_info"/>
+        <entry key="accountFilter" value="type[blank]=true"/>
+        <entry key="pageSize" value="50"/>
+        <entry key="grant_type" value="CLIENT_CREDENTIALS"/>
+        <entry key="userObjectMapping">
+          <value>
+            <Map>
+              <entry key="roles" value="roles[*].id"/>
+              <entry key="user-groups" value="user-groups[*].name"/>
+              <entry key="content-groups" value="content-groups[*].name"/>
+              <entry key="approval-groups" value="approval-groups[*].name"/>
+              <entry key="account-groups" value="account-groups[*].name"/>
+              <entry key="manager" value="manager.login"/>
+              <entry key="default-currency" value="default-currency.code"/>
+            </Map>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+    <Schema displayAttribute="login" identityAttribute="id" nativeObjectType="account" objectType="account">
+      <AttributeDefinition name="id" type="string">
+        <Description>Coupa unique user identifier</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="login" type="string">
+        <Description>The user's login name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="firstname" type="string">
+        <Description>The user's first name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="lastname" type="string">
+        <Description>The user's last name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="middlename" type="string">
+        <Description>The user's middle name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="fullname" type="string">
+        <Description>The user's full name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="email" type="string">
+        <Description>The user's email address</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="active" type="boolean">
+        <Description>The user's active status</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="employee-payment-channel" type="string">
+        <Description>The user's expense payment channel. For example: ERP, CoupaPay, etc.</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="authentication-method"  type="string">
+        <Description>The user's authentication method. For example: coupa_credentials or SAML</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="employee-number"  type="string">
+        <Description>The user's employee number</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="manager" type="string">
+        <Description>The user's manager's name</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="purchasing-user" type="boolean">
+        <Description>Indicates if the user has a purchasing license</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="expense-user" type="boolean">
+        <Description>Indicates if the user has an expense license</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="sourcing-user" type="boolean">
+        <Description>Indicates if the user has a sourcing license</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="inventory-user" type="boolean">
+        <Description>Indicates if the user has an inventory license</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="contracts-user" type="boolean">
+        <Description>Indicates if the user has a contracts license</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="sso-identifier" type="string">
+        <Description>The user's Single Sign-on ID (SSO ID)</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="api-user" type="boolean">
+         <Description>Indicates if the user is an API User</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="default-currency" type="string">
+          <Description>The user's default currency code</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="roles" entitlement="true" managed="true" multi="true" schemaObjectType="role" type="string">
+        <Description>List of roles associated with the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="user-groups" entitlement="true" managed="true" multi="true"  type="string">
+        <Description>List of user groups associated with the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="content-groups" entitlement="true" managed="true" multi="true"  type="string">
+        <Description>List of content groups associated with the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="account-groups" entitlement="true" managed="true" multi="true"  type="string">
+        <Description>List of account groups associated with the user</Description>
+      </AttributeDefinition>
+    </Schema>
+
+      <Schema displayAttribute="name" identityAttribute="id" aggregationType="group"
+              nativeObjectType="role" objectType="role" >
+        <AttributeDefinition name="id" type="string">
+          <Description>Coupa unique role identifier</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" type="string">
+          <Description>The role's name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="description" type="string">
+          <Description>Description of the role</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="omnipotent" type="boolean">
+          <Description>Indicates if the role is an administrative role</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="created-at" type="string">
+          <Description>The role's initial creation timestamp</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="updated-at" type="string">
+          <Description>Timestamp for the last time the role received an update.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="system-role" type="boolean">
+          <Description>Indicates if the role is a system role</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="Create account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_prov_policy_coupa_login" helpKey="help_con_prov_policy_coupa_login" name="login" required="true" reviewRequired="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_coupa_firstName" helpKey="help_con_prov_policy_coupa_firstName" name="firstname" required="true" reviewRequired="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_coupa_middleName" helpKey="help_con_prov_policy_coupa_middleName" name="middlename"  reviewRequired="true" section="" type="string" />
+        <Field displayName="con_prov_policy_coupa_lastName" helpKey="help_con_prov_policy_coupa_lastName"  name="lastname" required="true" type="string" />
+        <Field displayName="con_prov_policy_coupa_authenticationMethod" name="authentication-method" reviewRequired="true" section="" type="string" value="coupa_credentials">
+          <AllowedValues>
+            <String>coupa_credentials</String>
+            <String>saml</String>
+          </AllowedValues>
+        </Field>
+        <Field displayName="con_prov_policy_coupa_singleSignOnId" helpKey="help_con_prov_policy_coupa_singleSignOnId" name="sso-identifier" reviewRequired="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_coupa_email" helpKey="help_con_prov_policy_coupa_email" name="email" required="true" reviewRequired="true" section="" type="string" />
+        <Field displayName="con_prov_policy_coupa_generatePassword" helpKey="help_con_prov_policy_coupa_generatePassword" reviewRequired="true" name="generate-password-and-notify" type="string">
+          <AllowedValues>
+            <String>Yes</String>
+            <String>No</String>
+          </AllowedValues>
+       </Field>
+        <Field displayName="con_prov_policy_coupa_isActive" multi="false" name="active"  reviewRequired="true" type="boolean" value="true"/>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='Coupa Configuration' connectorName= "Coupa"
+      type="SourceConfig" directConnect="true" status="released" shortDesc="con_form_coupa_config">
+
+    <Menu name="Connector Credentials" label="con_form_coupa_connector_credentials">
+        <Section name="Connector Credentials" label="con_form_coupa_connector_credentials" sectionInfo="sectionInfo_ConnectionCredentials"
+                 docLinkLabel="docLinkLabel_ConnectionCredentials" docLink="https://documentation.sailpoint.com/connectors/coupa/help/">
+
+            <Field type="textLabel" displayName="con_form_label_auth_method" helpKey="help_con_form_label_auth_method" readOnly="true" labelValue="oauth_2" />
+            <Field name="baseURL" type="text" required="true" displayName="con_form_base_url" helpKey="help_con_form_base_url"/>
+            <Field type="textLabel" displayName="con_form_coupa_grant_type" helpKey="help_con_form_coupa_grant_type" readOnly="true" labelValue="readonly_grant_type" />
+            <Field name="tokenURL" type="text" required="true" displayName="con_form_coupa_token_url" helpKey="help_con_form_coupa_token_url"/>
+            <Field name="client_id" type="text" required="true"  displayName="con_form_coupa_client_ID" helpKey="help_con_form_coupa_client_ID" />
+            <Field name="client_secret" type="secret" required="true"  displayName="con_form_coupa_client_secret" helpKey="help_con_form_coupa_client_secret" />
+            <Field name="scope" type="textarea" required="true"  displayName="con_form_coupa_scopes" helpKey="help_con_form_coupa_scopes"/>
+        </Section>
+    </Menu>
+
+    <Menu name="Aggregation Configuration" label="con_form_coupa_aggregation_config">
+        <Section name="Aggregation Configuration" label="con_form_coupa_aggregation_config" sectionInfo="sectionInfo_AggregationSettings">
+            <Field name="accountFilter" type="text" displayName="con_form_coupa_account_filters" helpKey="help_con_form_coupa_account_filters" defaultValue="type[blank]=true" />
+            <Field name="pageSize" type="number" defaultValue="50" displayName="con_form_coupa_page_size" min="1" max="50" helpKey="help_con_form_coupa_page_size" saveAsString="true"/>
+        </Section>
+    </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

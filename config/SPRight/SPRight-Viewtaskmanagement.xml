@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394247276" displayName="right_view_task_management" id="c0a801899fb11942819fb1ca366c00c5" name="ViewTaskManagement">
+  <Description>right_desc_view_task_management</Description>
+</SPRight>

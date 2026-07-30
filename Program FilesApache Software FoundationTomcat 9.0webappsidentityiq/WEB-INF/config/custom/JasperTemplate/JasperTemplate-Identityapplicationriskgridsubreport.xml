@@ -1,0 +1,342 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE JasperTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<JasperTemplate name="IdentityApplicationRiskGridSubReport">
+  <DesignXml>&lt;?xml version="1.0" encoding="UTF-8"  ?>
+&lt;!-- Created with iReport - A designer for JasperReports -->
+&lt;!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+&lt;!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+&lt;jasperReport
+		 name="IdentityApplicationRiskGridSubReport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="732"
+		 pageHeight="595"
+		 columnWidth="732"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	&lt;property name="ireport.scriptlethandling" value="0" />
+	&lt;property name="ireport.encoding" value="UTF-8" />
+	&lt;import value="java.util.*" />
+	&lt;import value="net.sf.jasperreports.engine.*" />
+	&lt;import value="net.sf.jasperreports.engine.data.*" />
+	&lt;import value="sailpoint.reporting.datasource.*" />
+
+	&lt;style 
+		name="title"
+		isDefault="false"
+		fontName="Arial"
+		fontSize="24"
+		isBold="true"
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="bandedText"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		topBorder="None"
+		topBorderColor="#FFFFFF"
+		bottomBorder="1Point"
+		bottomBorderColor="#DDDDDD"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+
+		&lt;conditionalStyle>
+			&lt;conditionExpression>&lt;![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)&#x5D;]>&lt;/conditionExpression>
+			&lt;style 
+				isDefault="false"
+				backcolor="#EEEEEE"
+			/>
+		&lt;/conditionalStyle>
+	&lt;/style>
+	&lt;style 
+		name="spBlue"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#1A7182"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spLightBlue"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#c2dce0"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spGreen"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#5A8429"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spLightGreen"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#cfdcbf"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spOrange"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#F45D14"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spLightOrange"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#f4c3ab"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spYellow"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#F3B833"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spLightYellow"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#f3ddaa"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="spRed"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#b40b0e"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="body"
+		isDefault="false"
+		mode="Transparent"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="bodySmall"
+		isDefault="false"
+		mode="Transparent"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="10"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="bodyGray"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#DDDDDD"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		
+		isBlankWhenNull="true"
+	/>
+	&lt;style 
+		name="footer"
+		isDefault="false"
+		forecolor="#000000"
+		fontName="Arial"
+		fontSize="10"
+	/>
+
+
+	&lt;field name="username" class="java.lang.String"/>
+	&lt;field name="firstname" class="java.lang.String"/>
+	&lt;field name="lastname" class="java.lang.String"/>
+	&lt;field name="issue" class="java.lang.String"/>
+	&lt;field name="action" class="java.lang.String"/>
+	&lt;field name="appName" class="java.lang.String"/>
+
+		&lt;background>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/background>
+		&lt;title>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/title>
+		&lt;pageHeader>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/pageHeader>
+		&lt;columnHeader>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/columnHeader>
+		&lt;detail>
+			&lt;band height="23"  isSplitAllowed="true" >
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="body"
+						x="132"
+						y="0"
+						width="100"
+						height="22"
+						key="textField"
+						stretchType="RelativeToTallestObject"/>
+					&lt;box topBorder="None" topBorderColor="#000000" topPadding="4" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{username}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="body"
+						x="232"
+						y="0"
+						width="100"
+						height="22"
+						key="textField-1"
+						stretchType="RelativeToTallestObject"/>
+					&lt;box topBorder="None" topBorderColor="#000000" topPadding="4" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{firstname}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="body"
+						x="332"
+						y="0"
+						width="100"
+						height="22"
+						key="textField-2"
+						stretchType="RelativeToTallestObject"/>
+					&lt;box topBorder="None" topBorderColor="#000000" topPadding="4" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{lastname}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="body"
+						x="432"
+						y="0"
+						width="300"
+						height="22"
+						key="textField-3"
+						stretchType="RelativeToTallestObject"/>
+					&lt;box topBorder="None" topBorderColor="#000000" topPadding="4" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{issue}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="body"
+						x="0"
+						y="0"
+						width="132"
+						height="22"
+						key="textField-4"
+						stretchType="RelativeToTallestObject"/>
+					&lt;box topBorder="None" topBorderColor="#000000" topPadding="4" leftBorder="None" leftBorderColor="#000000" leftPadding="4" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{appName}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+			&lt;/band>
+		&lt;/detail>
+		&lt;columnFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/columnFooter>
+		&lt;pageFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/pageFooter>
+		&lt;summary>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/summary>
+&lt;/jasperReport>
+</DesignXml>
+</JasperTemplate>

@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jstl/core" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+    xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+  <sp:loadBundle basename="sailpoint.web.messages.iiqMessages" var="msgs"/>
+  <sp:loadBundle basename="sailpoint.web.messages.iiqHelp" var="help"/>
+
+  <c:set var="baseType" value="#{analyzeController.searchBean.baseSearchType}"/>
+  <c:set var="prefix" value="adv#{analyzeController.searchBean.baseSearchType}Search"/>
+
+  <h:form id="advanced#{baseType}SearchForm">
+    <input name="searchType" type="hidden" value="#{analyzeController.searchBean.searchType}"/>
+    <div style="display:none" class="width100" id="#{analyzeController.searchBean.searchType}Error"></div>
+    <p:outputPanel id="advanced#{baseType}AttributesToRerender">
+      <p:autoUpdate />
+      <ui:fragment rendered="#{(analyzeController.searchBean.mySearchItemsByType!=null) and (!empty analyzeController.searchBean.mySearchItemsByType)}">
+        <div class="spContent">
+          <table class="width100" style="margin:5px"><tr><td>
+          <ui:include src="../searchUserItems.xhtml">
+            <ui:param name="searchBean" value="#{analyzeController.searchBean}"/>
+            <ui:param name="formName" value="advanced#{baseType}SearchForm"/>
+            <ui:param name="loadBtnName" value="advanced#{baseType}LoadBtn"/>
+          </ui:include>
+          </td></tr>
+          </table>
+        </div>
+      </ui:fragment>
+
+      <table id="advancedSearchWrapperTbl" class="width100">
+        <tr>
+          <td colspan="73%" valign="top">
+            <ui:include src="/analyze/advanced/addFilters.xhtml">
+              <ui:param name="formName" value="advanced#{baseType}SearchForm"/>
+              <ui:param name="prefix" value="#{prefix}"/>
+              <ui:param name="backingBean" value="#{analyzeController.searchBean.searchBean}"/>
+              <ui:param name="errorDivId" value="selectedCount"/>
+              <ui:param name="isRendered" value="#{not (empty analyzeController.searchBean.searchBean.availableItemNames)}"/>
+              <ui:param name="notRenderedBecause" value="#{msgs.adv_search_err_no_searchable_fields}"/>
+              <ui:param name="useCalendar" value="#{true}"/>
+              <ui:param name="showIgnoreCase" value="#{false}"/>
+            </ui:include>
+            
+            <!-- NOT an spContent div, otherwise it looks odd with no msgs -->
+            <div class="padded10">
+              <table style="border-top:1px #ccc dotted" class="width100">
+                <tr>
+                  <td align="left">
+                    <p:outputPanel>
+                      <p:autoUpdate />
+                      <h:messages infoClass="formInfo" warnClass="formWarn" errorClass="formError" fatalClass="formError"/>
+                    </p:outputPanel>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+          <td width="2%">
+            &nbsp;
+          </td>
+          <td width="25%" valign="top">
+            <div id="advanced#{baseType}Attributes" class="paddedContainer">
+              <h:outputText styleClass="spContentTitle" value="#{msgs.adv_identity_search_choose_fields_to_display}"/>
+              <h:graphicImage id="imgHlpAdvanced#{baseType}SearchDisplay"
+                              alt="#{analyzeController.searchBean.displayHelpMsg}"
+                              style="cursor:pointer;padding: 0px 7px 0px 7px"
+                              url="/images/icons/dashboard_help_16.png" />
+              <br/>
+              <table class="dashWidth100" >
+                <tr>
+                  <td>
+
+                    <ui:include src="../searchDisplayFields.xhtml">
+                      <ui:param name="searchType" value="advanced#{baseType}" />
+                      <ui:param name="searchBean" value="#{analyzeController.searchBean}" />
+                    </ui:include>
+                  </td>               
+                </tr>
+              </table>
+            </div>
+          </td>              
+
+        </tr>
+      </table>
+    </p:outputPanel>
+    
+    <input style="display:none" type="button" id="preSearchBtn" value="#{msgs.button_run_search}" onclick="SailPoint.Analyze.validateSearch('advanced#{baseType}SearchForm', 'advanced#{baseType}');"/>
+    <h:commandButton id="searchBtn" style="display:none" action="#{analyzeController.searchBean.runQueryAction}"/>
+    <input style="display:none" type="button" id="clearBtn" value="#{msgs.button_clear_search}" onclick="Ext.getDom('editForm:resetBtn').click()"/>
+    <p:commandButton style="display:none"
+                       action="#{analyzeController.searchBean.runQueryAction}"
+                       id="ajaxSearchBtn"
+                       update="@([id$=resultsCountSection])"
+                       oncomplete="var gridPanel = Ext.getCmp('advanced#{baseType}SearchResultsGrid');
+                                   gridPanel.isRefresh = true;
+                                   Ext.MessageBox.wait('#{sp:escapeJavascript(msgs.loading_data)}');
+                                   gridPanel.getStore().loadPage(1, {
+                                       params:{start:0, limit: gridPanel.pageSize},
+                                       callback: SailPoint.#{baseType}.Search.displayAdvancedSearchResults
+                                   });"/>    
+    <p:commandButton  style="display:none"
+                        immediate="true" 
+                        action="#{analyzeController.searchBean.clearSearchItem}"
+                        id="resetBtn"
+                        update="@([id$=advancedSearchfilterPnl], [id$=advancedSearchfilterErrorPnl])"
+                        oncomplete="SailPoint.#{baseType}.Search.clearAdvanced#{baseType}SearchFields(); SailPoint.Analyze.resetSearchName('advanced#{baseType}SearchForm');"/>
+    <h:commandButton style="display:none" id="clearSearchBtn" action="#{analyzeController.searchBean.clearSearchItem}"/>
+    <p:commandButton id="rerenderSearchItemsBtn" action="none" update="" style="display:none"/>
+  </h:form>
+</ui:composition>
+
+</body>
+</html>

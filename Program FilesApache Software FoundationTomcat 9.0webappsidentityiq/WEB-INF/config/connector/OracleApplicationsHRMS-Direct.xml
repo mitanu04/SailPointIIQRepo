@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OracleAppsHRMSConnector" featuresString="PROVISIONING,MANAGER_LOOKUP,ENABLE" icon="enterpriseIcon" name="Oracle HRMS" type="Oracle HRMS">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="OracleAppsHRMSAttributesForm.xhtml"/>
+        <entry key="aggregateOnlyOrganisationData" value="true"/>
+        <entry key="useEnhancedAggregation" value="true"/>
+	<entry key="aggregatePersonWithoutSupervisor">
+		<value>
+                     <Boolean>true</Boolean>
+		</value>
+	</entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="FULL_NAME" identityAttribute="PERSON_ID" nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="FULL_NAME" type="string">
+          <Description>Full name of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="FIRST_NAME" type="string">
+          <Description>First name of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="LAST_NAME" type="string">
+          <Description>Last name of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MIDDLE_NAMES" type="string">
+          <Description>Middle name of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="EMPLOYEE_NUMBER" type="string">
+          <Description>Employee number of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PERSON_ID" type="string">
+          <Description>Unique ID of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="START_DATE" type="string">
+          <Description>Start date of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="END_DATE" type="string">
+          <Description>End date of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="GENDER" type="string">
+          <Description>Gender of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="EMAIL_ADDRESS" type="string">
+          <Description>Email ID of the person</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MARITAL_STATUS" type="string">
+          <Description>Marital status</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="DATE_OF_BIRTH" type="string">
+          <Description>Date of Birth</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SUPERVISOR_ID" type="string">
+          <Description>Person ID of the supervisor</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SUPERVISOR" type="string">
+          <Description>Name of supervisor/mentor/manager of an employee</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="POSITION" type="string">
+          <Description>Current position or job title of an employee</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ORGANIZATION" type="string">
+          <Description>Organization name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PERSON_TYPE" type="string">
+          <Description>Type of person define for an organization. For example, Employee, applicant</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="BUSINESS_GROUP" type="string">
+          <Description>Business group of an employee</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="JOB" type="string">
+          <Description>Job details of an employee</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ASSIGNMENT_STATUS" type="string">
+          <Description>Assignment status information of an employee. For example, Active, Suspend, Terminate, End</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="WORK_TELEPHONE" type="string">
+          <Description>Work telephone of an employee</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" multi="true" name="ROLE_NAME" schemaObjectType="group" type="string">
+            <Description>Role name of an employee</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="ROLE_NAME" identityAttribute="ROLE_NAME" nativeObjectType="group" objectType="group">
+          <AttributeDefinition name="ROLE_NAME" type="string">
+              <Description>Role name of group</Description>
+          </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Settings><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc. All rights reserved. -->
+<Form xmlns="http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd" name="Oracle HRMS"
+      connectorName="Oracle HRMS" shortDesc="ShortDesc" type="SourceConfig" directConnect="true" status="released">
+
+   <Menu name="Oracle HRMS Connection Settings" label="oracleHRMS_conn_settings">
+      <Section name="Oracle HRMS Connection Settings" label="oracleHRMS_conn_settings" sectionInfo="sectionInfo_Credentials" docLinkLabel="docLinkLabel_oracledirectSettings" docLink="https://documentation.sailpoint.com/connectors/oracle/hrms/help/">
+        <Field name="user" displayName="connection_user" type="text" required="true" helpKey="connection_user" defaultValue="apps" />
+        <Field name="password" displayName="connection_password" type="secret" required="true" helpKey="connection_password" />
+        <Field name="url" displayName="database_url" type="text" required="true" defaultValue="jdbc:oracle:thin:@&lt;HOST&gt;:&lt;PORT&gt;:&lt;SID&gt;" maxlength="9999" helpKey="database_url"/>
+        <Field name="driverClass" displayName="jdbc_driver" type="text" required="true" defaultValue="oracle.jdbc.driver.OracleDriver" helpKey="jdbc_driver" />
+        <Field name="sptProxyHRMSEBSUser" displayName="oracleHRMS_conn_ProxyUser" type="text" helpKey="help_con_form_OracleHRMS_proxy_user" />
+        <Field name="aggregatePersonWithoutSupervisor" displayName="oracleHRMS_conn_aggregate_person_without_supervisor" type="checkbox" defaultValue="true" helpKey="help_con_aggregate_person_without_supervisor" />
+        <Field name="aggregatePersonsWithoutDefaultUserPersonType" displayName="oracleHRMS_conn_aggregate_person_without_default_user_person_type" type="checkbox" defaultValue="false" helpKey="help_con_aggregate_person_without_default_user_person_type" />
+        <Field name="aggregate_inactive_users" type="checkbox" displayName="oracleHRMS_conn_aggregate_inactive_users" defaultValue="false" helpKey="help_con_aggregate_inactive_users" />
+        <Field name="inactiveOffset" displayName="oracleHRMS_conn_inactive_user_offset" helpKey="help_oracleHRMS_conn_inactive_user_offset" type="text" required="true" parentKey="aggregate_inactive_users" parentValue="true"/>
+        <Field name="buildMapRule" type="select" displayName="con_form_delimited_buildMap" helpKey="con_help_delimited_buildMap" method="post" url="/rest/applications/restricted/suggest/object/sailpoint.object.Rule" payload="{&quot;filterString&quot;:&quot;type==\&quot;JDBCBuildMap\&quot;&quot;}" />
+      </Section>
+   </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

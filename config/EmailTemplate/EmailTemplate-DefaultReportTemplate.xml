@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate created="1785394251373" id="c0a801899fb11942819fb1ca466d017c" modified="1785394251373" name="Default Report Template" significantModified="1785394251373">
+  <Body>Please find the requested report file(s) attached to this email.</Body>
+  <Description>
+      Default email template for sending report results.
+      NOTE: There are no input arguments for this template, the report
+      is sent as a PDF and/or csv attachment.
+    </Description>
+  <Subject>IdentityIQ Report</Subject>
+</EmailTemplate>

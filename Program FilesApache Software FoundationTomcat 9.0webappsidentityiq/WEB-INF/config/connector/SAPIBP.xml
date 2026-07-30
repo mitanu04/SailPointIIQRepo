@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+    <Application connector="sailpoint.connector.OpenConnectorAdapter"
+                 featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE" icon="internetIcon" name="SAP Integrated Business Planning"
+                 type="SAP Integrated Business Planning">
+        <Attributes>
+            <Map>
+                <entry key="connectorClass" value="openconnector.connector.sapibp.SAPIBPConnector"/>
+                <entry key="encrypted" value="ips0_password, rest0_password"/>
+                <entry key="pageSize" value="100"/>
+                <entry key="ips0_authType" value="Basic"/>
+                <entry key="formPath" value="SAPIBPAttributesForm.xhtml"/>
+                <entry key="includeExtendedSchemaUrnInSchemasList">
+                    <value>
+                        <Boolean>true</Boolean>
+                    </value>
+                </entry >
+                <entry key="updateGroupsViaUsers">
+                    <value>
+                        <Boolean>true</Boolean>
+                    </value>
+                </entry>
+            </Map>
+        </Attributes>
+        <Schemas>
+            <Schema displayAttribute="Full Name" identityAttribute="ID" nativeObjectType="User"
+                    objectType="account">
+                <AttributeDefinition name="ID" type="string" internalName="id">
+                    <Description>ID of the Business partner</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Active" type="string" internalName="active">
+                    <Description>The user's active status</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Username" type="string" internalName="userName">
+                    <Description>The user's user name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="User ID" type="string" internalName="userID">
+                    <Description>User ID</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Person UUID" type="string" internalName="personUUID">
+                    <Description>Unique ID of the business partner</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Global User ID" type="string" internalName="globalUserID">
+                    <Description>Global User ID</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Person External ID" type="string" internalName="personExternalID">
+                    <Description>Employee ID of Business partner</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="First Name" type="string" internalName="name.givenName">
+                    <Description>The user's first name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Last Name" type="string" internalName="name.familyName">
+                    <Description>The user's last name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Middle Name" type="string" internalName="name.middleName">
+                    <Description>The user's middle name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Department" type="string" internalName="department">
+                    <Description>Department of Employee</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Function" type="string" internalName="function">
+                    <Description>Functional Title Name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Full Name" type="string" internalName="name.formatted">
+                    <Description>The user's full name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Last Name Prefix" type="string" internalName="lastNamePrefix">
+                    <Description>The user's last name prefix</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Initials" type="string" internalName="initials">
+                    <Description>The user's initials</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Name Supplement" type="string" internalName="nameSupplement">
+                    <Description>Name supplement</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Email" type="string" internalName="emails.value">
+                    <Description>The user's email address</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="User Start Date" type="string" internalName="startDate">
+                    <Description>Validity Start Date of User</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="User End Date" type="string" internalName="endDate">
+                    <Description>Validity End Date of User</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Employee Start Date" type="string" internalName="empStartDate">
+                    <Description>Start Date of Employee</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Employee End Date" type="string" internalName="empEndDate">
+                    <Description>End Date of Employee</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Locked" type="string" internalName="lockedIndicator">
+                    <Description>Indicates the user's locked status</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Timezone" type="string" internalName="timezone">
+                    <Description>User's timezone</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Logon Language Code" type="string" internalName="locale">
+                    <Description>Logon Language Code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Time Format Code" type="string" internalName="timeFormatCode">
+                    <Description>Time Format Code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Date Format Code" type="string" internalName="dateFormatCode">
+                    <Description>Date Format Code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Decimal Format Code" type="string" internalName="decimalFormatCode">
+                    <Description>Decimal Format Code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Groups" type="string" internalName="groups" multi="true" entitlement="true" managed="true" schemaObjectType="group">
+                    <Description>Business roles assigned to User</Description>
+                </AttributeDefinition>
+            </Schema>
+            <Schema displayAttribute="Group Name" identityAttribute="ID" objectType="group" nativeObjectType="group">
+                <AttributeDefinition name="ID" internalName="id" type="String">
+                    <Description>A unique identifier for the group</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Group Name" internalName="displayName" required="true" type="String">
+                    <Description>The group's name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="members.value" multi="true" name="Members" type="string">
+                    <Description>The members of the group</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="description" name="Description" type="string">
+                    <Description>The group's description</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="catalogs" name="Catalogs" type="string" multi="true">
+                    <Description>The catalogs assigned to Business role</Description>
+                </AttributeDefinition>
+            </Schema>
+        </Schemas>
+        <Templates>
+            <Template name="Create" schemaObjectType="account" usage="Create">
+                <Field displayName="con_prov_policy_user_create_ibp_user_name"
+                       helpKey="help_con_prov_policy_user_create_ibp_user_name" name="userName"
+                       required="true" type="string"/>
+                <Field displayName="con_prov_policy_user_create_ibp_first_name"
+                       helpKey="help_con_prov_policy_user_create_ibp_first_name" name="name.givenName"
+                       required="true" type="string"/>
+                <Field displayName="con_prov_policy_user_create_ibp_last_name"
+                       helpKey="help_con_prov_policy_user_create_ibp_last_name" name="name.familyName"
+                       required="true" type="string"/>
+                <Field displayName="con_prov_policy_user_create_ibp_email"
+                       helpKey="help_con_prov_policy_user_create_ibp_email" name="emails.value"
+                       required="true" type="string"/>
+
+            </Template>
+        </Templates>
+        <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies","Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='SAP Integrated Business Planning' connectorName="SAP Integrated Business Planning"
+	type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="SAP Integrated Business Planning Configuration" label="con_form_ibp_connection_settings">
+		<Section name="SAP IPS Connection Settings" label="con_form_ibp_ips_connection_settings">
+			<Field name="ips0_host" displayName="con_form_ibp_ips_proxy_host" type="text" required="true"
+				helpKey="help_con_form_ibp_ips_proxy_host" />
+			<Field name="ips0_proxySystemId" displayName="con_form_ibp_ips_proxy_system_id" type="text" required="true"
+				helpKey="help_con_form_ibp_ips_proxy_system_id"/>
+			<Field name="ips0_user" displayName="con_form_ibp_ips_client_id" type="text" required="true"
+				helpKey="help_con_form_ibp_ips_client_id"/>
+			<Field name="ips0_password" displayName="con_form_ibp_ips_client_secret" type="secret" required="true"
+				helpKey="help_con_form_ibp_ips_client_secret" />
+		</Section>
+	</Menu>
+	<Menu name="Additional Connection Settings" label="con_form_ibp_additional_settings">
+		<Section name="Additional Connection Settings" label="con_form_ibp_additional_settings">
+			<Field name="rest0_authType" displayName="con_form_sap_ibp_authentication_method" type="select"
+				defaultValue="Basic"  helpKey="help_con_sap_ibp_authentication_method">
+				<AllowedValues>
+					<Option label="Basic" value="Basic"/>
+				</AllowedValues>
+			</Field>
+			<Field name="rest0_host" displayName="con_form_ibp_host" type="text" helpKey="help_con_form_ibp_host"/>
+			<Field name="rest0_user" displayName="con_form_ibp_user" type="text" helpKey="help_con_ibp_user"/>
+			<Field name="rest0_password" displayName="con_form_ibp_password" type="secret" helpKey="help_con_ibp_password"/>
+		</Section>
+	</Menu>
+	<Menu name="Page Size Settings" label="con_form_ibp_page_size_settings">
+		<Section name="Page Size Settings" label="con_form_ibp_page_size_settings">
+			<Field name="pageSize" displayName="con_form_ibp_page_size" type="number"
+				defaultValue="100" min="1" max="100" helpKey="help_con_form_ibp_page_size_settings"/>
+		</Section>
+	</Menu>
+</Form>]]>
+        </Settings>
+    </Application>
+</ImportAction>

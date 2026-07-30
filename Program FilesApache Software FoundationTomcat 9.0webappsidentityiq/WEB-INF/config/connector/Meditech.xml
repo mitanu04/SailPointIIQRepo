@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter"
+    featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE, SEARCH" icon="internetIcon" name="MEDITECH" type="MEDITECH">
+    <Attributes>
+      <Map>
+        <entry key="CAConnector" value="true" />
+        <entry key="connectorClass" value="openconnector.connector.meditech.MeditechConnector" />
+        <entry key="formPath" value="MeditechAttributesForm.xhtml" />
+        <entry key="scope" value="user-provisioning general" />
+        <entry key="pageSize" value="100" />
+        <entry key="encrypted" value="client_secret,oauth_token_info" />
+        <entry key="retryableErrors">
+          <value>
+            <List>
+              <String>The server encountered a temporary error</String>
+            </List>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="nameFirst" identityAttribute="id" groupAttribute="role" instanceAttribute=""
+        nativeObjectType="user" objectType="account">
+        <AttributeDefinition name="id" remediationModificationType="None" type="string">
+          <Description>Unique Identifier of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="mnemonic" remediationModificationType="None" type="string">
+          <Description>Mnemonic for this MIS person record.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="monogram" remediationModificationType="None" type="string">
+          <Description>Monogram for the associated universal record.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="active" remediationModificationType="None" type="boolean">
+          <Description>Whether the person is active or not.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameFirst" remediationModificationType="None" type="string">
+          <Description>First name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameMiddle" remediationModificationType="None" type="string">
+          <Description>Middle name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameLast" remediationModificationType="None" type="string">
+          <Description>Last name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameFull" remediationModificationType="None" type="string">
+          <Description>Full name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="namePrefix" remediationModificationType="None" type="string">
+          <Description>Prefix for the name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameSuffix" remediationModificationType="None" type="string">
+          <Description>Suffix for the name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameOtherFirst" remediationModificationType="None" type="string">
+          <Description>Other first name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="nameOtherLast" remediationModificationType="None" type="string">
+          <Description>Other last name of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="credentials" multi="true" remediationModificationType="None" type="string">
+          <Description>Credentials of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="domainAccounts" multi="true" remediationModificationType="None" type="string">
+          <Description>Domain accounts of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isProvider" remediationModificationType="None" type="boolean">
+          <Description>Person being identified as a provider or not.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="providerType" remediationModificationType="None" type="string">
+          <Description>Type of Provider.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" name="role"
+          remediationModificationType="None" schemaObjectType="role" type="string">
+          <Description>Role of the person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="isSupervisor" type="boolean">
+          <Description>Person being identified as a supervisor or not.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="supervisorId" remediationModificationType="None" type="string">
+          <Description>Identifier of the supervisor.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="lastEditedBy" remediationModificationType="None" type="string">
+          <Description>Last edited by person.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="lastEditDateTime" remediationModificationType="None"
+          type="string">
+          <Description>Last edited time stamp of the person, eg: yyyy-MM-dd'T'HH:mm:ssXXX.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="onStaff" remediationModificationType="None" type="boolean">
+          <Description>Whether the person is staff or not.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="providerSpecialties" multi="true" remediationModificationType="None"
+          type="string">
+          <Description>List of provider specialties.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="unvId" remediationModificationType="None" type="string">
+          <Description>ID for the associated universal record.</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="name" identityAttribute="mnemonic" instanceAttribute="" nativeObjectType="role"
+        objectType="role" aggregationType="group" permissionsRemediationModificationType="None">
+        <AttributeDefinition name="id" remediationModificationType="None" type="string">
+          <Description>Unique ID of the role.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" remediationModificationType="None" type="string">
+          <Description>Name of the role.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="mnemonic" remediationModificationType="None" type="string">
+          <Description>Mnemonic for the role.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="active" remediationModificationType="None" type="string">
+          <Description>Status of the role, “active” or “inactive”.</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <ProvisioningForms>
+      <Form name="Create Account" objectType="account" type="Create">
+        <Attributes>
+          <Map>
+            <entry key="pageTitle" value="Create Account" />
+          </Map>
+        </Attributes>
+        <Section>
+          <Field displayName="con_prov_policy_meditech_mnemonic" name="mnemonic"
+            helpKey="help_con_prov_policy_meditech_mnemonic" reviewRequired="true" type="string" />
+          <Field displayName="con_prov_policy_meditech_active" name="active" value="false"
+            helpKey="help_con_prov_policy_meditech_active" reviewRequired="true" type="boolean" />
+          <Field displayName="con_prov_policy_meditech_firstName" name="nameFirst"
+            helpKey="help_con_prov_policy_meditech_firstName" required="true" reviewRequired="true" type="string" />
+          <Field displayName="con_prov_policy_meditech_lastName" name="nameLast"
+            helpKey="help_con_prov_policy_meditech_lastName" required="true" reviewRequired="true" type="string" />
+          <Field displayName="con_prov_policy_meditech_createMISOnly" name="createMISOnly"
+            helpKey="help_con_prov_policy_meditech_createMISOnly" reviewRequired="true" type="boolean" />
+        </Section>
+      </Form>
+    </ProvisioningForms>
+  </Application>
+</ImportAction>

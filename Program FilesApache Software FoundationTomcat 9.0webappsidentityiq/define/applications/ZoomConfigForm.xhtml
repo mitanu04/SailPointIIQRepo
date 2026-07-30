@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- (c) Copyright 2017 SailPoint Technologies, Inc., All Rights Reserved. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+<ui:composition>
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(fieldname) {
+            var val = null;
+            var field = Ext.getDom(fieldname);
+            if ( field ) {
+                val = field.value;
+            }
+            return val;
+        }
+
+        function toggleCredentials(authType) {
+            var grantTypeRow = Ext.get('grantTypeRow');
+            var tokenUrlRow=  Ext.get('tokenUrlRow');
+            var clientIdRow = Ext.get('clientIdRow');
+            var clientSecretRow = Ext.get('clientSecretRow');
+            var accountIdRow = Ext.get('accountIdRow');
+            var refreshTokenRow = Ext.get('refreshTokenRow');
+
+            if (authType == "" || authType == "API Token") {
+                authType = "OAuth2";
+            }
+
+            if (authType == "API Token") {
+                grantTypeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                grantTypeRow.hide();
+                tokenUrlRow.setVisibilityMode(Ext.Element.DISPLAY);
+                tokenUrlRow.hide();
+                clientIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientIdRow.hide();
+                clientSecretRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecretRow.hide();
+                accountIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                accountIdRow.hide();
+                refreshTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshTokenRow.hide();
+            } if (authType == "OAuth2") {
+                grantTypeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                grantTypeRow.show();
+                tokenUrlRow.setVisibilityMode(Ext.Element.DISPLAY);
+                tokenUrlRow.show();
+                clientIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientIdRow.show();
+                clientSecretRow.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecretRow.show();
+                toggleGrantType(Ext.getDom('editForm:grant_type').value);
+            }
+        }
+
+        function toggleGrantType(grantType) {
+            var accountIdRow = Ext.get('accountIdRow');
+            var refreshTokenRow = Ext.get('refreshTokenRow');
+            if (grantType == "") {
+                grantType = "account_credentials";
+            }
+            if (grantType == "account_credentials") {
+                accountIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                accountIdRow.show();
+                refreshTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshTokenRow.hide();
+            } else if (grantType == "REFRESH_TOKEN") {
+                accountIdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                accountIdRow.hide();
+                refreshTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshTokenRow.show();
+            }
+        }
+
+        function validateParams(){
+            var url = getFieldValue('editForm:url');
+            Validator.validateNonBlankString(url, "#{msgs.err_zoom_account_missing_url}");
+            var authType = getFieldValue('editForm:authType');
+
+            if (authType == "API Token") {
+                var apiKey = getFieldValue('editForm:apiKey');
+                var apiSecret = getFieldValue('editForm:apiSecret');
+                Validator.validateNonBlankString(apiKey, "#{msgs.con_form_zoom_api_key_null}");
+                Validator.validateNonBlankString(apiSecret, "#{msgs.con_form_zoom_api_secret_null}");
+            } else {
+
+                var grant_type = getFieldValue('editForm:grant_type');
+                var token_url = getFieldValue('editForm:token_url');
+                var client_id = getFieldValue('editForm:client_id');
+                var client_secret = getFieldValue('editForm:client_secret');
+
+                if(grant_type == "account_credentials"){
+                    var account_id = getFieldValue('editForm:account_id');
+                    Validator.validateNonBlankString(token_url, "#{msgs.con_form_zoom_token_url_null}");
+                    Validator.validateNonBlankString(client_id, "#{msgs.con_form_zoom_client_id_null}");
+                    Validator.validateNonBlankString(client_secret, "#{msgs.con_form_zoom_client_secret_null}");
+                    Validator.validateNonBlankString(account_id, "#{msgs.con_form_zoom_account_id_null}");
+                } else if(grant_type == "REFRESH_TOKEN"){
+                    var refresh_token = getFieldValue('editForm:refresh_token');
+                    Validator.validateNonBlankString(token_url, "#{msgs.con_form_zoom_token_url_null}");
+                    Validator.validateNonBlankString(client_id, "#{msgs.con_form_zoom_client_id_null}");
+                    Validator.validateNonBlankString(client_secret, "#{msgs.con_form_zoom_client_secret_null}");
+                    Validator.validateNonBlankString(refresh_token, "#{msgs.con_form_zoom_refresh_token_null}");
+                }
+            }
+            var pageSize = getFieldValue('editForm:pageSize');
+            if(pageSize){
+                var isValidString = Validator.validateNumber(pageSize, "#{msgs.err_zoom_account_invalid_page_size_entered}");
+                if(isValidString)
+                    Validator.validateGreaterThanOrEqual(pageSize, 1, "#{msgs.err_zoom_account_invalid_page_size_range}")
+            }
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            toggleCredentials('#{applicationObject.attributes["authType"]}');
+            // This is our validation hook
+            Page.on('beforeSave', function() {
+                if (!hasCredentialConfiguration()) {
+                    validateParams();
+                    var errors = Validator.getErrors();
+                    if (errors && errors.length > 0) {
+                        Validator.displayErrors('appErrorsTop');
+                        return false;
+                    }
+                }
+                return true;
+            });
+        });
+
+        //--><!]]>
+    </script>
+    <f:view>
+        <div id="accountSettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} Connection Settings" />
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="zoomURLRow">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_account_url}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_zoom_account_url}"/>
+                    </td>
+                    <td valign="center">
+                        <sp:inputText id="url"
+                                      value="#{applicationObject.attributes['url']}" size="120" redisplay="true"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="authTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_auth_type}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_auth_type}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="authType"
+                                         value="#{applicationObject.attributes['authType']}"
+                                         redisplay="true"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleCredentials(this.value)">
+                            <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_zoom_oauth2}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+                <tr id="grantTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_grant_type}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_grant_type}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="grant_type"  value="#{applicationObject.attributes['grant_type']}"
+                                         redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleGrantType(this.value)">
+                            <f:selectItem itemValue="account_credentials" itemLabel="#{msgs.con_form_zoom_grant_type_account_credentials}" />
+                            <f:selectItem itemValue="REFRESH_TOKEN" itemLabel="#{msgs.con_form_zoom_grant_type_refresh_token}" />
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+                <tr id="tokenUrlRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_token_url}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpTokenUrl" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_token_url}" />
+                    </td>
+                    <td>
+                        <h:inputText id="token_url" value="#{applicationObject.attributes['token_url']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="clientIdRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_client_id}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAudience" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_client_id}" />
+                    </td>
+                    <td>
+                        <h:inputText id="client_id" value="#{applicationObject.attributes['client_id']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="clientSecretRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_client_secret}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpIssuer" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_client_secret}" />
+                    </td>
+                    <td>
+                        <sp:inputSecret id="client_secret" value="#{applicationObject.attributes['client_secret']}" size="20"
+                                        redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="accountIdRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_account_id}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpSubject" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_zoom_account_id}" />
+                    </td>
+                    <td>
+                        <h:inputText id="account_id" value="#{applicationObject.attributes['account_id']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="refreshTokenRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_refresh_token}"/>
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpPrivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_zoom_refresh_token}"/>
+                    </td>
+                    <td>
+                        <sp:inputSecret id="refresh_token"
+                                        value="#{applicationObject.attributes['refresh_token']}"
+                                        size="20" redisplay="true"
+                                        autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr id="pageSizeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_page_size}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_zoom_account_page_size}"/>
+                    </td>
+                    <td valign="center">
+                        <sp:inputText id="pageSize"
+                                      value="#{applicationObject.attributes['pageSize']}"
+                                      size="120"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            <f:validateLongRange minimum="1" />
+                            <!-- Max records returned by zoom system is 300 per page-->
+                        </sp:inputText>
+                    </td>
+                </tr>
+                <tr id="timeOutRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_connection_timeout}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpConnectionTimeout" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_zoom_account_connection_timeout}"/>
+                    </td>
+                    <td valign="center">
+                        <sp:inputText id="connectionTimeout"
+                                      value="#{applicationObject.attributes['connectionTimeout']}"
+                                      size="120"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            <f:validateLongRange minimum="1" />
+                        </sp:inputText>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <h:outputText styleClass="sectionHeader"
+                      value="#{msgs.con_form_zoom_filters}" />
+        <br />
+        <div id="filter" class='spContent'>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_include_inactive_users}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpIsActive"
+                                        styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_zoom_account_inclued_inactive}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregateInactiveUser"
+                                                 value="#{applicationObject.attributes['aggregateInactiveUser']}" redisplay="true"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_zoom_include_pending_users}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpIsPending"
+                                        styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_zoom_account_inclued_pending}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregatePendingUsers"
+                                                 value="#{applicationObject.attributes['aggregatePendingUsers']}" redisplay="true"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </f:view>
+</ui:composition>
+</body>
+</html>

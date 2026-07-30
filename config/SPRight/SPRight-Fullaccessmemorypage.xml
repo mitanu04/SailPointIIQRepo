@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246840" displayName="right_full_access_memory_page" id="c0a801899fb11942819fb1ca34b80073" name="FullAccessMemoryPage">
+  <Description>right_desc_full_access_memory_page</Description>
+</SPRight>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247775" displayName="capability_identity_correlation_administrator" id="c0a801899fb11942819fb1ca385f00dc" name="IdentityCorrelationAdministrator">
+  <Description>capability_desc_identity_correlation_administrator</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33790034" name="FullAccessIdentityCorrelation"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca31e20002" name="ViewIdentity"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca321a0008" name="DeleteIdentityLink"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca32220009" name="MoveIdentityLink"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca336e0032" name="FullAccessReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33d80048" name="FullAccessUncorrelatedIdentitiesReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33ee004c" name="FullAccessUserReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca340c0051" name="FullAccessIdentityEntitlementReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33e2004a" name="FullAccessApplicationUserReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca346a0062" name="FullAccessIdentityRisk"/>
+  </RightRefs>
+</Capability>

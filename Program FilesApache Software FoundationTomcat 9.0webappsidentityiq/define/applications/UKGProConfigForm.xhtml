@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2023 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:a4j="http://richfaces.org/a4j" xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        var expanded = false;
+
+        function showCheckboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if (fileName) {
+                val = fileName.value;
+            }
+            return val;
+        }
+
+        function toggleTerminationOffset() {
+            var terminationOffset = Ext.getDom('terminationOffset');
+            // If the checkbox is enabled, show the div for termination offset.
+            var includeTerminatedEmployees = Ext.getDom('editForm:aggregateTerminated');
+            if (includeTerminatedEmployees && includeTerminatedEmployees.checked == true) {
+                terminationOffset.style.display = "";
+            } else {
+                terminationOffset.style.display = "none";
+            }
+        }
+
+        function toggleFutureOffset() {
+            var futureOffset = Ext.getDom('futureOffset');
+            // If the checkbox is enabled, show the div for future offset.
+            var includeFutureHireEmployees = Ext.getDom('editForm:aggregateFutureHires');
+            if (includeFutureHireEmployees && includeFutureHireEmployees.checked == true) {
+                futureOffset.style.display = "";
+            } else {
+                futureOffset.style.display = "none";
+            }
+        }
+
+
+        Ext
+            .onReady(function () {
+                Ext.QuickTips.init();
+                toggleFutureOffset();
+                toggleTerminationOffset();
+                // This is our validation hook
+                Page
+                    .on(
+                        'beforeSave',
+                        function () {
+                            if (!hasCredentialConfiguration()) {
+                                var apiurl = getFieldValue('editForm:url');
+                                Validator
+                                    .validateNonBlankString(
+                                        apiurl,
+                                        "#{msgs.con_err_ukgpro_missing_url}");
+                                var username = getFieldValue('editForm:username');
+                                Validator
+                                    .validateNonBlankString(
+                                        username,
+                                        "#{msgs.con_err_ukgpro_missing_username}");
+                                var password = getFieldValue('editForm:password');
+                                Validator
+                                    .validateNonBlankString(
+                                        password,
+                                        "#{msgs.con_err_ukgpro_missing_password}");
+                                var customerApiKey = getFieldValue('editForm:customerApiKey');
+                                Validator
+                                    .validateNonBlankString(
+                                        customerApiKey,
+                                        "#{msgs.con_err_ukgpro_missing_customer_api_key}");
+
+                                var errors = Validator
+                                    .getErrors();
+                                if (errors && errors.length > 0) {
+                                    Validator
+                                        .displayErrors('appErrorsTop');
+                                    return false;
+                                }
+                            }
+                            //return false will kill cancel the save
+                            return true;
+                        });
+            });
+
+        //--><!]]>
+    </script>
+
+    <f:view>
+
+        <h:outputText styleClass="sectionHeader"
+                      value="#{msgs.con_form_ukgpro_config}"/>
+        <br/>
+
+        <!-- connection info -->
+        <div id="accountSettings" class='spContent'>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_ukgpro_url}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpMongoUrl" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{msgs.help_con_form_ukgpro_url}"/>
+                    </td>
+
+                    <td valign="center">
+                        <h:inputText id="url"
+                                     value="#{applicationObject.attributes['url']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr id="authTypeRow">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_ukgpro_auth_type}"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpAuthtype" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_ukgpro_auth_type}"/>
+                    </td>
+                    <td valign="center">
+                        <h:selectOneMenu id="authType"
+                                         value="#{applicationObject.attributes['authtype']}"
+                                         redisplay="true"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            <f:selectItem itemValue="BasicAuthentication"
+                                          itemLabel="#{msgs.con_form_ukgpro_basic_auth}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_ukgpro_username}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUserName" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{msgs.help_con_form_ukgpro_username}"/>
+                    </td>
+
+                    <td valign="center">
+                        <h:inputText id="username"
+                                     value="#{applicationObject.attributes['username']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_ukgpro_password}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpPassword" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{msgs.help_con_form_ukgpro_password}"/>
+                    </td>
+
+                    <td>
+                        <sp:inputSecret id="password"
+                                        value="#{applicationObject.attributes['password']}"
+                                        redisplay="true" size="80" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ukgpro_customer_api_key}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpCustomerAPIKey" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{msgs.help_con_form_ukgpro_customer_api_key}"/>
+                    </td>
+                    <td>
+                        <sp:inputSecret id="customerApiKey"
+                                        value="#{applicationObject.attributes['customerApiKey']}"
+                                        redisplay="true" size="80" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ukgpro_page_size}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{msgs.help_con_form_ukgpro_page_size}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="pageSize"
+                                     value="#{applicationObject.attributes['pageSize']}"
+                                     size="10"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                        </h:inputText>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div id="filterCriteriaEmployee" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_ukgpro_filter_criteria_employees}"/>
+            <table class="spTable" style="border:0px" cellspacing="0">
+                <tr>
+                    <style>
+                        .multiselect {
+                            width: 155px;
+                        }
+
+                        .selectBox {
+                            position: relative;
+                        }
+
+                        .selectBox select {
+                            width: 100%;
+                            font-weight: 500;
+                        }
+
+                        .overSelect {
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                        }
+
+                        #checkboxes {
+                            display: none;
+                            width: 100%;
+                            column-width: 100px;
+                            text-align: start;
+                            border: 1px #dadada solid;
+                            align-content: flex-start;
+                        }
+
+                        #checkboxes label {
+                            display: inline;
+                            font-weight: 500;
+                        }
+                    </style>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_ukgpro_filter_criteria_employee_status}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpExcludeEnitities" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_ukgpro_filter_criteria_employee_status}"/>
+                    </td>
+                    <td class='certScheduleTitleCo'>
+                        <div class="multiselect">
+                            <div class="selectBox" onclick="showCheckboxes()">
+                                <select>
+                                    <option>Employee Statuses</option>
+                                </select>
+                                <div class="overSelect"></div>
+                            </div>
+                            <div id="checkboxes">
+                                <h:selectManyCheckbox style="display:inline" id="aggregationEmpStatusValues" layout="pageDirection"
+                                                      value="#{applicationObject.attributes['aggregationEmpStatusValues']}"
+                                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                    <f:selectItem disabled="true" checked="checked" style="display:inline" itemValue="Active" itemLabel="Active"/>
+                                    <f:selectItem style="display:inline" itemValue="Leave of absence" itemLabel="Leave of absence"/>
+                                    <f:selectItem style="display:inline" itemValue="On strike" itemLabel="On strike"/>
+                                    <f:selectItem style="display:inline" itemValue="Released/laid off" itemLabel="Released/laid off"/>
+                                    <f:selectItem style="display:inline" itemValue="Suspended" itemLabel="Suspended"/>
+                                </h:selectManyCheckbox>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id='futureHires'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText value="#{msgs.con_form_ukgpro_aggregate_future_hires}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAggFutureHires" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ukgpro_aggregate_future_hires}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregateFutureHires" onclick='toggleFutureOffset()'
+                                                 value="#{applicationObject.attributes['aggregateFutureHires']}"
+                                                 converter="NewLineList"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr id='futureOffset'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ukgpro_future_hire_offset}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpfutureOffset"
+                                        styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{msgs.help_con_form_ukgpro_futureOffset}"/>
+                    </td>
+                    <td>
+                        <h:inputText value="#{applicationObject.attributes['futureOffset']}"
+                                     size="10"
+                                     id="futureOffset"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                        </h:inputText>
+                        <br/>
+                    </td>
+                </tr>
+
+                <tr id='terminatedEmployee'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText value="#{msgs.con_form_ukgpro_aggregate_terminated_employees}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAggTerminatedEmployees" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ukgpro_aggregate_terminated_employees}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregateTerminated" onclick='toggleTerminationOffset()'
+                                                 redisplay="true"
+                                                 value="#{applicationObject.attributes['aggregateTerminated']}"
+                                                 converter="NewLineList"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id='terminationOffset'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ukgpro_terminated_emp_offset}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpinactiveOffset"
+                                        styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{msgs.help_con_form_ukgpro_terminationOffset}"/>
+                    </td>
+                    <td>
+                        <h:inputText value="#{applicationObject.attributes['terminationOffset']}"
+                                     size="10"
+                                     id="terminationOffset"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                        </h:inputText>
+                        <br/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

@@ -1,0 +1,697 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!--
+  ~ (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<sailpoint>
+
+<Rule name="Leaver Reassignment Sample - Mgr or Admin"  language="beanshell" type="LeaverReassignment" >
+  <Description>
+    This example is for Leaver reassignment.  This simple example returns the manager's name
+    if identityname has a amanger, otherwise returns 'spadmin'.
+  </Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="identityName">
+        <Description>
+          The name of the identity whose artifacts are being reassigned during Leaver.
+        </Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument name="reassignee">
+        <Description>
+          The name of the identity to whom the artifacts of identityName should be reassigned
+        </Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source>
+    <![CDATA[
+
+    import sailpoint.object.Identity;
+
+    String reassignee = null;
+    Identity identity = context.getObjectByName(Identity.class, identityName);
+    if (identity != null) {
+      Identity mgr = identity.getManager();
+      if (mgr != null) {
+        reassignee = mgr.getName();
+      }
+      else {
+        reassignee = "spadmin";
+      }
+      context.decache(identity);
+    }
+    return reassignee;
+    ]]>
+  </Source>
+</Rule> 
+<Rule name="Leaver Sample - empty Account Requests"  language="beanshell" type="LeaverAccountRequests" >
+  <Description>
+    This example is for Leaver application-specific account requests rule.
+  </Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="identityName">
+        <Description>
+          The name of the identity who is leaving.
+        </Description>
+      </Argument>
+      <Argument name="appName">
+        <Description>
+          The name of the application on which the identity (with name = identityName) has an account
+        </Description>
+      </Argument>
+      <Argument name="nativeId">
+        <Description>
+          The native id for the account that the identity (with name = identityName) has on the application
+          (with name = appName)
+        </Description>
+      </Argument>
+      <Argument name="requestType">
+        <Description>
+          The type of request being processed.  This is currently always set to "leaver".
+        </Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument name="accountRequests">
+        <Description>
+          The list of AccountRequest objects which should be executed to allow the given identity (identityName) to leave the
+          given account (nativeId) on the given application (appName)
+        </Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source>
+    <![CDATA[
+
+    import java.util.List;
+    import java.util.ArrayList;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+
+    // this is a stub example that returns an empty list of AccountRequest
+    List accountRequests = new ArrayList();
+
+    // Normally, you construct AccountRequest objects, and possibly add AttributeRequest objects
+    // into the AccountRequest objects
+
+    return accountRequests;
+    ]]>
+  </Source>
+</Rule>
+
+<!--
+  -  A RequestObjectSelector rule that generates a Filter to only return roles that are not selected as RapidSetup Birthright roles.
+  -->
+<Rule language="beanshell" name="Roles that are not RapidSetup Birthright Roles" type="RequestObjectSelector">
+  <Description>This rule returns a Filter that restricts roles with a type that is not selected as RapidSetup Birthright role types.</Description>
+  <Signature returnType="sailpoint.object.Filter">
+    <Inputs>
+      <Argument name="log">
+        <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="requestor" type="sailpoint.object.Identity">
+        <Description>
+          Identity that is making the Life Cycle Manager request.
+        </Description>
+      </Argument>
+      <Argument name="requestee" type="sailpoint.object.Identity">
+        <Description>
+          Identity on whose behalf the Life Cycle Manager request is being made. In the case of bulk requests,
+          this argument will be set to null when determining the roles that are visible to the requestor.
+          It will be provided once a selection has been made in order to determine whether or not the given requestee
+          should have access to the selected role.
+        </Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument name="filter">
+        <Description>
+          A Filter object that will be used to search for accessible Roles.
+        </Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source>
+    <![CDATA[
+     import sailpoint.object.Filter;
+     import sailpoint.object.Identity;
+     import sailpoint.web.modeler.RoleConfig;
+     RoleConfig rc = new RoleConfig();
+     return Filter.in("type", rc.getNonBirthrightRapidSetupRoleTypes());
+   ]]>
+  </Source>
+</Rule>
+
+
+<Rule language="beanshell" name="Population Specific Leaver Rule" type="LeaverAccountRequests">
+      <Source>
+       <![CDATA[
+       /**
+        Example rule for leaver configuration.  The following parameters are passed in:
+        context - a SailpointContext
+        identityName - the name of the identity that is leaving
+        appName - the name of the application for which the config is being requeested
+        nativeId - the native id of the account
+        requestType - terminate or leaver
+        mode - immediate or later
+        leaverPlanBuilder - the leaver plan builder
+        log - log object, used to write log messages
+        */
+      import java.util.Map;
+      import java.util.List;
+      import java.util.HashMap;
+      import sailpoint.object.ProvisioningPlan;
+      import sailpoint.tools.Util;
+      import sailpoint.rapidsetup.plan.*;
+
+      Map additionalArgs = new HashMap();
+      additionalArgs.put("requestType", requestType);
+
+      // Create a composite configuration object, and pass in the default configuration provider (forEveryone)
+      LeaverAppConfigProvider provider = new CompositeConfigProvider(
+          LeaverConfigBuilder.forEveryone().
+		          setRemoveEntitlements(appName, LeaverAppConfigProvider.OPT_MODE_LATER).
+              setEntitlementDelay(appName, 5).
+              build(context)
+      );
+
+      // Create the population specific configuration provider (forPopulation) and
+      // add it to the composite configuration object
+      provider.add(
+          LeaverConfigBuilder.forPopulation(context, "GoofyGoobers").
+              setRemoveEntitlements(appName, LeaverAppConfigProvider.OPT_MODE_LATER).
+              setEntitlementDelay(appName, 3).
+              build(context)
+      );
+
+      // this returns the individual requests used in the provisioning plans using the passed in configuration objects
+      ConfiguredLeaverRequest configuredRequest = BasePlanBuilder.leaverPlan(context, identityName, additionalArgs, provider, leaverPlanBuilder.isTerminateIdentity()).
+              getAppRequests(context, identityName, appName, mode, nativeId);
+
+      // insert custom processing of leaver requests here
+      // this could be for example to add more complex entitlement exclusuion rules.  Just replace
+      // the print statements below, with actual processing of the accountRequests.
+      // if no additional processing is required, just return configuredRequest
+      List accountRequests = configuredRequest.getAccountRequests();
+
+      // walk through the plan account requests and alter the details.
+      for(ProvisioningPlan.AccountRequest accountRequest : Util.safeIterable(accountRequests)) {
+          print("Account Op: " + accountRequest.getOperation() + "   Application Name: " + accountRequest.getApplicationName());
+          print("Attribute request info ...");
+          for(ProvisioningPlan.AttributeRequest attributeRequest : Util.safeIterable(accountRequest.getAttributeRequests())) {
+              print("  Attribute Op: " + attributeRequest.getOp() + "   Attribute Name: " +
+                      attributeRequest.getName() + "   Attribute Value: " + attributeRequest.getValue());
+          }
+      }
+
+      return configuredRequest;
+    ]]>
+  </Source>
+</Rule>
+
+<Rule language="beanshell" name="Post Lifecycle Rule" type="PostLifecycle" >
+  <Source>
+  <![CDATA[
+    /*
+     * Example of a PostLifecycle Rule.  
+     * Params passed into the rule are:
+     *    identityName - String - name of the identity that was processed
+     *    requestType - String - type of the request (for example, joiner, mover or leaver)
+     *    project - ProvisioningProject - ProvisioningProject for for this request (may be null 
+     *              if no provisioning plans were run immediately)
+     */
+    print("This is a test Post Joiner Rule");
+    print("IdentityName:  " + identityName);
+    print("RequestType:  " + requestType);
+    print("ProvisioningProject Identity:  " + ((project == null) ? "<project is null>" : project.getIdentity()));
+  ]]>
+  </Source>
+</Rule>
+
+<Rule language="beanshell" name="Post Lifecycle Rule - Delete Container" type="PostLifecycle" >
+  <Source>
+    <![CDATA[
+    import sailpoint.rapidsetup.plan.BasePlanBuilder;
+    import sailpoint.api.Workflower;
+    import sailpoint.api.WorkflowSession;
+    import sailpoint.object.Configuration;
+    import sailpoint.object.Attributes;
+    import sailpoint.object.Filter;
+    import sailpoint.object.Identity;
+    import sailpoint.object.ManagedAttribute;
+    import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.Source;
+    import sailpoint.object.WorkflowLaunch;
+
+    /*
+     * This is an example of how to remove a PAM container from a post lifecycle rule.
+     * Params passed into the rule are:
+     *    identityName - String - name of the identity that was processed
+     *    requestType - String - type of the request (for example, joiner, mover or leaver)
+     *    project - ProvisioningProject - ProvisioningProject for for this request (may be null
+     *              if no provisioning plans were run immediately)
+     */
+
+    // the next two lines set the application name, and the name of the container to remove.
+    // these would likely be stored in the identity in extended attributes.
+    String appName = "PAMApplicationName";
+    String containerName = "ContainerToRemove";
+
+    // This is just an example, so we will use displayName to lookup the
+    // container to delete.  In production, be sure to use something
+    // that uniquely identifies the container.
+    Filter filter = Filter.and(Filter.eq("type", "Container"),
+    Filter.eq("displayName", containerName));
+
+    ManagedAttribute entitlement = context.getUniqueObject(ManagedAttribute.class, filter);
+    if (entitlement == null) {
+        return;
+    }
+    ProvisioningPlan.ObjectRequest or = new ProvisioningPlan.ObjectRequest();
+    or.setApplication(appName);
+    or.setType(entitlement.isGroupType() ? entitlement.getType() : ProvisioningPlan.OBJECT_TYPE_MANAGED_ATTRIBUTE);
+    String nativeIdentity = entitlement.getNativeIdentity();
+    if (ManagedAttribute.Type.Permission.name().equalsIgnoreCase(entitlement.getType())) {
+        nativeIdentity = entitlement.getAttribute();
+    }
+    or.setNativeIdentity(nativeIdentity);
+    or.setOp(ProvisioningPlan.ObjectOperation.Delete);
+    AttributeRequest referenceAttribute = new AttributeRequest(ManagedAttribute.PROV_ATTRIBUTE, entitlement.getAttribute());
+    AttributeRequest typeAttribute = new AttributeRequest(ManagedAttribute.PROV_MANAGED_ATTRIBUTE_TYPE, entitlement.getType().toString());
+    or.setAttributeRequests(Arrays.asList(new AttributeRequest[] { referenceAttribute, typeAttribute }));
+
+    ProvisioningPlan plan = new ProvisioningPlan();
+    plan.setSource(Source.RapidSetup);
+    String contextUserName = context.getUserName();
+    Identity contextIdentity = context.getObject(Identity.class, contextUserName);
+    plan.addRequester(contextIdentity);
+    plan.addRequest(or);
+
+    WorkflowLaunch wfl = new WorkflowLaunch();
+    wfl.setTargetClass(ManagedAttribute.class);
+    wfl.setTargetId(entitlement.getId());
+
+    wfl.setSessionOwner(contextUserName);
+
+    // this is the default workflow we'll run
+    String workflowName = Configuration.WORKFLOW_MANAGED_ATTRIBUTE;
+    wfl.setWorkflowRef(workflowName);
+
+    // generate a case name
+    String caseName = "Update Account Group " + containerName;
+    wfl.setCaseName(caseName);
+
+    Attributes vars = new Attributes();
+    vars.put("plan", plan);
+    wfl.setVariables(vars);
+
+    // launch a session
+    Workflower wf = new Workflower(context);
+    WorkflowSession session = wf.launchSession(wfl);
+  ]]>
+  </Source>
+</Rule>
+
+<Rule language="beanshell" name="Post Joiner Rule - Create PAM Container" type="PostLifecycle">
+  <Description>
+        This is an example of how to create a PAM container
+    </Description>
+  <Source>
+    <![CDATA[
+    import java.util.HashMap;
+    import java.util.Map;
+    import sailpoint.api.Workflower;
+    import sailpoint.api.WorkflowSession;
+    import sailpoint.object.Attributes;
+    import sailpoint.object.Identity;
+    import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.Source;
+    import sailpoint.object.WorkflowLaunch;
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Set;
+    import sailpoint.api.TaskManager;
+    import sailpoint.object.Target;
+    import sailpoint.object.RapidSetupConfigUtils;
+    import sailpoint.tools.GeneralException;
+    import sailpoint.object.Application;
+    import org.apache.log4j.Logger;
+
+    /*
+     * This is an example of how to create a PAM container and add identity to container
+     * from a post lifecycle rule.
+     * Params passed into the rule are:
+     *    identityName - String - name of the identity that added by jointer process
+     *    requestType - String - type of the request (for example, joiner, mover or leaver)
+     *    project - ProvisioningProject - ProvisioningProject for for this request (may be null
+     *              if no provisioning plans were run immediately)
+     */
+
+
+    /**
+     * Convenience method to create new provisioning plan for container
+     * @param pamAppName - The PAM App
+     * @param containerDisplayName - The Container display name
+     * @param containerName - The container name
+     */
+    private ProvisioningPlan createContainerPlan(String pamAppName, String containerDisplayName, String containerName) {
+        log.debug("Starting createContainerPlan for " + containerName);
+        Map attributeMap = new HashMap();
+
+        // iiq container attributes
+        attributeMap.put("application", pamAppName);
+        attributeMap.put("sysDisplayName", containerDisplayName);
+
+        // PAM container attributes
+        attributeMap.put("name", identityName + "Container");
+        attributeMap.put("displayName", containerDisplayName);
+        if (containerOwner != null && !containerOwner.equals("")) {
+          Identity owner = null;
+          try {
+            owner = context.getObjectByName(Identity.class, containerOwner);
+          } catch (GeneralException e) {
+            log.error("Error adding the container owner", e);
+          }
+          if (owner != null) {
+            attributeMap.put("sysOwner", owner.getId());
+            attributeMap.put("owner.value", containerOwner);
+            log.debug("Identity "+ containerOwner + " was added as container owner.");
+          }
+        }
+
+        //object request for the new container
+        ProvisioningPlan.ObjectRequest objectRequest = new ProvisioningPlan.ObjectRequest();
+        objectRequest.setApplication(pamAppName);
+        objectRequest.setType("Container");
+        objectRequest.setOp(ProvisioningPlan.ObjectOperation.Create);
+
+        List attributeRequests = new ArrayList();
+        Set keySet = attributeMap.keySet();
+        for (Object objectKey : keySet) {
+            String key = (String)objectKey;
+            attributeRequests.add(new ProvisioningPlan.AttributeRequest(key, ProvisioningPlan.Operation.Set, attributeMap.get(key)));
+        }
+
+        objectRequest.addAll(attributeRequests);
+        ProvisioningPlan containerPLan = new ProvisioningPlan();
+        containerPLan.setSource(Source.RapidSetup);
+        containerPLan.addRequester(launcher);
+        containerPLan.addRequest(objectRequest);
+
+        log.debug("Finishing createContainerPlan for " + containerName);
+
+        return containerPLan;
+    }
+
+    /**
+     * Convenience method to launch the container creation workflow
+     * @param plan
+     * @param workflowName
+     * @param pamAppName
+     * @param caseName
+     */
+    private void launchContainerWorkflow(ProvisioningPlan plan, String workflowName, String pamAppName, String caseName) {
+        log.debug("Starting launchContainerWorkflow " + workflowName);
+
+        WorkflowLaunch wfl = new WorkflowLaunch();
+        wfl.setSessionOwner(launcherName);
+        wfl.setWorkflowRef(workflowName);
+        wfl.setCaseName(caseName);
+
+        Attributes vars = new Attributes();
+        vars.put("plan", plan);
+        vars.put("applicationName", pamAppName);
+        vars.put("pamContainersToAggregate", containerDisplayName);
+        if (generateApprovals) {
+          vars.put("approver", approver);
+        }
+
+        wfl.setVariables(vars);
+        // launch a session
+        Workflower wf = new Workflower(context);
+        try {
+          WorkflowSession session = wf.launchSession(wfl);
+          if (generateApprovals) {
+            log.debug("An approval was generated for "+ approver);
+          } else {
+            containerCreated = true;
+            log.debug("Container "+ containerName + " was created.");
+          }
+        } catch(GeneralException e) {
+          log.error("Error when creating a container", e);
+        }
+
+        log.debug("Finishing launchContainerWorkflow " + workflowName);
+    }
+
+    /**
+     * Convenience method to launch a task
+     * @param taskName
+     * @param taskAttr
+     */
+    private void runTask(String taskName, Attributes taskAttr) {
+        log.debug("Starting task " + taskName);
+
+        TaskManager tm = new TaskManager(context);
+        tm.setLauncher(launcherName);
+        tm.runSync(taskName, taskAttr);
+
+        log.debug("Finishing task " + taskName);
+    }
+
+    private void runTaskPAMDemodataTargetAggregation(String taskName) {
+        Attributes taskAttr = new Attributes();
+        taskAttr.put("targetSource", "PAMTargetSource");
+        taskAttr.put("taskCompletionEmailNotify", "Disabled");
+        taskAttr.put("TaskDefinition.runLengthAverage", "24");
+        runTask(taskName, taskAttr);
+    }
+
+    private void createContainer() {
+        ProvisioningPlan containerPlan = createContainerPlan(pamAppName, containerDisplayName, containerName);
+        String workflowName = "Entitlement Update";
+        String caseName = "Create PAM Container " + containerDisplayName;
+
+        launchContainerWorkflow(containerPlan, workflowName, pamAppName, caseName);
+
+        //we need to run the following task to reflect the new container to
+        //IIQ PAM Console aka "Privileged Account Management" otherwise
+        //we can run into issues when loading a Target aka "Container"
+        runTaskPAMDemodataTargetAggregation("PAMDemodataTargetAggregation");
+    }
+
+    Logger log = Logger.getLogger("sailpoint.rapidsetup");
+
+    log.debug("new identity joined: " + identityName);
+
+    // the next two lines set the application name, and the name of the container to create.
+    String pamAppName = "PAM Demodata";
+    String containerDisplayName = "Container for " + identityName;
+    String containerName = identityName + "Container";
+
+    //we are pulling the Business Process Requestor from Rapidsetup
+    String launcherName = RapidSetupConfigUtils.getString("workflow,requester");
+    Identity launcher = context.getObject(Identity.class, launcherName);
+
+    //containerOwner : it is used to add an owner to the new container.
+    //You have to specify a valid user name, otherwise no owner will be added.
+    String containerOwner = "Alice.Ford";
+
+    //we can create an approval for the creation of the container only if Rapidsetup
+    //approvals are turn on.
+    //if launcher and approver are the same, approvals are not generated.
+    String approver = "James.Smith";
+    boolean generateApprovals = RapidSetupConfigUtils.shouldGenerateApprovals("joiner");
+
+    //flag to know if the container was created
+    boolean containerCreated = false;
+
+    //let's call the method to create the container
+    createContainer();
+
+    System.out.println("Happy coding!!!!!");
+    ]]>
+  </Source>
+</Rule>
+
+<Rule language="beanshell" name="Post Joiner Rule - Create PAM Container and Add Identities" type="PostLifecycle">
+  <Description>
+        This is an example of how to create a PAM container and add identities and permissions to the container.
+    </Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="Post Joiner Rule - Create PAM Container"/>
+  </ReferencedRules>
+  <Source>
+    <![CDATA[
+    import sailpoint.service.pam.ContainerProvisioningService;
+    import sailpoint.api.IdentityLifecycler;
+    import sailpoint.service.pam.PamUtil;
+    import sailpoint.workflow.PAMLibrary;
+
+    /**
+     * Convenience method to launch a PAM workflow
+     * @param identityToAdd - The identity name to be added to the container
+     * @param accountName   - The account name in PAM App
+     * @param permissions   - The list of permissions
+     */
+    private ProvisioningPlan createIdentityPermissionPlan(String identityToAdd, String accountName, List permissions) {
+        log.debug("Starting createIdentityPermissionPlan for " + containerName);
+        ProvisioningPlan provisioningPlan = null;
+        try {
+            Application pamApplication = context.getObject(Application.class, pamAppName);
+
+            //let's pull the container
+            Target containerEntity = PamUtil.getContainer(context, pamApplication, containerName);
+
+            //The identity that we are adding to the new container
+            Identity identity = context.getObject(Identity.class, identityToAdd);
+
+            //ID of the account DonnaScottPS for PAM Demodata
+            String linkId = PamUtil.getAccountId(context, pamApplication, identity, accountName);
+
+            provisioningPlan = service.createProvisioningPlan(identity.getId(), linkId, permissions, containerEntity, pamApplication);
+
+            log.debug("Finishing createIdentityPermissionPlan for " + containerName);
+        } catch(Exception e) {
+            log.error("Error generating the provisining plan for " + identityToAdd);
+        }
+        return provisioningPlan;
+    }
+
+    /**
+     * Convenience method to launch a PAM workflow
+     * @param plan         - The provisioning plan
+     * @param workflowName - The workflow name
+     * @param pamAppName   - The PAM application
+     */
+    private void launchIdentityPermissionWorkflow(ProvisioningPlan plan, String workflowName, String pamAppName) {
+        log.debug("Starting launchIdentityPermissionWorkflow");
+
+        Attributes ops = new Attributes();
+        ops.put(PAMLibrary.ARG_CONTAINER_NAME, containerName);
+        ops.put(PAMLibrary.ARG_CONTAINER_DISPLAY_NAME, containerDisplayName);
+        ops.put("launcher", launcherName);
+        //for the purpose of this example we are disabling approvals
+        //if you want to use the default in the workflow, just comment out the following line,
+        //then approvals are going to be generated.
+        ops.put(PAMLibrary.ARG_APPROVAL_SCHEMA, "none");
+        //if you added a container owner, we need this
+        //ops.put(PAMLibrary.ARG_CONTAINER_OWNER_NAME, "ownerName");
+
+        try {
+            IdentityLifecycler cycler = new IdentityLifecycler(context);
+            cycler.launchUpdate(launcherName, plan.getIdentity(), plan, workflowName, ops);
+            log.debug("Identity and permissions for " + plan.getIdentity().getName() + " were added to container " + containerName);
+        } catch (Exception e) {
+            log.error("Error adding the identity and permissions for " + plan.getIdentity().getName(), e);
+        }
+
+        log.debug("Finishing launchIdentityPermissionWorkflow");
+    }
+
+    /**
+     * Convenience method run a PIRM task
+     * @param taskName - The name of the task
+     */
+    private void runTaskPIRM(String taskName) {
+        Attributes taskAttr = new Attributes();
+        //the majority of these attributes are optional
+        taskAttr.put("TaskDefinition.runLengthAverage", "40");
+        taskAttr.put("TaskDefinition.runLengthTotal", "3023");
+        taskAttr.put("TaskDefinition.runs", "75");
+        taskAttr.put("maxAge", "0");
+        taskAttr.put("maxVerificationDays", "7");
+        taskAttr.put("scanRequests", "true");
+        runTask(taskName, taskAttr);
+    }
+
+    /**
+     * Convenience method to add an Identity to a container
+     * @param identityToAdd - The identity user name
+     * @param accountName   - The account of the identity in the PAM App
+     * @param permissions   - List of permissions to be added
+     */
+    private void addIdentyToContainer(String identityToAdd, String accountName, List permissions) {
+        ProvisioningPlan permissionIdentityPlan = createIdentityPermissionPlan(identityToAdd, accountName, permissions);
+
+        if (permissionIdentityPlan != null) {
+            String workflowName = "PAM Identity Provisioning";
+
+            launchIdentityPermissionWorkflow(permissionIdentityPlan, workflowName, pamAppName);
+
+            runTaskPIRM("Perform Identity Request Maintenance");
+        }
+    }
+
+    if (!containerCreated) {
+        log.debug("The creation of the container " + containerName + " failed. It is not possible to add Identities and Permissions.");
+        return;
+    } else {
+        log.debug("The creation of the container " + containerName + " was good. Let's add the identities and permissions.");
+    }
+
+    ContainerProvisioningService service = new ContainerProvisioningService(context, launcher, null);
+
+    List permissions_1 = new ArrayList();
+    permissions_1.add("View");
+    permissions_1.add("View Password");
+    permissions_1.add("View Permissions");
+
+    String identityToAdd_1 = "Donna.Scott";
+    //in order to add the identity to the container, the identity needs an account
+    //for the PAM app.
+    String pamAccountName_1 = "DonnaScottPS";
+
+    List permissions_2 = new ArrayList();
+    permissions_2.add("Create object");
+    permissions_2.add("Delete object");
+    permissions_2.add("Update object");
+
+    String identityToAdd_2 = "TestyOne";
+    String pamAccountName_2 = "TestyOne";
+
+    //this method will add the identity with the specified permissions
+    addIdentyToContainer(identityToAdd_1, pamAccountName_1, permissions_1);
+
+    //you can use a loop for many identities
+    addIdentyToContainer(identityToAdd_2, pamAccountName_2, permissions_2);
+
+    System.out.println("Happy coding!!!!!");
+    ]]>
+  </Source>
+</Rule>
+
+</sailpoint>

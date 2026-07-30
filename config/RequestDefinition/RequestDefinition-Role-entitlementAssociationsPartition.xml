@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250590" executor="sailpoint.request.RoleEntitlementAssociationsRequestExecutor" id="c0a801899fb11942819fb1ca435e012b" name="Role-Entitlement Associations Partition" retryMax="20"/>

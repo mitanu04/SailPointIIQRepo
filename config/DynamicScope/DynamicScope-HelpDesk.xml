@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE DynamicScope PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<DynamicScope created="1785394271994" id="c0a801899fb11942819fb1ca96fa02f9" name="Help Desk">
+  <ApplicationRemoveControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4aa401b5" name="Objects in Requestor&apos;s Authorized Scopes"/>
+  </ApplicationRemoveControl>
+  <ApplicationRequestControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4aa401b5" name="Objects in Requestor&apos;s Authorized Scopes"/>
+  </ApplicationRequestControl>
+  <ManagedAttributeRemoveControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4b6601b9" name="All Objects"/>
+  </ManagedAttributeRemoveControl>
+  <ManagedAttributeRequestControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4b6601b9" name="All Objects"/>
+  </ManagedAttributeRequestControl>
+  <PopulationRequestAuthority allowAll="true"/>
+  <RoleRemoveControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4aa401b5" name="Objects in Requestor&apos;s Authorized Scopes"/>
+  </RoleRemoveControl>
+  <RoleRequestControl>
+    <Reference class="sailpoint.object.Rule" id="c0a801899fb11942819fb1ca4aa401b5" name="Objects in Requestor&apos;s Authorized Scopes"/>
+  </RoleRequestControl>
+  <Selector>
+    <IdentitySelector>
+      <MatchExpression>
+        <MatchTerm name="capabilities" value="HelpDesk"/>
+      </MatchExpression>
+    </IdentitySelector>
+  </Selector>
+</DynamicScope>

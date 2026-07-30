@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui" xmlns:sp="http://sailpoint.com/ui">
+<body>
+<ui:composition>
+  <script type="text/javascript">
+    <!--//--><![CDATA[//><!--
+    helpKey = 'APPLICATION';
+
+    function getFieldValue(field) {
+      var val = null;
+      var fileName = Ext.getDom(field);
+      if ( fileName ) {
+        val = fileName.value;
+      }
+      return val;
+    }
+
+    /**
+     * Updates form element attributes based on the value of `newSource`.
+     *
+     * <p>
+     * This method checks the value of `newSource` to determine the state of specific form elements.
+     * The behavior is as follows:
+     * </p>
+     * <ul>
+     *     <li>If `newSource` is truthy (true or any value that evaluates to true), it will set the checkboxes for
+     *         "roleAggregationWithDirectApis" and "isMigrationCompleted" to checked (true).</li>
+     *     <li>If `newSource` is falsy (false, null, or undefined), it will set both checkboxes to unchecked (false).</li>
+     * </ul>
+     * <p>
+     * Additionally, if `newSource` is not defined or is an empty string, the value of `isNewSource` is updated to "false"
+     * to simulate sending the updated state to the backend.
+     * </p>
+     */
+    function updateAttributesBasedOnOldAndNewSource() {
+      var isNewSource = getFieldValue('editForm:isNewSource');
+
+      // If isNewSource is undefined or empty (old source case), treat it as false
+      if (isNewSource === "" || isNewSource === undefined) {
+        // Log that we are handling the old source case
+        document.getElementById("editForm:roleAggregationWithDirectApis").checked = false;
+        document.getElementById("editForm:isMigrationCompleted").checked = false;
+        document.getElementById("editForm:isNewSource").value = "false";
+      } else if(isNewSource === "true"){
+        Ext.getDom("roleAggregationWithDirectApisRow").style.display = "none";
+      }
+    }
+
+    /**
+     * Helper function to toggle the visibility of an element based on the checkbox status.
+     * @param {string} checkboxId - The ID of the checkbox element.
+     * @param {string} elementId - The ID of the element to show or hide.
+     * @param {boolean} shouldHide - Whether the element should be hidden (true) or shown (false).
+     */
+    function toggleVisibility(checkboxId, elementId, shouldHide) {
+      var checkbox = document.getElementById(checkboxId);
+      var element = Ext.getDom(elementId);
+
+      if (checkbox.checked === shouldHide) {
+        element.style.display = "none";  // Hide the element
+      } else {
+        element.style.display = "";  // Show the element
+      }
+    }
+
+    /**
+     * Function to hide or display the file upload path based on the checkbox 'roleAggregationWithDirectApis'.
+     */
+    function roleAggregationWithDirectApis() {
+      toggleVisibility("editForm:roleAggregationWithDirectApis", 'fileUploadPath', true);
+    }
+
+    /**
+     * Function to hide or display the worker ID input field based on the checkbox 'createBusinessUser'.
+     */
+    function createBusinessUser() {
+      toggleVisibility("editForm:createBusinessUser", 'workerIdApiInput', false);
+    }
+
+    Ext.onReady(function () {
+
+      // Updates form element attributes based on the value of `newSource`.
+      updateAttributesBasedOnOldAndNewSource();
+      // Hide file upload path if 'roleAggregationWithDirectApis' is checked
+      roleAggregationWithDirectApis();
+      // Show or hide the worker ID input field based on 'createBusinessUser' checkbox
+      createBusinessUser();
+
+      Ext.QuickTips.init();
+      var pageSize = getFieldValue('editForm:pageSize');
+      if (pageSize.length == 0) {
+        Ext.getDom('editForm:pageSize').value = '50';
+      }
+
+      // This is our validation hook
+      Page.on('beforeSave', function() {
+        if (!hasCredentialConfiguration()) {
+          var url = getFieldValue('editForm:host');
+          Validator.validateNonBlankString(url, "#{msgs.con_form_saps4hanacloud_urlnotnull}");
+
+          var username = getFieldValue('editForm:username');
+          Validator.validateNonBlankString(username, "#{msgs.con_form_saps4hanacloud_usernotnull}");
+
+          var password = getFieldValue('editForm:password');
+          Validator.validateNonBlankString(password, "#{msgs.con_form_saps4hanacloud_passwordnotnull}");
+
+          if (document.getElementById("editForm:roleAggregationWithDirectApis").checked == false) {
+            var roleDetailsFile = getFieldValue('editForm:roleDetailsFile');
+            Validator.validateNonBlankString(roleDetailsFile, "#{msgs.con_form_saps4hanacloud_roledetails_filepathnotnull}");
+          }
+
+          if (document.getElementById("editForm:roleAggregationWithDirectApis").checked == false) {
+            var migrationCompleted = getFieldValue('editForm:isMigrationCompleted');
+            if(migrationCompleted === ""){
+              migrationCompleted = "false";
+            }
+            Validator.validateInputs(migrationCompleted, "false", "#{msgs.con_form_saps4hanacloud_direct_role_aggregation_required}");
+          }
+
+          var errors = Validator.getErrors();
+          if (errors && errors.length > 0) {
+            Validator.displayErrors('appErrorsTop');
+            return false;
+          }
+        }
+        //return false will kill cancel the save
+        //return true;
+      });
+
+    });
+
+    //--><!]]>
+  </script>
+  <f:view>
+    <h:outputText styleClass="sectionHeader"
+                  value="#{msgs.con_form_saps4hanacloud_conn_settings}" />
+    <br />
+    <br />
+
+    <div id="accountSettings" class='spContent'>
+      <table class="spTable" style="border: 0px" cellspacing="0">
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText
+                  style='padding:5px'
+                  value="#{msgs.con_form_saps4hanacloud_url}" />
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                  id="imgHlpUrl" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_saps4hanacloud_url}" /></td>
+          <td valign="center"><h:inputText id="host"
+                                           value="#{applicationObject.attributes['host']}" size="50"
+                                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText
+                  style='padding:5px'
+                  value="#{msgs.con_form_saps4hanacloud_user}" />
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                  id="imgHlpUserName" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_saps4hanacloud_user}" /></td>
+          <td valign="center"><h:inputText id="username"
+                                           value="#{applicationObject.attributes['username']}"
+                                           size="50"
+                                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText
+                  style='padding:5px'
+                  value="#{msgs.con_form_saps4hanacloud_password}" />
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                  id="imgHlpPassword" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_saps4hanacloud_password}" /></td>
+          <td valign="center"><sp:inputSecret id="password" size="50"
+                                              autocomplete="off"
+                                              value="#{applicationObject.attributes['password']}"
+                                              redisplay="true"
+                                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                  style='padding:5px' value="#{msgs.con_form_page_size}" />
+          </td>
+          <td class="certScheduleHelpCol"><h:graphicImage
+                  id="imgHlpPageSize" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_page_size}" /></td>
+          <td><h:inputText id="pageSize" size="50"
+                           value="#{applicationObject.attributes['pageSize']}"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           validatorMessage="#{msgs.con_form_page_size_not_valid}">
+            <f:validateLongRange minimum="1" />
+          </h:inputText></td>
+        </tr>
+
+        <tr id="roleAggregationWithDirectApisRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px'
+                          value="#{msgs.con_form_saps4hanacloud_aggregate_accounts_with_direct_apis}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpRoleAggregationWithDirectApis" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_saps4hanacloud_aggregate_accounts_with_direct_apis}"/>
+          </td>
+          <td valign="center" >
+            <h:selectBooleanCheckbox id="roleAggregationWithDirectApis"
+                                     onclick="roleAggregationWithDirectApis()"
+                                     value="#{applicationObject.attributes['roleAggregationWithDirectApis']}"/>
+          </td>
+        </tr>
+
+        <tr class='spContent' id="fileUploadPath">
+          <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText
+                  style='padding:5px'
+                  value="#{msgs.con_form_saps4hanacloud_roledetailsfilepath}" />
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                  id="imgHlpRoleDetailsFilePath" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_saps4hanacloud_roledetailsfilepath}" />
+          </td>
+          <td valign="center"><h:inputText id="roleDetailsFile" size="50"
+                                           autocomplete="off"
+                                           value="#{applicationObject.attributes['roleDetailsFile']}"
+                                           redisplay="true"
+                                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px'
+                          value="#{msgs.con_form_saps4hanacloud_create_business_user}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpManagedDisabledUser" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_saps4hanacloud_create_business_user}"/>
+          </td>
+          <td valign="center">
+            <h:selectBooleanCheckbox id="createBusinessUser"
+                                     onclick="createBusinessUser()"
+                                     value="#{applicationObject.attributes['createBusinessUser']}"/>
+          </td>
+        </tr>
+
+        <tr class='spContent' id="workerIdApiInput">
+          <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText
+                  style='padding:5px'
+                  value="#{msgs.con_form_saps4hanacloud_worker_id_api}" />
+          </td>
+          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                  id="imgHlpWorkerIdApi" styleClass="helpIcon"
+                  url="/images/icons/dashboard_help_16.png"
+                  alt="#{msgs.help_con_form_saps4hanacloud_worker_id_api}" />
+          </td>
+          <td valign="center"><h:inputText id="workerIdApi" size="50"
+                                           autocomplete="off"
+                                           value="#{applicationObject.attributes['workerIdApi']}"
+                                           redisplay="true"
+                                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+      </table>
+      <h:inputHidden id="isNewSource" value="#{applicationObject.attributes['newSource']}"/>
+      <h:inputHidden id="isMigrationCompleted" value="#{applicationObject.attributes['migrationCompleted']}"/>
+
+    </div>
+  </f:view>
+</ui:composition>
+
+</body>
+</html>

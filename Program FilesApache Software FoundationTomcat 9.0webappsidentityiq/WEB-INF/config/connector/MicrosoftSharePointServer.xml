@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.SharePointServerConnector" featuresString="PROVISIONING, SYNC_PROVISIONING" icon="enterpriseIcon" name="Microsoft SharePoint Server" type="Microsoft SharePoint Server">
+    <Attributes>
+      <Map>
+        <entry key="skipDomainGroups" value="true"/>
+        <entry key="encrypted" value="IQServiceConfiguration.IQServicePassword"/>
+        <entry key="formPath" value="MicrosoftSharePointServer.xhtml"/>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="DisplayName" identityAttribute="AccountName" nativeObjectType="User" objectType="account">
+        <AttributeDefinition name="AccountName" type="string">
+        <Description>Login name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="DisplayName" type="string">
+        <Description>Display name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="UserName" type="string">
+        <Description>sAMAccountName of the user.</Description>
+        </AttributeDefinition>        
+        <AttributeDefinition name="Email" type="string">
+        <Description>E-mail address of the user.</Description>
+        </AttributeDefinition>        
+        <AttributeDefinition multi="true" name="OwnedGroups" type="string">
+        <Description>Groups that the user owns.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="IsDomainGroup" type="boolean">
+        <Description>Specifies whether the user is part of Domain Group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SID" type="string">
+        <Description>Unique security ID for the network account of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition multi="true" name="SiteCollections" type="string">
+        <Description>Site Collections associated with Account</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Notes" type="string">
+        <Description>Notes</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" multi="true" name="Groups" schemaObjectType="group" type="string">
+        <Description>Collection of groups of which the user is a member.</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="GroupName" featuresString="PROVISIONING" identityAttribute="GroupUrl" nativeObjectType="Group"
+              objectType="group" descriptionAttribute="Description">
+        <AttributeDefinition name="GroupUrl" remediationModificationType="None" type="string">
+        <Description>Identity attribute of group in format "ParentWeb.Url\GroupName".</Description> 
+        </AttributeDefinition>
+        <AttributeDefinition name="GroupName" remediationModificationType="None" type="string">
+        <Description>Name of the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="LoginName" remediationModificationType="None" type="string">
+        <Description>Login Name of the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Description" remediationModificationType="None" type="string">
+        <Description>Description for the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Owner" remediationModificationType="None" type="string">
+        <Description>Name of the group owner.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ID" remediationModificationType="None" type="string">
+        <Description>Identifier (ID) for the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ParentWeb" remediationModificationType="None" type="string">
+        <Description>Parent Web of the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AllowMembersEditMembership" remediationModificationType="None" type="string">
+        <Description>Who can edit the membership.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AllowRequestToJoinLeave" remediationModificationType="None" type="string">
+        <Description>Whether to allow users to request for membership of the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="OnlyAllowMembersViewMembership" remediationModificationType="None" type="string">
+        <Description>Who can view the membership of the group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AutoAcceptRequestToJoinLeave" remediationModificationType="None" type="string">
+        <Description>Whether membership requests are automatically accepted.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="RequestToJoinLeaveEmailSetting" remediationModificationType="None" type="string">
+        <Description>Membership requests to this e-mail address.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition multi="true" name="ADGroups" type="string">
+        <Description>Collection of AD groups which are member of this SharePoint Group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SiteAdmin" type="string">
+        <Description>Site Collection Administrator</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="Account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_prov_policy_sp_AccountName" helpKey="help_con_prov_policy_sp_AcountName" name="AccountName" required="true" section="" type="string"/>
+      </Template>
+      <Template name="Update Group" schemaObjectType="group" usage="Update">
+        <Field displayName="con_prov_policy_sp_ADGroups" multi="true" name="ADGroups" reviewRequired="true" type="string"/>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc. All rights reserved. -->
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+	  name='Microsoft SharePoint Server' connectorName="Microsoft SharePoint Server"
+	  type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="Microsoft SharePoint Server Connection Settings" label="con_form_sharepoint_settings">
+		<Section name="Microsoft SharePoint Server Connection Settings" label="con_form_sharepoint_settings" sectionInfo="sectionInfo_AuthenticationType" docLinkLabel="docLinkLabel_authenticationType" docLink="https://documentation.sailpoint.com/connectors/microsoft/sharepoint_server/help/">
+			<Field name="SharePointServer" displayName="con_form_sharepoint_url" type="text" required="true" helpKey="help_con_form_SharePoint_Server_URL" />
+      <Field name="user" displayName="con_form_sharepoint_user" type="text" required="true" helpKey="help_con_form_SharePoint_User" />
+			<Field name="password" displayName="con_form_sharepoint_password" type="secret" required="true" helpKey="help_con_form_SharePoint_Password" />
+			<Field name="IQServiceConfiguration.IQServiceHost" type="text" required="true" displayName="iq_service_host" helpKey="help_con_form_iq_service_host" />
+      <Field name="IQServiceConfiguration.IQServicePort" type="number" required="true" displayName="iq_service_port" helpKey="help_con_form_iq_service_port" saveAsString="true" />
+      <Field name="IQServiceConfiguration.IQServiceUser" type="text" displayName="iq_service_user" helpKey="help_con_form_iq_service_user" />
+      <Field name="IQServiceConfiguration.IQServicePassword" type="secret" displayName="iq_service_password" helpKey="help_con_form_iq_service_password" />
+      <Field name="IQServiceConfiguration.useTLSForIQService" type="checkbox" displayName="iq_service_tls" helpKey="help_con_form_iq_service_tls"/>
+      <Field name="pageSize" displayName="con_form_page_size" type="number" min="1" max="1000" defaultValue="500" helpKey="help_con_form_page_size" saveAsString="true" />
+		</Section>
+  </Menu>
+	<Menu name="Site Collection Settings" label="con_form_site_collections_settings">
+		<Section name="Site Collection Settings" label="con_form_site_collections_settings" sectionInfo="sectionInfo_siteSectionInfo" docLinkLabel="docLinkLabel_siteCollectionSettings" docLink="https://documentation.sailpoint.com/connectors/microsoft/sharepoint_server/help/integrating_ms_sharepoint_server/aggregation_settings.html" >
+			<Field name="includeSiteCollections" displayName="con_form_include_site_collections" type="textarea-list"  helpKey="help_con_form_sharepoint_server_include_site_sollections" />
+			<Field name="excludeSiteCollections" displayName="con_form_exclude_site_collections" type="textarea-list"  helpKey="help_con_form_sharepoint_server_exclude_site_sollections" readOnly="true"/>
+    </Section>
+  </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

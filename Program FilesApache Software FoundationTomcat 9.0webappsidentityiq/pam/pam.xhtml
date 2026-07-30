@@ -1,0 +1,52 @@
+<!-- (c) Copyright 2016 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:f="http://java.sun.com/jsf/core"
+ xmlns:h="http://java.sun.com/jsf/html"
+ xmlns:sp="http://sailpoint.com/ui"
+ xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+ <div id="notificationDiv" class="sr-only" role="alert" aria-live="assertive"></div>
+ <sp-notification sp-triggerable="true"></sp-notification>
+ <ui:composition template="/ngAppPage.xhtml">
+  <ui:define name="title">#{msgs.sys_config_tab_pam}</ui:define>
+  <ui:define name="headerItems">
+
+   <sp:style serveOffset="#{base.requestContextPath}/ui/css">
+    <src>ng-sortable.css</src>
+   </sp:style>
+
+   <ui:include src="/ui/scriptData.xhtml" />
+   <script>
+        SailPoint.configData.PAM_MAX_SELECTABLE_IDENTITIES = #{sp:getSystemConfigurationValue('pamMaxSelectableIdentities', 100)};
+        SailPoint.configData.FULL_PAM_ACCESS = #{sp:hasRight(facesContext, "FullAccessPAM")};
+        SailPoint.configData.CREATE_PAM_CONTAINER = #{sp:hasRight(facesContext, "CreatePAMContainer")};
+        SailPoint.configData.MODIFY_PAM_IDENTITIES = #{sp:hasRight(facesContext, "PAMModifyIdentities")};
+        SailPoint.configData.MODIFY_PAM_PRIV_ITEMS = #{sp:hasRight(facesContext, "PAMModifyPrivilegedItems")};
+        SailPoint.configData.VIEW_PAM_DETAIL = #{sp:hasRight(facesContext, "ViewPAMDetail")};
+   </script>
+   <!-- build:js #{base.requestContextPath}/ui/js/bundles/PamAppBundle.js -->
+   <ui:include src="/ui/jspmInclude.xhtml" />
+
+   <script type="text/javascript">
+            System.import('#{base.requestContextPath}/ui/js/pam/PamAppModule.js');
+        </script>
+   <!-- /build -->
+  </ui:define>
+
+  <ui:define name="body">
+   <div class="sp-ui-app">
+    <sp-register-config sp-config-key="pamProvisioningEnabled"
+     sp-config-value="#{sp:getSystemConfigurationValue('pamProvisioningEnabled', true)}" />
+    <sp-register-config sp-config-key="pamOwnerCanEditContainer"
+     sp-config-value="#{sp:getSystemConfigurationValue('pamOwnerCanEditContainer', true)}" />
+     <sp-register-config sp-config-key="pamCreateContainerEnabled"
+     sp-config-value="#{sp:getSystemConfigurationValue('pamCreateContainerEnabled', true)}" />
+    <sp-register-config sp-config-key="pamModifyPrivilegedDataEnabled"
+                        sp-config-value="#{sp:getSystemConfigurationValue('pamModifyPrivilegedDataEnabled', false)}" />
+    <div ui-view=""></div>
+   </div>
+  </ui:define>
+ </ui:composition>
+</body>
+</html>

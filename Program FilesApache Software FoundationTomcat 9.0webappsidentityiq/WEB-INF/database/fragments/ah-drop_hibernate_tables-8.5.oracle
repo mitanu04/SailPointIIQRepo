@@ -1,0 +1,64 @@
+
+    drop table identityiqah.spt_hist_accounts cascade constraints;
+
+    drop table identityiqah.spt_hist_assigned_roles cascade constraints;
+
+    drop table identityiqah.spt_hist_detected_roles cascade constraints;
+
+    drop table identityiqah.spt_hist_entitlements cascade constraints;
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_bundle_ids cascade constraints;
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_entitlements cascade constraints;
+
+    drop table identityiqah.spt_hist_policy_violations cascade constraints;
+
+    drop table identityiqah.spt_hist_role_remediation_entitlements cascade constraints;
+
+    drop table identityiqah.spt_hist_account_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_capability cascade constraints;
+
+    drop table identityiqah.spt_hist_capability_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_cert_remediation_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_certification cascade constraints;
+
+    drop table identityiqah.spt_hist_database_version cascade constraints;
+
+    drop table identityiqah.spt_hist_entitlement_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_identity cascade constraints;
+
+    drop table identityiqah.spt_hist_identity_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_identity_event cascade constraints;
+
+    drop table identityiqah.spt_hist_identity_req_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_identity_req_item_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_mattr cascade constraints;
+
+    drop table identityiqah.spt_hist_mattr_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_mattr_event cascade constraints;
+
+    drop table identityiqah.spt_hist_object_config_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_policy_violation_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_policy_violation_remediation_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_role cascade constraints;
+
+    drop table identityiqah.spt_hist_role_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_role_event cascade constraints;
+
+    drop table identityiqah.spt_hist_workgroup cascade constraints;
+
+    drop table identityiqah.spt_hist_workgroup_capture cascade constraints;
+
+    drop table identityiqah.spt_hist_workgroup_event cascade constraints;

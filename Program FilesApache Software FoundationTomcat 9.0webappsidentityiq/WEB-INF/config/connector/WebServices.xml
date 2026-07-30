@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd" >
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.webservices.WebServicesConnector" featuresString="PROVISIONING, ENABLE, PASSWORD, AUTHENTICATE, UNLOCK" name="Web Services" type="Web Services">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="WebServicesAttributesForm.xhtml"/>
+        <entry key="encrypted" value="accesstoken,refresh_token,oauth_token_info,client_secret,private_key,private_key_password,clientCertificate,clientKeySpec,resourceOwnerPassword,custom_auth_token_info" />
+        <entry key="throwProvBeforeRuleException">
+           <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="throwProvAfterRuleException">
+           <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="httpCookieSpecsStandard" value="true"/>
+        <entry key="enableHasMore" value="true"/>
+        <entry key="isGetObjectRequiredForPTA">
+           <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+        <entry key="createAccountWithEntReq">
+           <value>
+            <Boolean>false</Boolean>
+          </value>
+        </entry>
+         <entry key="oAuthJwtHeader">
+          <value>
+            <Map>
+              <entry key="alg" value="RS256"/>
+            </Map>
+          </value>
+        </entry>
+        <entry key="oAuthJwtPayload">
+          <value>
+            <Map>
+              <entry key="aud" value=""/>
+              <entry key="exp" value="15f"/>
+              <entry key="iss" value=""/>
+              <entry key="sub" value=""/>
+            </Map>
+          </value>
+        </entry>
+        <entry key="version" value="v2"/>
+        <entry key="fixedPlanMultivaluedAttribute" value="true" />
+      </Map>
+    </Attributes>
+    <Schemas>
+        <Schema displayAttribute="" groupAttribute="" identityAttribute="" nativeObjectType="user" objectType="account">
+        </Schema>
+        <Schema displayAttribute="" identityAttribute="" nativeObjectType="group" objectType="group">
+        </Schema>
+    </Schemas>
+    <Settings><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2022 SailPoint Technologies, Inc.  All rights reserved. -->
+<Form xmlns="http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd" name="Web Services" connectorName="Web Services"
+      type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+  <Menu name="ConnectionSettings" label="menuLabel_ConnectionSettings">
+    <Section name="ConnectionSettings" label="sectionLabel_ConnectionSettings"
+             sectionInfo="sectionInfo_ConnectionSettings" docLinkLabel="docLinkLabel_ConnectionSettings"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/connection_settings.html">
+      <Field name="authenticationMethod" displayName="AuthenticationType" type="select" required="true"
+             defaultValue="BasicLogin">
+        <AllowedValues>
+          <Option value="BasicLogin" label="Basic"/>
+          <Option value="OAuthLogin" label="API_TOKEN"/>
+          <Option value="OAuth2Login" label="OAuth2"/>
+          <Option value="No Auth" label="CustomAuth"/>
+        </AllowedValues>
+      </Field>
+    </Section>
+
+    <!--   Basic   -->
+    <Section name="BasicAuthentication" label="sectionLabel_BasicAuthentication" parentKey="authenticationMethod"
+             parentValue="BasicLogin">
+      <Field name="genericWebServiceBaseUrl" displayName="BaseURL" type="url" required="true"
+             placeHolder="placeHolder_genericWebServiceBaseUrl"/>
+      <Field name="username" displayName="UserName" type="text" required="true"/>
+      <Field name="password" displayName="Password" type="secret" required="true"/>
+    </Section>
+
+    <!--  API_TOKEN  -->
+    <Section name="ApiTokenAuthentication" label="sectionLabel_ApiTokenAuthentication" parentKey="authenticationMethod"
+             parentValue="OAuthLogin">
+      <Field name="genericWebServiceBaseUrl" displayName="BaseURL" type="url" required="true"
+             placeHolder="placeHolder_genericWebServiceBaseUrl"/>
+      <Field name="accesstoken" displayName="API_TOKEN" type="secret" required="true"/>
+    </Section>
+
+    <!--  No_Auth  -->
+    <Section name="CustomAuthentication" label="sectionLabel_CustomAuthentication" parentKey="authenticationMethod"
+             parentValue="No Auth" sectionInfo="sectionInfo_CustomAuthentication"
+             docLinkLabel="docLinkLabel_CustomAuthentication"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/connection_settings.html">
+      <Field name="genericWebServiceBaseUrl" displayName="BaseURL" type="url" required="true"
+             placeHolder="placeHolder_genericWebServiceBaseUrl"/>
+      <Field name="username" displayName="UserName" type="text" />
+      <Field name="password" displayName="Password" type="secret" />
+      <Field name="accesstoken" displayName="API_TOKEN" type="secret" />
+      <Field name="resourceOwnerUsername" displayName="ResourceOwnerUsername" type="text" />
+      <Field name="resourceOwnerPassword" displayName="ResourceOwnerPassword" type="secret" />
+      <Field name="private_key" valueHidden="true" displayName="PrivateKey" type="secrettextarea" />
+      <Field name="private_key_password" displayName="PrivateKeyPassword" type="secret" />
+      <Field name="client_id" displayName="ClientID" type="text" maxlength="4096" />
+      <Field name="client_secret" displayName="ClientSecret" type="secret" maxlength="4096" />
+      <Field name="refresh_token" displayName="RefreshToken" type="secret" />
+    </Section>
+
+    <!--  OAuth2  -->
+    <Section name="OAuth2Authentication" label="sectionLabel_OAuth2Authentication"
+             sectionInfo="sectionInfo_OAuth2Authentication" parentKey="authenticationMethod"
+             parentValue="OAuth2Login" docLinkLabel="docLinkLabel_OAuth2Authentication"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/connection_settings.html">
+      <Field name="genericWebServiceBaseUrl" displayName="BaseURL" type="url" required="true"
+             placeHolder="placeHolder_genericWebServiceBaseUrl"/>
+
+      <Field name="grant_type" displayName="GrantType" type="select" required="true">
+        <AllowedValues>
+          <Option value="PASSWORD" label="Password"/>
+          <Option value="CLIENT_CREDENTIALS" label="ClientCredentials"/>
+          <Option value="REFRESH_TOKEN" label="RefreshToken"/>
+          <Option value="JWT_BEARER" label="JWTBearerToken"/>
+          <Option value="SAML_BEARER_ASSERTION" label="SAMLBearerAssertion"/>
+        </AllowedValues>
+      </Field>
+
+      <Field name="token_url" displayName="TokenURL" type="url" required="true"
+             placeHolder="placeHolder_token_url"/>
+
+      <!--  grant_type = PASSWORD  -->
+      <Field name="resourceOwnerUsername" displayName="UserName" type="text" parentKey="grant_type"
+             parentValue="PASSWORD" required="true"/>
+      <Field name="resourceOwnerPassword" displayName="Password" type="secret" parentKey="grant_type"
+             parentValue="PASSWORD" required="true"/>
+
+      <!--  grant_type = CLIENT_CREDENTIALS  -->
+      <Field name="client_id" displayName="ClientID" type="text" parentKey="grant_type"
+             parentValue="CLIENT_CREDENTIALS" required="true" maxlength="4096"/>
+      <Field name="client_secret" displayName="ClientSecret" type="secret" parentKey="grant_type"
+             parentValue="CLIENT_CREDENTIALS" required="true" maxlength="4096" />
+
+      <!--  grant_type = REFRESH_TOKEN  -->
+      <Field name="client_id" displayName="ClientID" type="text" required="true" parentKey="grant_type"
+             parentValue="REFRESH_TOKEN" maxlength="4096" />
+      <Field name="client_secret" displayName="ClientSecret" type="secret" required="true" parentKey="grant_type"
+             parentValue="REFRESH_TOKEN" maxlength="4096" />
+      <Field name="refresh_token" displayName="RefreshToken" type="secret" required="true" parentKey="grant_type"
+             parentValue="REFRESH_TOKEN"/>
+
+      <!--  grant_type = JWT_BEARER  -->
+      <Field name="private_key" valueHidden="true" displayName="PrivateKey" type="secrettextarea" required="true" parentKey="grant_type"
+             parentValue="JWT_BEARER"/>
+      <Field name="private_key_password" displayName="PrivateKeyPassword" type="secret" required="true"
+             parentKey="grant_type" parentValue="JWT_BEARER"/>
+      <Field name="client_id" displayName="ClientID" type="text" required="false" parentKey="grant_type"
+             parentValue="JWT_BEARER" maxlength="4096" />
+      <Field name="client_secret" displayName="ClientSecret" type="secret" required="false" parentKey="grant_type"
+             parentValue="JWT_BEARER" maxlength="4096" />
+      <Field name="oAuthJwtHeader" displayName="JWTHeader" type="keyValue"
+             parentKey="grant_type" parentValue="JWT_BEARER">
+        <Key name="headerKey" displayName="Key" type="text" required="true" maxlength="4096" />
+        <Value name="headerValue" displayName="Value" type="text" required="true" maxlength="4096" />
+      </Field>
+      <Field name="oAuthJwtPayload" displayName="JWTPayload" type="keyValue" required="true"
+             parentKey="grant_type" parentValue="JWT_BEARER" maxlength="4096" >
+        <Key name="payloadKey" displayName="Key" type="text" required="true" maxlength="4096" />
+        <Value name="payloadValue" displayName="Value" type="text" required="true" maxlength="4096" />
+      </Field>
+
+      <!--  grant_type = SAML_BEARER_ASSERTION  -->
+      <Field name="client_id" displayName="ClientID" type="text" parentKey="grant_type"
+             parentValue="SAML_BEARER_ASSERTION" required="false" maxlength="4096" />
+      <Field name="client_secret" displayName="ClientSecret" type="secret" parentKey="grant_type"
+             parentValue="SAML_BEARER_ASSERTION" required="false"/>
+      <Field name="saml_assertion_url" displayName="SAMLAssertionURL" type="url" required="true"
+             parentKey="grant_type" parentValue="SAML_BEARER_ASSERTION"/>
+      <Field name="saml_request_body" displayName="SAMLRequestBody" type="textarea" required="true"
+             parentKey="grant_type" parentValue="SAML_BEARER_ASSERTION"/>
+
+      <Field name="resourceOwnerUsername" displayName="UserName" type="text" required="false" parentKey="grant_type"
+             parentValue="SAML_BEARER_ASSERTION"/>
+      <Field name="resourceOwnerPassword" displayName="Password" type="secret" required="false" parentKey="grant_type"
+             parentValue="SAML_BEARER_ASSERTION"/>
+
+      <Field name="saml_headers" displayName="SAMLHeaders" type="keyValue" parentKey="grant_type"
+             parentValue="SAML_BEARER_ASSERTION">
+        <Key name="SAMLHeaderKey" displayName="Key" type="text" required="false" maxlength="4096" />
+        <Value name="SAMLHeaderValue" displayName="Value" type="text" required="false" maxlength="4096" />
+      </Field>
+      <Field name="saml_headers_to_exclude" displayName="SAMLHeadersToExclude" type="text"
+             placeHolder="placeHolder_saml_headers_to_exclude" helpKey="helpKey_saml_headers_to_exclude"
+             parentKey="grant_type" parentValue="SAML_BEARER_ASSERTION" maxlength="4096" />
+
+      <Field name="oauth_headers" displayName="OAuthHeaders" type="keyValue">
+        <Key name="keys" displayName="Key" type="text" required="false" maxlength="4096" />
+        <Value name="values" displayName="Value" type="text" required="false" maxlength="4096" />
+      </Field>
+
+      <Field name="oauth_headers_to_exclude" displayName="OauthHeadersToExclude"
+             placeHolder="placeHolder_oauth_headers_to_exclude" helpKey="helpKey_oauth_headers_to_exclude" type="text" maxlength="4096" />
+
+      <Field name="oauth_request_parameters" displayName="OauthRequestParameters" type="keyValue">
+        <Key name="requestparameterkeys" displayName="Key" type="text" required="false" maxlength="4096" />
+        <Value name="requestparametervalues" displayName="Value" type="text" required="false" maxlength="4096" />
+      </Field>
+      <Field name="oauth_body_attrs_to_exclude" displayName="OauthBodyAttrsToExclude"
+             placeHolder="placeHolder_oauth_body_attrs_to_exclude" helpKey="helpKey_oauth_body_attrs_to_exclude"
+             type="text"/>
+    </Section>
+
+    <Section name="DeltaAggregationSettings" label="sectionLabel_DeltaAggregationSettings"
+             sectionInfo="sectionInfo_DeltaAggregationSettings">
+      <Field name="deltaAggregationEnabled" displayName="DeltaAggregation" type="toggle" defaultValue="false"/>
+      <Field name="deleteStatus" displayName="AccountDeleteStatusAttribute" type="text"
+             parentKey="deltaAggregationEnabled" parentValue="true"/>
+    </Section>
+
+    <Section name="CommonConfiguration" label="sectionLabel_CommonConfiguration"
+             sectionInfo="sectionInfo_CommonConfiguration"
+             docLinkLabel="docLinkLabel_CommonConfiguration"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/connection_settings.html">
+      <Field name="timeoutInSeconds" displayName="ConnectionTimeout" type="number" defaultValue="60" max="9999"/>
+      <Field name="clientCertificate" displayName="ClientCertificate" type="secrettextarea"/>
+      <Field name="clientKeySpec" displayName="ClientPrivateKey" type="secrettextarea"/>
+      <Field name="enableStatus" displayName="AccountEnableStatusAttribute" type="text" required="false"
+             placeHolder="placeHolder_enableStatus"/>
+      <Field name="lockStatus" displayName="AccountLockStatusAttribute" type="text" required="false"
+             placeHolder="placeHolder_lockStatus"/>
+      <Field name="enableHasMore" displayName="EnableHasMore" type="checkbox" required="false"/>
+    </Section>
+
+    <Section name="partitionSettings" label="sectionLabel_partitionSettings" sectionInfo="sectionInfo_partitionSetting">
+      <Field name="partitionAggregationEnabled" displayName="partitionAggregationEnabled" type="toggle" defaultValue="false"/>
+      <Field name="numPartitionThreads" displayName="numPartitionThreads" type="number" min="1" max="8" defaultValue="2" parentKey="partitionAggregationEnabled" parentValue="true"/>
+    </Section>
+
+  </Menu>
+
+  <Menu name="HttpOperations" label="menuLabel_HttpOperations">
+    <Section name="HttpOperationsSettings" label="sectionLabel_HttpOperationsSettings"
+             sectionInfo="sectionInfo_HttpOperationsSettings" docLinkLabel="docLinkLabel_HttpOperationsSettings"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/http_operations.html">
+      <Field name="connectionParameters" titleKey="uniqueNameForEndPoint" subtitleKey="operationType"
+             indexKey="sequenceNumberForEndpoint" dragNDropEnabled="true" deleteButton="true" editButton="true"
+             addButton="true" copyButton="true" buttonLabel="buttonLabel_connectionParameters"
+             displayName="AddHttpOperation"
+             type="cardList">
+        <Menu name="GeneralInformation" label="menuLabel_GeneralInformation">
+          <Field name="uniqueNameForEndPoint" displayName="OperationName" type="text" required="true"
+                 helpKey="helpKey_uniqueNameForEndPoint"/>
+          <Field name="operationType" displayName="OperationType" type="select" required="true"
+                 defaultValue="Test Connection">
+            <AllowedValues>
+              <Option value="Test Connection" label="TestConnection"/>
+              <Option value="Account Aggregation" label="AccountAggregation"/>
+              <Option value="Account Delta Aggregation" label="AccountDeltaAggregation"/>
+              <Option value="Group Aggregation" label="GroupAggregation"/>
+              <Option value="Get Object" label="GetObject"/>
+              <Option value="Get Object-Group" label="GetObjectGroup"/>
+              <Option value="Create Account" label="CreateAccount"/>
+              <Option value="Update Account" label="UpdateAccount"/>
+              <Option value="Delete Account" label="DeleteAccount"/>
+              <Option value="Enable Account" label="EnableAccount"/>
+              <Option value="Disable Account" label="DisableAccount"/>
+              <Option value="Unlock Account" label="UnlockAccount"/>
+              <Option value="Change Password" label="ChangePassword"/>
+              <Option value="Add Entitlement" label="AddEntitlement"/>
+              <Option value="Remove Entitlement" label="RemoveEntitlement"/>
+              <Option value="Pass-through Authentication" label="PassThroughAuthentication"/>
+              <Option value="Custom Authentication" label="CustomAuthentication"/>
+              <Option value="Get Partitions" label="GetPartitions"/>
+              <Option value="Partitioned Account Aggregation" label="PartitionedAccountAggregation"/>
+              <Option value="Get Object" label="GetObject"
+                      jsonPathQuery='$.schemas[?(@.name!="account" &amp;&amp; @.name!="group")].name'
+                      postfixJsonPathQueryResults="true" separator="-"/>
+              <Option value="Group Aggregation" label="GroupAggregation"
+                      jsonPathQuery='$.schemas[?(@.name!="account" &amp;&amp;@.name!="group")].name'
+                      postfixJsonPathQueryResults="true" separator="-"/>
+              <Option value="Add Entitlement" label="AddEntitlement"
+                      jsonPathQuery='$.schemas[?(@.name!="account" &amp;&amp; @.name!="group")].name'
+                      postfixJsonPathQueryResults="true" separator="-"/>
+              <Option value="Remove Entitlement" label="RemoveEntitlement"
+                      jsonPathQuery='$.schemas[?(@.name!="account" &amp;&amp; @.name!="group")].name'
+                      postfixJsonPathQueryResults="true" separator="-"/>
+            </AllowedValues>
+          </Field>
+          <Field name="curlEnabled" displayName="UseCurlCommand" type="toggle"/>
+          <Field name="contextUrl" displayName="ContextURL" type="text" placeHolder="placeHolder_contextUrl"
+                 parentKey="curlEnabled"
+                 parentValue="false" maxlength="4096" />
+          <Field name="customAuthUrl" displayName="CustomAuthenticationURL" type="text"
+                 helpKey="helpKey_customAuthUrl" parentKey="operationType" parentValue="Custom Authentication" maxlength="4096" />
+          <Field name="httpMethodType" displayName="HTTPMethod" type="select" defaultValue="GET" parentKey="curlEnabled"
+                 parentValue="false">
+            <AllowedValues>
+              <Option value="GET" label="GET"/>
+              <Option value="POST" label="POST"/>
+              <Option value="PUT" label="PUT"/>
+              <Option value="PATCH" label="PATCH"/>
+              <Option value="DELETE" label="DELETE"/>
+            </AllowedValues>
+          </Field>
+          <Field name="curlCommand" displayName="cURL" type="textarea" parentKey="curlEnabled" parentValue="true"/>
+        </Menu>
+
+        <Menu name="Header" label="menuLabel_Header" parentKey="curlEnabled" parentValue="false">
+          <Field name="header" type="keyValue">
+            <Key name="key" displayName="Key" type="text"  maxlength="4096" />
+            <Value name="value" displayName="Value" type="text" maxlength="4096" />
+          </Field>
+        </Menu>
+
+        <Menu name="Body" label="menuLabel_Body" parentKey="curlEnabled" parentValue="false">
+          <Field name="bodyFormat" type="radio" defaultValue="raw" jsonPathQuery="$.body.bodyFormat">
+            <AllowedValues>
+              <Option value="formData" label="FormData"/>
+              <Option value="raw" label="Raw"/>
+            </AllowedValues>
+          </Field>
+
+          <Field name="bodyFormData" type="keyValue" parentKey="bodyFormat" parentValue="formData"
+                 jsonPathQuery="$.body.bodyFormData">
+            <Key name="key" displayName="Key" type="text" required="true" maxlength="4096" />
+            <Value name="value" displayName="Value" type="text" required="true" maxlength="8192" />
+          </Field>
+          <Field name="jsonBody" displayName="JsonBody" type="textarea" parentKey="bodyFormat" parentValue="raw"
+                 jsonPathQuery="$.body.jsonBody"/>
+        </Menu>
+
+        <Menu name="ResponseInformation" label="menuLabel_ResponseInformation">
+          <Field name="rootPath" displayName="RootPath" type="text" maxlength="4096" />
+          <Field name="responseCode" displayName="SuccessCode" type="list" helpKey="helpKey_listField"/>
+        </Menu>
+
+        <Menu name="ResponseMapping" label="menuLabel_ResponseMapping">
+          <Field name="resMappingObj" type="keyValue">
+            <Key name="schemaattribute" displayName="SchemaAttribute" type="text" required="true" maxlength="4096" />
+            <Value name="attributepath" displayName="AttributePath" type="text" required="true" maxlength="9999" />
+          </Field>
+        </Menu>
+
+        <Menu name="XPathNamespaceMapping" label="menuLabel_XPathNamespaceMapping">
+          <Field name="xpathNamespaces" type="keyValue">
+            <Key name="namespaceprefix" displayName="NamespacePrefix" type="text"/>
+            <Value name="namespaceurl" displayName="NamespaceURL" type="text" maxlength="9999" />
+          </Field>
+        </Menu>
+
+        <!--   Parent  Endpoint menu when operationType contains "Aggregation" -->
+        <Menu name="ParentEndpoint" label="menuLabel_ParentEndpoint" parentKey="operationType" parentValue="Aggregation"
+              parentKeyValueOperation="contains">
+          <Field name="parentEndpointName" displayName="ParentEndpointName" type="select">
+            <AllowedValues>
+              <Option jsonPathQuery="$.connectorAttributes.connectionParameters[*].uniqueNameForEndPoint"/>
+            </AllowedValues>
+          </Field>
+        </Menu>
+
+        <!--   Parent Endpoint menu when operationType contains "Get Object" -->
+        <Menu name="ParentEndpoint" label="menuLabel_ParentEndpoint" parentKey="operationType" parentValue="Get Object"
+              parentKeyValueOperation="contains">
+          <Field name="parentEndpointName" displayName="ParentEndpointName" type="select">
+            <AllowedValues>
+              <Option jsonPathQuery="$.connectorAttributes.connectionParameters[*].uniqueNameForEndPoint"/>
+            </AllowedValues>
+          </Field>
+        </Menu>
+
+        <!--   Parent Endpoint menu when operationType contains "Get Partitions" -->
+        <Menu name="ParentEndpoint" label="menuLabel_ParentEndpoint" parentKey="operationType" parentValue="Get Partitions"
+              parentKeyValueOperation="contains">
+          <Field name="parentEndpointName" displayName="ParentEndpointName" type="select">
+            <AllowedValues>
+              <Option jsonPathQuery="$.connectorAttributes.connectionParameters[*].uniqueNameForEndPoint"/>
+            </AllowedValues>
+          </Field>
+        </Menu>
+
+        <Menu name="Paging" label="menuLabel_Paging" parentKey="operationType" parentValue="Aggregation"
+              parentKeyValueOperation="contains">
+          <Field name="pagingInitialOffset" displayName="InitialPageOffset" type="number" saveAsString="false"
+                 defaultValue="0" min="0"/>
+          <Field name="pagingSize" displayName="PageSize" type="number" saveAsString="false" defaultValue="50" min="0"/>
+          <Field name="paginationSteps" displayName="PagingSteps" type="textarea"/>
+        </Menu>
+
+        <!--   Paging Endpoint menu when operationType contains "Get Partitions" -->
+        <Menu name="Paging" label="menuLabel_Paging" parentKey="operationType" parentValue="Get Partitions"
+              parentKeyValueOperation="contains">
+          <Field name="pagingInitialOffset" displayName="InitialPageOffset" type="number" saveAsString="false"
+                 defaultValue="0" min="0"/>
+          <Field name="pagingSize" displayName="PageSize" type="number" saveAsString="false" defaultValue="50" min="0"/>
+          <Field name="paginationSteps" displayName="PagingSteps" type="textarea"/>
+        </Menu>
+
+      </Field>
+    </Section>
+  </Menu>
+
+  <Menu name="AdditionalSettings" label="menuLabel_AdditionalSettings">
+    <Section name="ProvisioningSettings" label="sectionLabel_ProvisioningSettings"
+             sectionInfo="sectionInfo_ProvisioningSettings" docLinkLabel="docLinkLabel_ProvisioningSettings"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/additional_settings.html">
+      <Field name="createAccountWithEntReq" displayName="CreateAccountWithEntReq" type="checkbox"/>
+      <Field name="throwBeforeAfterRuleException" displayName="ThrowBeforeAfterRuleException" type="checkbox"/>
+      <Field name="throwProvAfterRuleException" displayName="ThrowProvAfterRuleException" type="checkbox"
+             required="true"/>
+      <Field name="throwProvBeforeRuleException" displayName="ThrowProvBeforeRuleException" type="checkbox"
+             required="true"/>
+      <Field name="updateAttrWithChangePassword" displayName="UpdateAttrWithChangePassword" type="checkbox"/>
+      <Field name="isGetObjectRequiredForPTA" displayName="GetObjectRequiredForPTA" type="checkbox" required="true"/>
+    </Section>
+
+    <Section name="CommonConfiguration" label="sectionLabel_CommonConfiguration"
+             sectionInfo="sectionInfo_AdditionalSettings_CommonConfiguration"
+             docLinkLabel="docLinkLabel_AdditionalSettings_CommonConfiguration"
+             docLink="https://documentation.sailpoint.com/connectors/webservices/help/integrating_webservices/additional_settings.html">
+      <Field name="possibleHttpErrors" displayName="HTTPErrors" type="keyValue" helpKey="helpKey_listField">
+        <Key name="errorCodes" displayName="HTTPErrorKeys" type="text" readOnly="true"/>
+        <Value name="errorMessages" displayName="HTTPErrorValues" type="list"/>
+      </Field>
+      <Field name="objectNotFoundErrorMsg" displayName="ObjectNotFoundErrorMsg" type="list"
+             placeHolder="placeHolder_objectNotFoundErrorMsg" helpKey="helpKey_listField"/>
+      <Field name="authenticationFailedErrorMsg" displayName="AuthenticationFailedErrorMsg" type="list"
+             placeHolder="placeHolder_authenticationFailedErrorMsg" helpKey="helpKey_listField"/>
+      <Field name="expiredPasswordErrorMsg" displayName="ExpiredPasswordErrorMsg" type="list"
+             placeHolder="placeHolder_expiredPasswordErrorMsg" helpKey="helpKey_listField"/>
+      <Field name="disableCookies" displayName="DisableCookies" type="checkbox"/>
+    </Section>
+  </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

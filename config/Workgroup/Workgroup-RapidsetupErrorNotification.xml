@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Identity PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Identity created="1785394273828" id="c0a801899fb11942819fb1ca9e24034e" name="RapidSetup Error Notification" workgroup="true">
+  <Attributes>
+    <Map>
+      <entry key="displayName" value="RapidSetup Error Notification"/>
+    </Map>
+  </Attributes>
+  <Capabilities>
+    <Reference class="sailpoint.object.Capability" id="c0a801899fb11942819fb1ca9d130345" name="RapidSetupConfigurationReadOnly"/>
+  </Capabilities>
+  <Owner>
+    <Reference class="sailpoint.object.Identity" id="c0a801899fb11942819fb1ca419c00fe" name="spadmin"/>
+  </Owner>
+  <Preferences>
+    <Map>
+      <entry key="workgroupNotificationOption">
+        <value>
+          <WorkgroupNotifationOption>Both</WorkgroupNotifationOption>
+        </value>
+      </entry>
+    </Map>
+  </Preferences>
+</Identity>

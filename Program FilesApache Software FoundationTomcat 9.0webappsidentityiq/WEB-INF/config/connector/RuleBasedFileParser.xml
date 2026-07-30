@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.RuleFileConnector" featuresString="DIRECT_PERMISSIONS, NO_RANDOM_ACCESS, DISCOVER_SCHEMA" icon="enterpriseIcon" name="RuleBasedFileParser Template" type="RuleBasedFileParser">
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies","Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='RuleBasedFileParser' connectorName="RuleBasedFileParser"
+	type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="Attributes" label="attributes">
+		<Section name="Attributes" label="attributes" type="api" method="get" url="/rest/applications/settings/attributeConfig" paramsAllowed="appId,appType" />
+	</Menu>
+
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

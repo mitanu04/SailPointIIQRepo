@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+                    
+        // Handle the Grant Type change in dropdown - show hide respective views
+        function toggleGrantTypeView() {
+            var grantType = getFieldValue("editForm:grantType"); 
+            var clientCred = (grantType == "CLIENT_CREDENTIALS" );
+            var certificateCred = (grantType == "CERTIFICATE_CREDENTIALS" ) ;
+            var refreshToken = (grantType == "REFRESH_TOKEN" ) ;
+            
+            if(!refreshToken && !clientCred && !certificateCred) {
+                    clientCred = true;
+                    document.getElementById("editForm:grantType:0").checked = true;
+            }
+            
+            if(clientCred){
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").removeCls("hidden");   
+            } else if(certificateCred) {               
+                Ext.fly("certificateCredentialsDiv").removeCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").addCls("hidden");              
+            } else if(refreshToken) {
+                Ext.fly("refreshTokenDiv").removeCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").removeCls("hidden");   
+            }
+        }
+        
+
+        function isJWTGrantType() {
+            return "CERTIFICATE_CREDENTIALS" == getFieldValue("editForm:grantType");
+        }
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+           
+           
+           toggleGrantTypeView();
+           
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var clientID = getFieldValue('editForm:clientID');
+                   Validator.validateNonBlankString(clientID, "Client ID cannot be null!");
+
+                   var clientSecret = getFieldValue('editForm:clientSecret');
+                   if(!isJWTGrantType()) {
+                       Validator.validateNonBlankString(clientSecret, "Client Secret cannot be null!");
+                   }
+
+                        var envUrl = getFieldValue('editForm:envUrl');
+                        Validator.validateNonBlankString(envUrl, "Business Central Environment URL cannot be null!");
+                        
+                        if(getFieldValue("editForm:grantType") == "REFRESH_TOKEN") {
+                            var refreshToken = getFieldValue('editForm:refresh_token');
+                            Validator.validateNonBlankString(refreshToken, "Refresh Token cannot be null!");
+                        }                                              
+                        if(isJWTGrantType()){
+                         
+                           var clientCertExists = getFieldValue("editForm:clientCertExists");
+                           if (!clientCertExists) {
+                             var certificate = getFieldValue("editForm:clientCertificate");
+                             Validator.validateNonBlankString(certificate, '#{msgs.err_msg_client_cert_cert_empty}');
+                           }
+
+                            var privateKeyExists = getFieldValue('editForm:privateKeyExists');
+                            if (!privateKeyExists) {
+                              var privateKey = getFieldValue('editForm:private_key');
+                              Validator.validateNonBlankString(privateKey, "Private Key cannot be null!");
+                            }
+
+                            var privateKeyPassword = getFieldValue('editForm:privateKeyPassword');
+                            Validator.validateNonBlankString(privateKeyPassword, "Private Key Password cannot be null!");
+                        }                       
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+
+               //return false will kill cancel the save
+               return true;
+           });
+
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+        <div class="spContent" id="credentialsContainer" style="padding-bottom:0px">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="Connection Settings"/>
+                </div>
+            </div>
+            <div class="row spContent">
+                <div class="col-sm-12">
+                   <table class="spTable" style="border:0px" cellspacing="0">
+                       <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_bcentral_env_url}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>   
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpEnvUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_bcentral_env_url}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "envUrl"
+                            value="#{applicationObject.attributes['envUrl']}"
+                            size="20"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+                   </table>
+                 </div>
+            </div>
+        <!-- Grant type selection -->
+            <div class ="row spContent">
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText style='padding:5px' value="#{msgs.label_auth_method}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                    <h:graphicImage id="imgHlpIndexGDetails_authMethod" styleClass="helpIcon"
+                         url="/images/icons/dashboard_help_16.png"
+                         alt="#{help.help_con_form_rws_authentication_method}" />
+                   </td>
+                   <td>
+                        <h:outputText style='font-weight:bold' value="OAuth 2.0" />
+                   </td>
+                </tr>
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText value="#{msgs.label_grant_type}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpGrantType"
+                       styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                       alt="#{help.help_con_form_oauth2_grant_type}" />
+                   </td>
+                   <td>
+                    <h:selectOneMenu id="grantType" name="granttype"
+                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       value="#{applicationObject.attributes['grantType']}"
+                       class="" onchange="toggleGrantTypeView()">
+                       <f:selectItem itemValue = "CLIENT_CREDENTIALS" itemLabel = "Client Credentials" />
+                       <f:selectItem itemValue = "CERTIFICATE_CREDENTIALS" itemLabel = "JWT Certificate Credentials" />
+                       <f:selectItem itemValue = "REFRESH_TOKEN" itemLabel = "Refresh Token / Auth Code" /> 
+                   </h:selectOneMenu>
+                   </td>
+                </tr>
+                </table>
+                </div>
+            </div> <!-- Grant type selection End-->
+            <!-- Credentials -->
+            <div class ="row spContent" id="credentials">
+                <div class="col-sm-12" id="clientCredentialsDiv">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_bcentral_client_ID}"/>   
+                            <h:outputText styleClass="requiredText" value="*"/>           
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpClientID" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_bcentral_client_ID}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id="clientID"
+                            value="#{applicationObject.attributes['clientID']}"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr id="clientSecretRow">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_bcentral_client_secret}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>           
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_bcentral_client_secret}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="clientSecret"
+                            value="#{applicationObject.attributes['clientSecret']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>        
+                </table>
+              
+                </div>
+
+                <!-- Auth Code(Refresh Token) grant type-->
+                <div class="col-sm-12" id="refreshTokenDiv">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_bcentral_refreshToken}"/>   
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpToken" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_bcentral_refreshToken}"/>
+
+                            </td>
+                            <td>
+                                <sp:inputSecret id="refresh_token"
+                                   value="#{applicationObject.attributes['refresh_token']}"
+                                   redisplay="true"
+                                   size="80"
+                                   autocomplete="off"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+      
+               <!-- Certificate Credentials grant type flow -->
+               <div class="col-sm-12" id="certificateCredentialsDiv">
+                 <c:set target="${applicationObject.attributes}" property="clientCertAuthEnabled" value="true" />
+                 <table class="spTable" style="border:0px" cellspacing="0">
+                   <tr>
+                     <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_bcentral_certificate}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                     </td>
+                     <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpCert" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                          alt="#{help.help_con_form_bcentral_certificate}"/>
+                     </td>
+                     <td>
+                        <div>
+                          <c:if test="${applicationObject.attributes['clientCertificate'] ne null}">
+                            <h:inputHidden id="clientCertExists" value="true" />
+                            <div>
+                              <b>
+                                <h:outputFormat value="#{msgs.con_form_client_cert_present}">
+                                  <f:param value="#{applicationObject.attributes['clientCertUploadedOn']}" />
+                                </h:outputFormat>
+                              </b>
+                              <br />
+                              <h:outputFormat value="#{msgs.con_form_client_cert_certselectnew}" />
+                            </div>
+                          </c:if>
+                          <h:inputTextarea id="clientCertificate"
+                            value="#{applicationObject.attributes['client_cert_to_update']}"
+                            rows="5" cols="100" style="width: 35%;"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </div>
+                     </td>
+                   </tr>
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key}" />
+                      <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpprivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                        alt="#{help.help_con_form_bcentral_jwt_private_key}" />
+                    </td>
+                    <td>
+                      <ui:include src="privateKey.xhtml" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key_password}" />
+                      <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpprivatekeypassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                        alt="#{help.help_con_form_bcentral_jwt_private_key_password}" />
+                    </td>
+                    <td>
+                      <sp:inputSecret id="privateKeyPassword" value="#{applicationObject.attributes['privateKeyPassword']}"
+                        size="20" redisplay="true" autocomplete="off"
+                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                 </tr>
+                 </table>
+               </div>
+            </div><!-- credentials Ends-->
+        </div> <!-- Connector Credentials Container End-->
+        <div class="" id="additionalConfigurationContainer">
+        <div class="spContent" style="padding-top:0">
+            <div class ="row spContent"  >        
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">                    
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_page_size}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_bcentral_page_size}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "pageSize"
+                             value="#{applicationObject.attributes['pageSize']}"
+                             size="20"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                             <f:validateLongRange minimum="1" maximum="999"/>
+                            </h:inputText>
+                        </td>
+                    </tr>                       
+                </table>
+                </div>
+            </div>
+            </div>
+            
+    </div>
+
+      
+    </f:view>
+    <style>
+    .hidden {
+        display:none;
+    }
+    .top0{
+        margin-top: 0px !important;
+    }
+</style>
+</ui:composition>
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- (c) Copyright 2025 SailPoint Technologies, Inc., All Rights Reserved. -->
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<ui:composition>
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if (fileName) {
+                val = fileName.value;
+            }
+            return val;
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            let pageSize = getFieldValue('editForm:pageSize');
+            if (!pageSize) {
+                Ext.getDom('editForm:pageSize').value = '500';
+            }
+
+            let aggregationDelimiter = getFieldValue('editForm:aggregationDelimiter');
+            if (!aggregationDelimiter) {
+                Ext.getDom('editForm:aggregationDelimiter').value = '~~';
+            }
+
+            let language = getFieldValue('editForm:language');
+            if (!language) {
+                Ext.getDom('editForm:language').value = 'EN';
+            }
+
+            let pollingInterval = getFieldValue('editForm:provisioningStatusCheckInterval');
+            if (!pollingInterval) {
+                Ext.getDom('editForm:provisioningStatusCheckInterval').value = '60';
+            }
+
+            //This is the validation hook
+            Page.on('beforeSave', function () {
+                if (!hasCredentialConfiguration()) {
+                    var tokenURL = getFieldValue('editForm:rest0_token_url');
+                    Validator.validateNonBlankString(tokenURL, "#{msgs.err_sap_iag_missing_token_url}");
+
+                    var hostURL = getFieldValue('editForm:rest0_host');
+                    Validator.validateNonBlankString(hostURL, "#{msgs.err_sap_iag_missing_host_url}");
+
+                    var domain = getFieldValue('editForm:domain');
+                    Validator.validateNonBlankString(domain, "#{msgs.err_sap_iag_missing_domain}");
+
+                    var clientId = getFieldValue('editForm:rest0_client_id');
+                    Validator.validateNonBlankString(clientId, "#{msgs.err_sap_iag_missing_client_id}");
+
+                    var clientSecret = getFieldValue('editForm:rest0_client_secret');
+                    Validator.validateNonBlankString(clientSecret, "#{msgs.err_sap_iag_missing_client_secret}");
+
+                    var accessRequestPriority = getFieldValue('editForm:accessRequestPriority');
+                    Validator.validateNonBlankString(accessRequestPriority, "#{msgs.err_sap_iag_missing_access_request_priority}");
+
+                    var accessRequestReasonCode = getFieldValue('editForm:accessRequestReasonCode');
+                    Validator.validateNonBlankString(accessRequestReasonCode, "#{msgs.err_sap_iag_missing_access_request_reason_code}");
+
+                    var errors = Validator.getErrors();
+                    if (errors && errors.length > 0) {
+                        Validator.displayErrors('appErrorsTop');
+                        return false;
+                    }
+                }
+                //return false will cancel the save
+                return true;
+            });
+        });
+        //--><!]]>
+    </script>
+    <f:view>
+        <div id="accountSettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_iag_service_url_details}"/>
+            <!-- IAG Service URL Settings-->
+            <div class='spContent' id="iagServiceURLSettings">
+                <table class="spTable" style="border: 0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_host_url}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpHostUrl" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_host_url}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="rest0_host"
+                                         value="#{applicationObject.attributes['rest0_host']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_token_url}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpTokenUrl" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_token_url}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="rest0_token_url"
+                                         value="#{applicationObject.attributes['rest0_token_url']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_domain}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpDomain" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_from_sap_iag_domain}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="domain"
+                                         value="#{applicationObject.attributes['domain']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_iag_connection_settings}"/>
+            <br/>
+            <!-- BTP Connection Settings-->
+            <div class='spContent' id="iagConnectionSettings">
+                <table class="spTable" style="border: 0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText
+                                    style='padding:5px'
+                                    value="#{msgs.con_form_sap_iag_authentication_type}"/>
+                            <h:outputText
+                                    styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage
+                                    id="imgHlpAuthenticationMethod" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_authentication_type}"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="rest0_authType"
+                                             value="#{applicationObject.attributes['rest0_authType']}"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                <f:selectItem itemValue="OAuth2Login" itemLabel="OAuth 2.0"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText
+                                    style='padding:5px'
+                                    value="#{msgs.con_form_sap_iag_grant_type}"/>
+                            <h:outputText
+                                    styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage
+                                    id="imgHlpGrantType" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_grant_type}"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="rest0_grant_type"
+                                             value="#{applicationObject.attributes['rest0_grant_type']}"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                <f:selectItem itemValue="client_credentials" itemLabel="Client Credentials"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_client_id}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpClientId" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_client_id}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="rest0_client_id"
+                                         value="#{applicationObject.attributes['rest0_client_id']}"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_client_secret}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpClientSecret" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_client_secret}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="rest0_client_secret"
+                                            value="#{applicationObject.attributes['rest0_client_secret']}"
+                                            redisplay="true" autocomplete="off"
+                                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <!--Aggregation Settings-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_iag_aggregation_setting}"/>
+            <br/>
+            <div class="" id="aggregationSettings">
+
+                <table class="spTable" style="border: 0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_aggregation_delimiter}"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpAggregationDelimiter" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_aggregation_delimiter}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="aggregationDelimiter"
+                                         value="#{applicationObject.attributes['aggregationDelimiter']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_language}"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpLanguage" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_language}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="language"
+                                         value="#{applicationObject.attributes['language']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr id="pageSizeTr">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_page_size}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage
+                                    id="imgHlpPageSize" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_page_size}"/>
+                        </td>
+                        <td>
+                            <sp:inputText id="pageSize"
+                                          value="#{applicationObject.attributes['pageSize']}"
+                                          size="20"
+                                          disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                          readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                <f:validateLongRange minimum="10" maximum="1000"/>
+                            </sp:inputText>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--Access Request Settings-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_iag_access_request_configuration}"/>
+            <br/>
+            <div class="" id="accessRequestSettings">
+
+                <table class="spTable" style="border: 0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_polling_interval}"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpPollingInterval" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_polling_interval}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="provisioningStatusCheckInterval"
+                                         value="#{applicationObject.attributes['provisioningStatusCheckInterval']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_access_request_priority}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpAccessRequestPriority" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_access_request_priority}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="accessRequestPriority"
+                                         value="#{applicationObject.attributes['accessRequestPriority']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol' valign="center">
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_sap_iag_access_request_reason_code}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle">
+                            <h:graphicImage
+                                    id="imgHlpAccessRequestReasonCode" styleClass="helpIcon"
+                                    url="/images/icons/dashboard_help_16.png"
+                                    alt="#{help.help_con_form_sap_iag_access_request_reason_code}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="accessRequestReasonCode"
+                                         value="#{applicationObject.attributes['accessRequestReasonCode']}"
+                                         size="100"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </f:view>
+</ui:composition>
+</body>
+</html>

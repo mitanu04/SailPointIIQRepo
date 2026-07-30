@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!--
+  ~ (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!--
+  Initialization file for SailPoint Data Extract
+-->
+<sailpoint>
+  <ImportAction name="merge">
+    <Configuration name="DataExtractConfiguration">
+      <Attributes>
+        <Map>
+          <entry key="dataExtractTasksEnabled" value="true"/>
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+
+  <!--
+    Create in case accesshistory.xml didn't already create it.
+    See sample publisher definitions..
+    -->
+  <ImportAction name="merge">
+    <Configuration name="PublishersConfiguration">
+    </Configuration>
+  </ImportAction>
+
+  <!--
+    Task for Data Extract.
+  -->
+  <TaskDefinition executor="sailpoint.task.DataExtractExecutor"
+                  name="Data Extract"
+                  progressInterval="5000" progressMode="String"
+                  template="true" type="System"
+                  formPath="/monitor/tasks/dataExtract.xhtml"
+                  resultRenderer="dataExtractResult.xhtml">
+    <Description>
+      Template for Data Extract Task.
+    </Description>
+    <Attributes>
+      <Map>
+        <entry key="enableNamedTimestamp" value="true"/>
+        <entry key="lossLimit" value="2500"/>
+        <entry key="maxObjectAttempts" value="5"/>
+        <entry key="maxFailuresAbsolute" value="500"/>
+        <entry key="maxFailuresPercent" value="5"/>
+        <entry key="minExtractPartitions" value="5"/>
+        <entry key="maxExtractPartitions" value="50"/>
+        <entry key="maxObjectsPerExtractPartition" value="50000"/>
+      </Map>
+    </Attributes>
+    <Signature>
+      <Inputs>
+        <Argument filterString="type == YAMLConfig.Type.Extract &amp;&amp; subtype.isNull()" helpKey="help_task_data_extract_config" name="configuration" required="true" type="YAMLConfig">
+          <Prompt>task_in_data_extract_config</Prompt>
+        </Argument>
+        <Argument name="publisher" required="true" type="string" helpKey="help_task_data_extract_publisher">
+          <Prompt>task_in_data_extract_publisher</Prompt>
+        </Argument>
+      </Inputs>
+      <Returns>
+        <Argument name="totalDeletionExtractedObjects" type="int">
+          <Prompt>task_out_data_extract_totalDeletionExtractedObjects</Prompt>
+        </Argument>
+        <Argument name="totalDeletionExtractedObjectsDispatched" type="int">
+          <Prompt>task_out_data_extract_totalDeletionExtractedObjectsDispatched</Prompt>
+        </Argument>
+        <Argument name="totalObjectMessages" type="int">
+          <Prompt>task_out_data_extract_totalObjectMessages</Prompt>
+        </Argument>
+        <Argument name="totalModifiedObjectMessages" type="int">
+          <Prompt>task_out_data_extract_totalModifiedObjectMessages</Prompt>
+        </Argument>
+        <Argument name="totalReattemptObjectMessages" type="int">
+          <Prompt>task_out_data_extract_totalReattemptObjectMessages</Prompt>
+        </Argument>
+        <Argument name="totalSeenObjects" type="int">
+          <Prompt>task_out_data_extract_totalSeenObjects</Prompt>
+        </Argument>
+        <Argument name="totalUnseenObjects" type="int">
+          <Prompt>task_out_data_extract_totalUnseenObjects</Prompt>
+        </Argument>
+        <Argument name="totalExtractedObjects" type="int">
+          <Prompt>task_out_data_extract_totalExtractedObjects</Prompt>
+        </Argument>
+        <Argument name="totalExtractedObjectsNotFound" type="int">
+          <Prompt>task_out_data_extract_totalExtractedObjectsNotFound</Prompt>
+        </Argument>
+        <Argument name="totalExtractedObjectsFailed" type="int">
+          <Prompt>task_out_data_extract_totalExtractedObjectsFailed</Prompt>
+        </Argument>
+        <Argument name="totalExtractedObjectsPublished" type="int">
+          <Prompt>task_out_data_extract_totalExtractedObjectsPublished</Prompt>
+        </Argument>
+        <Argument name="totalPublishingFails" type="int">
+          <Prompt>task_out_data_extract_totalPublishingFails</Prompt>
+        </Argument>
+        <Argument name="droppedObjects" type="int">
+          <Prompt>task_out_data_extract_totalDroppedObjects</Prompt>
+        </Argument>
+        <Argument name="extractDetails" type="complex"/>
+      </Returns>
+    </Signature>
+  </TaskDefinition>
+
+  <!--
+    RequestDefinition for Data Extract Task.
+  -->
+  <RequestDefinition name="Data Extract Partition"
+                     executor="sailpoint.request.DataExtractRequestExecutor"
+                     retryMax="20">
+    <Attributes>
+      <Map>
+        <entry key='maxThreads' value='5'/>
+      </Map>
+    </Attributes>
+  </RequestDefinition>
+
+  <!--
+  RequestDefinition for Data Extract partition creation
+  -->
+  <RequestDefinition name="Data Extract Partition Creator"
+                     executor="sailpoint.request.DataExtractPartitioningRequestExecutor"
+                     retryMax="20">
+    <Attributes>
+      <Map>
+        <entry key='maxThreads' value='5'/>
+      </Map>
+    </Attributes>
+  </RequestDefinition>
+
+  <!--
+   RequestDefinition for Data Extract intercepted delete
+  -->
+  <RequestDefinition name="Intercepted Delete Processor"
+                     executor="sailpoint.request.InterceptedDeleteRequestExecutor"
+                     retryMax="20">
+    <Attributes>
+      <Map>
+        <entry key='maxThreads' value='5'/>
+      </Map>
+    </Attributes>
+  </RequestDefinition>
+
+
+  <ImportAction name='merge'>
+    <UIConfig name='UIConfig'>
+      <Attributes>
+        <Map>
+          <entry key="debugYAMLConfigGridColumns">
+            <value>
+              <List>
+                <ColumnConfig dataIndex="id" groupProperty="id" headerKey="Id" property="id" sortProperty="id" sortable="true" stateId="id" width="250"/>
+                <ColumnConfig dataIndex="name" groupProperty="name" headerKey="Name" property="name" sortProperty="name" sortable="true" stateId="name" width="250"/>
+                <ColumnConfig dataIndex="type" groupProperty="type" headerKey="Type" property="type" sortProperty="type" width="150" stateId="type" sortable="true" />
+                <ColumnConfig dataIndex="subtype" groupProperty="subtype" headerKey="SubType" property="subtype" sortProperty="subtype" width="150" stateId="subtype" sortable="true" />
+                <ColumnConfig dataIndex="created" groupProperty="created" headerKey="Created" property="created" sortProperty="created" width="150" stateId="created" sortable="true" dateStyle="medium" />
+                <ColumnConfig dataIndex="modified" groupProperty="modified" headerKey="Modified" property="modified" sortProperty="modified" width="150" stateId="modified" sortable="true" dateStyle="medium" />
+              </List>
+            </value>
+          </entry>
+          <entry key="debugInterceptedDeleteGridColumns">
+            <value>
+              <List>
+                <ColumnConfig dataIndex="id" groupProperty="id" headerKey="Id" property="id" sortProperty="id" sortable="true" stateId="id" width="250"/>
+                <ColumnConfig dataIndex="objectId" groupProperty="objectId" headerKey="Obj ID" property="objectId" sortProperty="objectId" sortable="true" stateId="objectId" width="250"/>
+                <ColumnConfig dataIndex="objectName" headerKey="Obj Name"  property="objectName" sortProperty="objectName" width="250" sortable="true" />
+                <ColumnConfig dataIndex="objectType" headerKey="Obj Type"  property="objectType" sortProperty="objectType" width="100" sortable="true" />
+                <ColumnConfig dataIndex="objectDeletedDate" headerKey="Obj Deleted" dateStyle="medium" property="objectDeletedDate" sortProperty="objectDeletedDate" width="175" sortable="true" />
+                <ColumnConfig dataIndex="extractConfigName" headerKey="Extract Config"  property="extractConfigName" sortProperty="extractConfigName" width="200" sortable="true" />
+                <ColumnConfig dataIndex="extractExecutionTimeMs" headerKey="Run Time (ms)"  property="extractExecutionTimeMs" sortProperty="extractExecutionTimeMs" width="200" sortable="false" />
+              </List>
+            </value>
+          </entry>
+          <entry key="debugInterceptedDeleteSearchProperties" value="objectId,objectName,extractConfigName" />
+        </Map>
+      </Attributes>
+    </UIConfig>
+  </ImportAction>
+</sailpoint>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE JasperTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<JasperTemplate name="GenericListSubReport">
+  <DesignXml>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GenericListSubReport" pageWidth="110" pageHeight="20" orientation="Landscape" columnWidth="110" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	&lt;property name="ireport.scriptlethandling" value="0"/>
+	&lt;property name="ireport.encoding" value="UTF-8"/>
+	&lt;property name="ireport.zoom" value="1.0"/>
+	&lt;property name="ireport.x" value="0"/>
+	&lt;property name="ireport.y" value="0"/>
+	&lt;import value="sailpoint.reporting.datasource.*"/>
+	&lt;import value="net.sf.jasperreports.engine.*"/>
+	&lt;import value="java.util.*"/>
+	&lt;import value="net.sf.jasperreports.engine.data.*"/>
+	&lt;style name="NormalText" isBlankWhenNull="true" fontName="Arial" fontSize="12"/>
+	&lt;style name="SailPointBlueBackWhiteFront" mode="Opaque" forecolor="#FFFFFF" backcolor="#025588" vAlign="Middle" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true">
+		&lt;box leftPadding="5"/>
+	&lt;/style>
+	&lt;field name="_THIS" class="java.lang.String"/>
+	&lt;background>
+		&lt;band splitType="Stretch"/>
+	&lt;/background>
+	&lt;title>
+		&lt;band splitType="Stretch"/>
+	&lt;/title>
+	&lt;pageHeader>
+		&lt;band splitType="Stretch"/>
+	&lt;/pageHeader>
+	&lt;columnHeader>
+		&lt;band splitType="Stretch"/>
+	&lt;/columnHeader>
+	&lt;detail>
+		&lt;band height="20" splitType="Stretch">
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="textField" style="NormalText" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="110" height="17" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
+				&lt;box topPadding="3" leftPadding="5">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement textAlignment="Left" verticalAlignment="Top">
+					&lt;font fontName="Arial" size="10"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$F{_THIS}&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+		&lt;/band>
+	&lt;/detail>
+	&lt;columnFooter>
+		&lt;band splitType="Stretch"/>
+	&lt;/columnFooter>
+	&lt;pageFooter>
+		&lt;band splitType="Stretch"/>
+	&lt;/pageFooter>
+	&lt;summary>
+		&lt;band splitType="Stretch"/>
+	&lt;/summary>
+&lt;/jasperReport>
+</DesignXml>
+</JasperTemplate>

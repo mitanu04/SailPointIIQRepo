@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Rule-Mock">
+    <Description></Description>
+    <Signature>
+        <Inputs>
+            <Argument name="arg1"/>
+        </Inputs>
+    </Signature>
+<Source><![CDATA[
+//Just a sample code, update me
+return arg1;
+]]></Source>
+</Rule>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule created="1785394261406" id="c0a801899fb11942819fb1ca6d9e02d3" language="beanshell" name="Report Scorecard Value Renderer">
+  <Description>
+      This rule renders report columns which pull values from a Scorecard object.
+    </Description>
+  <Source>
+      
+       import java.util.*;
+       import sailpoint.object.*;
+
+       Integer score = null;
+       if(value!=null) {
+					score = value.getScore(column.getField());
+			 }
+
+       return score != null ? score.toString() : null;
+      
+  </Source>
+</Rule>

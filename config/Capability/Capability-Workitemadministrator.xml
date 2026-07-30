@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247412" displayName="capability_workitem_administrator" id="c0a801899fb11942819fb1ca36f400cd" name="WorkItemAdministrator">
+  <Description>capability_desc_workitem_administrator</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca34750064" name="FullAccessWorkItems"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33a4003e" name="FullAccessWorkItemReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca336e0032" name="FullAccessReport"/>
+  </RightRefs>
+</Capability>

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui" xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+	<ui:composition>
+
+		<script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+            helpKey = 'APPLICATION';
+
+            function getFieldValue(field) {
+                var val = null;
+                var fileName = Ext.getDom(field);
+                if (fileName) {
+                    val = fileName.value;
+                }
+                return val;
+            }
+
+            Ext
+                    .onReady(function() {
+                        Ext.QuickTips.init();
+
+                        var pageSize = getFieldValue('editForm:pageSize');
+                        if (pageSize.length == 0) {
+                            Ext.getDom('editForm:pageSize').value = '100';
+                        }
+
+                        var connTimeout = getFieldValue('editForm:connTimeout');
+                        if (connTimeout.length == 0) {
+                            Ext.getDom('editForm:connTimeout').value = '1';
+                        }
+
+                        // This is our validation hook
+                        Page
+                                .on(
+                                        'beforeSave',
+                                        function() {
+                                            if (!hasCredentialConfiguration()) {
+                                                var apiurl = getFieldValue('editForm:url');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                apiurl,
+                                                                "#{msgs.con_form_Mongo_ApiUrlnotnull}");
+
+                                                var pubkey = getFieldValue('editForm:publicKey');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                pubkey,
+                                                                "#{msgs.con_form_Mongo_PublicKeynotnull}");
+
+                                                var privkey = getFieldValue('editForm:privateKey');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                privkey,
+                                                                "#{msgs.con_form_Mongo_PrivateKeynotnull}");
+                                                var errors = Validator
+                                                        .getErrors();
+                                                if (errors && errors.length > 0) {
+                                                    Validator
+                                                            .displayErrors('appErrorsTop');
+                                                    return false;
+                                                }
+                                            }
+                                            //return false will kill cancel the save
+                                            return true;
+                                        });
+
+                    });
+
+            //--><!]]>
+        </script>
+		<f:view>
+
+			<h:outputText styleClass="sectionHeader"
+				value="#{msgs.con_form_new_Mongo_setting}" />
+			<br />
+			<br />
+
+
+			<!-- connection info -->
+			<div id="accountSettings" class='spContent'>
+				<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_Mongo_ApiUrl}" /> <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpMongoUrl" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_Mongo_apiurl}" /></td>
+
+						<td valign="center"><h:inputText id="url"
+								value="#{applicationObject.attributes['url']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_Mongo_PublicKey}" /> <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpPublicKey" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_Mongo_publickey}" /></td>
+
+						<td valign="center"><h:inputText id="publicKey"
+								value="#{applicationObject.attributes['publicKey']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_Mongo_PrivateKey}" />
+							<h:outputText styleClass="requiredText" value="*" /></td>
+
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpPrivateKey" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_Mongo_privatekey}" /></td>
+
+						<td><sp:inputSecret id="privateKey"
+								value="#{applicationObject.attributes['privateKey']}"
+								redisplay="true" size="80" autocomplete="off"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_Mongo_page_size}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpPageSize" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_Mongo_PageSize}" /></td>
+						<td valign="center"><h:inputText id="pageSize"
+								value="#{applicationObject.attributes['pageSize']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="500" />
+							</h:inputText></td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_Mongo_conn_timeout}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpConnTimeout" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_Mongo_conn_timeout}" /></td>
+						<td valign="center"><h:inputText id="connTimeout"
+								value="#{applicationObject.attributes['connTimeout']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="inclusionList">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_Mongo_include_project}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpInclusion" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_Mongo_include_project}" /></td>
+						<td><h:inputTextarea converter="NewLineList" id="include" onchange='textArea()'
+								value="#{applicationObject.attributes['includeProjectList']}"
+								rows="4" style="width:300px;"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="exclusionList">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_Mongo_exclude_project}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpExclusion" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_Mongo_exclude_project}" /></td>
+						<td><h:inputTextarea converter="NewLineList" id="exclude"
+								value="#{applicationObject.attributes['excludeProjectList']}"
+								rows="4" style="width:300px;"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+
+				</table>
+
+			</div>
+
+		</f:view>
+	</ui:composition>
+
+</body>
+</html>

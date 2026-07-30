@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+		<script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+            helpKey = 'APPLICATION';
+
+            function getFieldValue(field) {
+                var val = null;
+                var fileName = Ext.getDom(field);
+                if (fileName) {
+                    val = fileName.value;
+                }
+                return val;
+            }
+
+            Ext
+                    .onReady(function() {
+                        Ext.QuickTips.init();
+
+                        var pageSize = getFieldValue('editForm:pageSize');
+                        if (pageSize.length == 0) {
+                            Ext.getDom('editForm:pageSize').value = '100';
+                        }
+
+                        var connTimeout = getFieldValue('editForm:connTimeout');
+                        if (connTimeout.length == 0) {
+                            Ext.getDom('editForm:connTimeout').value = '1';
+                        }
+
+                        // This is our validation hook
+                        Page
+                                .on(
+                                        'beforeSave',
+                                        function() {
+                                            if (!hasCredentialConfiguration()) {
+                                                var apiurl = getFieldValue('editForm:url');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                apiurl,
+                                                                "#{msgs.err_oracle_erp_cloud_missing_url}");
+
+                                                var pubkey = getFieldValue('editForm:username');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                pubkey,
+                                                                "#{msgs.err_oracle_erp_cloud_missing_username}");
+
+                                                var privkey = getFieldValue('editForm:password');
+                                                Validator
+                                                        .validateNonBlankString(
+                                                                privkey,
+                                                                "#{msgs.err_oracle_erp_cloud_missing_password}");
+                                                var errors = Validator
+                                                        .getErrors();
+                                                if (errors && errors.length > 0) {
+                                                    Validator
+                                                            .displayErrors('appErrorsTop');
+                                                    return false;
+                                                }
+                                            }
+                                            //return false will kill cancel the save
+                                            return true;
+                                        });
+
+                    });
+
+            //--><!]]>
+        </script>
+        
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_oracle_erp_cloud_config}"/><br/>
+
+
+	<!-- connection info -->
+		<ui:fragment>
+			<div id="accountSettings" class='spContent'>
+				<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_url}" /> <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpMongoUrl" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_form_oracle_erp_cloud_url}" /></td>
+
+						<td valign="center"><h:inputText id="url"
+								value="#{applicationObject.attributes['url']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_username}" />
+							 <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpUserName" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_form_oracle_erp_cloud_username}" /></td>
+
+						<td valign="center"><h:inputText id="username"
+								value="#{applicationObject.attributes['username']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'>
+						<h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_erp_cloud_password}" />
+							<h:outputText styleClass="requiredText" value="*" />
+							</td>
+
+						<td class="certScheduleHelpCol">
+						<h:graphicImage
+								id="imgHlpPassword" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{msgs.help_con_form_oracle_erp_cloud_password}" /></td>
+
+						<td><sp:inputSecret id="password"
+								value="#{applicationObject.attributes['password']}"
+								redisplay="true" size="80" autocomplete="off"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+			
+
+		         <tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_page_size}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpPageSize" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_page_size}" /></td>
+						<td valign="center"><h:inputText id="pageSize"
+								value="#{applicationObject.attributes['pageSize']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="500" />
+							</h:inputText></td>
+					</tr>
+					
+								<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_connection_timeout}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpConnTimeout" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_conn_timeout}" /></td>
+						<td valign="center"><h:inputText id="connTimeout"
+								value="#{applicationObject.attributes['connTimeout']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+                     <tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_accounts_filter}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpAccountsFilter" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_accounts_filter}" /></td>
+						<td valign="center"><h:inputText id="accounts_filter"
+								value="#{applicationObject.attributes['accounts_filter']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+					
+					 <tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_erp_cloud_roles_filter}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpRolesFilter" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_roles_filter}" /></td>
+						<td valign="center"><h:inputText id="roles_filter"
+								value="#{applicationObject.attributes['roles_filter']}" size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+				</table>
+			</div>
+	</ui:fragment>
+		<h:outputText styleClass="sectionHeader" value="#{msgs.con_form_oracle_erp_cloud_data_access_aggregation_settings}"/><br/>
+		<ui:fragment>
+			<div id="advancedAggregationSettings" class='spContent'>
+			<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='...' value="#{msgs.con_form_oracle_erp_cloud_aggregate_data_access_seeded_roles}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpAggregateDataAccessSeededRoles" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_aggregate_data_access_seeded_roles}" /></td>
+						<td valign="center"><h:selectBooleanCheckbox id="enable_data_access_seeded_roles"
+																	 value="#{applicationObject.attributes['enableDataAccessForSeededRoles']}" />
+						</td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='...' value="#{msgs.con_form_oracle_erp_cloud_aggregate_data_access_custom_roles}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpAggregateDataAccessCustomRoles" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_aggregate_data_access_custom_roles}" /></td>
+						<td valign="center"><h:selectBooleanCheckbox id="enable_data_access_custom_roles"
+																	 value="#{applicationObject.attributes['enableDataAccessForUserDefinedRoles']}" />
+						</td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+										  value="#{msgs.con_form_oracle_erp_cloud_report_directory_path}" />
+						</td>
+
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpReportDirectoryPath" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_erp_cloud_report_directory_path}" /></td>
+						<td valign="center"><h:inputText id="report_directory_path"
+														 value="#{applicationObject.attributes['biReportDirectoryPath']}" size="80"
+														 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+														 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+        </table>
+      </div>
+</ui:fragment>
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

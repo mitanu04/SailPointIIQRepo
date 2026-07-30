@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+<ImportAction name="connectorRegistryUpdateAction">
+	<Application connector="sailpoint.connector.OpenConnectorAdapter"
+				 featuresString="SYNC_PROVISIONING, PROVISIONING, ENABLE" icon="internetIcon" name="SAP S/4HANA Cloud"
+				 type="SAP S/4HANA Cloud">
+		<Attributes>
+			<Map>
+				<entry key="connectorClass"
+					   value="openconnector.connector.saps4hanacloud.SAPS4HANACloudConnector" />
+				<entry key="formPath" value="SAPS4HANAAttributesForm.xhtml" />
+				<entry key="newSource">
+					<value>
+						<Boolean>true</Boolean>
+					</value>
+				</entry>
+				<entry key="roleAggregationWithDirectApis">
+					<value>
+						<Boolean>true</Boolean>
+					</value>
+				</entry>
+				<entry key="migrationCompleted">
+					<value>
+						<Boolean>true</Boolean>
+					</value>
+				</entry>
+				<entry key="accountAggregationWithFilterBusinessUsers">
+					<value>
+						<Boolean>true</Boolean>
+					</value>
+				</entry>
+			</Map>
+		</Attributes>
+		<ProvisioningForms>
+			<Form name="Create" objectType="account" type="Create">
+				<Attributes>
+					<Map>
+						<entry key="pageTitle" value="Create"/>
+					</Map>
+				</Attributes>
+				<Section name="Create Business User on S4HANA Cloud Public">
+					<Field displayName="First Name" dynamic="true" name="First Name" required="true" reviewRequired="true" type="string">
+						<Script>
+							<Source>return identity.firstname</Source>
+						</Script>
+					</Field>
+					<Field displayName="Last Name" helpKey="Last Name for Business User " name="Last Name" required="true" reviewRequired="true" type="string">
+						<Script>
+							<Source>return identity.lastname</Source>
+						</Script>
+					</Field>
+					<Field displayName="Email" name="Email" required="true" reviewRequired="true" type="string">
+						<Script>
+							<Source>return identity.email</Source>
+						</Script>
+					</Field>
+					<Field displayName="Worker Id" helpKey="Worker Id is mandatory when Worker Id API is not set under configuration settings." name="WorkerId" reviewRequired="true" type="string"/>
+					<Field displayName="User Name" name="UserName" required="true" reviewRequired="true" type="string"/>
+				</Section>
+			</Form>
+		</ProvisioningForms>
+		<Schemas>
+			<Schema displayAttribute="User Name" identityAttribute="Person ID"
+					nativeObjectType="account" objectType="account">
+				<AttributeDefinition name="First Name"
+									 remediationModificationType="None" type="string">
+					<Description>First Name of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Last Name"
+									 remediationModificationType="None" type="string">
+					<Description>Last Name of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Person External ID"
+									 remediationModificationType="None" type="string">
+					<Description>Person External ID of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Business Partner Role"
+									 remediationModificationType="None" type="string">
+					<Description>Business Partner Role of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Person ID"
+									 remediationModificationType="None" type="string">
+					<Description>Person ID of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Email"
+									 remediationModificationType="None" type="string">
+					<Description>Email Address of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="User Name"
+									 remediationModificationType="None" type="string">
+					<Description>User Name of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="User ID"
+									 remediationModificationType="None" type="string">
+					<Description>User ID of Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Employee Date Valid From"
+									 remediationModificationType="None" type="string">
+					<Description>Valid From Date of the Employee</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Employee Date Valid To"
+									 remediationModificationType="None" type="string">
+					<Description>Valid To Date of the Employee</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Is Locked"
+									 remediationModificationType="None" type="boolean">
+					<Description>Is Business User Locked</Description>
+				</AttributeDefinition>
+				<AttributeDefinition entitlement="true" multi="true"
+									 managed="true" name="Business Roles"
+									 remediationModificationType="None" type="string" schemaObjectType="group">
+					<Description>Business Roles assigned to Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="User Date Valid From"
+									 remediationModificationType="None" type="string">
+					<Description>Valid From Date of the Business User</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="User Date Valid To"
+									 remediationModificationType="None" type="string">
+					<Description>Valid To Date of the Business User</Description>
+				</AttributeDefinition>
+			</Schema>
+			<Schema displayAttribute="Business Role Name" identityAttribute="Business Role ID" nativeObjectType="Role" objectType="group">
+				<AttributeDefinition name="Business Role ID" remediationModificationType="None" type="string">
+					<Description>Business Role Unique Identifier</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="Business Role Name" remediationModificationType="None" type="string">
+					<Description>Business Role Name</Description>
+				</AttributeDefinition>
+			</Schema>
+		</Schemas>
+		<Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='SAP S/4HANA Cloud'
+	connectorName="SAP S/4HANA Cloud" type="SourceConfig" directConnect="true" status="released"
+	fileUpload="true" shortDesc="ShortDesc">
+
+	<Menu name="S/4HANA Connection Settings" label="con_form_saps4hanacloud_conn_settings">
+		<Section name="S/4HANA Connection Settings" label="con_form_saps4hanacloud_conn_settings"
+			sectionInfo="sectionInfo_connectionCredentials" docLinkLabel="docLinkLabel_connectionCredentials"
+			docLink="https://documentation.sailpoint.com/connectors/sap/s4_hana/help/">
+
+			<Field name="host" type="url" required="true" displayName="con_form_saps4hanacloud_url" helpKey="help_con_form_saps4hanacloud_url" />
+			<Field name="username" required="true" displayName="con_form_saps4hanacloud_user" type="text" helpKey="help_con_form_saps4hanacloud_user" />
+			<Field name="password" type="secret" required="true" displayName="con_form_saps4hanacloud_password" helpKey="help_con_form_saps4hanacloud_password" />
+			<Field name="pageSize" type="number" defaultValue="50" displayName="con_form_page_size" min="1" helpKey="help_con_form_page_size" saveAsString="true" />
+			<Field name="roleDetailsFile" type="text" displayName="con_form_saps4hanacloud_roledetailsfilepath" required="true" helpKey="help_con_form_saps4hanacloud_roledetailsfilepath" />
+		</Section>
+	</Menu>
+</Form>]]>
+		</Settings>
+	</Application>
+</ImportAction>

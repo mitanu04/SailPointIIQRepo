@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250520" executor="sailpoint.request.EmailRequestExecutor" id="c0a801899fb11942819fb1ca4317011e" name="Email Request" retryMax="20">
+  <Attributes>
+    <Map>
+      <entry key="maxQueue" value="10"/>
+      <entry key="requestProcessorNoInterrupt" value="true"/>
+    </Map>
+  </Attributes>
+</RequestDefinition>

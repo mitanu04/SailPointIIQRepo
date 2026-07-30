@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns="http://www.w3.org/1999/xhtml">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        // Handle the Grant Type change in dropdown - show hide respective views
+        function toggleGrantTypeView() {
+            var grantType = getFieldValue("editForm:grantType");
+            var refreshToken = (grantType == "JWT_BEARER");
+            if (!refreshToken) {
+                refreshToken = true;
+                document.getElementById("editForm:grantType:0").checked = true;
+            }
+
+            if (refreshToken) {
+                Ext.fly("jwtBearerTokenDiv").removeCls("hidden");
+            } else {
+                Ext.fly("jwtBearerTokenDiv").addCls("hidden");
+            }
+        }
+
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if (fileName) {
+                val = fileName.value;
+            }
+            return val;
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+
+
+            toggleGrantTypeView();
+
+            // This is our validation hook
+            Page.on('beforeSave', function () {
+                if (!hasCredentialConfiguration()) {
+                    var ocs_name = getFieldValue('editForm:oracleCloudServiceName');
+                    Validator.validateNonBlankString(ocs_name, "#{msgs.err_oracle_epm_cloud_missing_oracle_cloud_service_name}");
+
+                    var epmUrl = getFieldValue('editForm:epmUrl');
+                    Validator.validateNonBlankString(epmUrl, "#{msgs.err_oracle_epm_cloud_missing_epm_url}");
+
+                    var idcsUrl = getFieldValue('editForm:idcsUrl');
+                    Validator.validateNonBlankString(idcsUrl, "#{msgs.err_oracle_epm_cloud_missing_identity_cloud_service_url}");
+
+                    var username = getFieldValue('editForm:username');
+                    Validator.validateNonBlankString(username, "#{msgs.err_oracle_epm_cloud_missing_username}");
+
+                    if (getFieldValue("editForm:grantType") == "JWT_BEARER") {
+                        var client_id = getFieldValue('editForm:client_id');
+                        Validator.validateNonBlankString(client_id, "#{msgs.err_oracle_epm_cloud_missing_client_id}");
+
+                        var client_secret = getFieldValue('editForm:client_secret');
+                        Validator.validateNonBlankString(client_secret, "#{msgs.err_oracle_epm_cloud_missing_client_secret}");
+
+                        var certificate_alias = getFieldValue('editForm:certificate_alias');
+                        Validator.validateNonBlankString(certificate_alias, "#{msgs.err_oracle_epm_cloud_missing_certificate_alias}");
+
+                        var public_certificate = getFieldValue('editForm:public_certificate');
+                        Validator.validateNonBlankString(public_certificate, "#{msgs.err_oracle_epm_cloud_missing_certificate}");
+
+                        var private_key = getFieldValue('editForm:private_key');
+                        Validator.validateNonBlankString(private_key, "#{msgs.err_oracle_epm_cloud_missing_private_key}");
+                    }
+
+                    var errors = Validator
+                        .getErrors();
+                    if (errors && errors.length > 0) {
+                        Validator
+                            .displayErrors('appErrorsTop');
+                        return false;
+                    }
+                }
+
+                //return false will kill cancel the save
+                return true;
+            });
+
+        });
+
+        //--><!]]>
+    </script>
+    <f:view>
+        <div class="spContent" id="credentialsContainer" style="padding-bottom:0px">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader"
+                                  value="#{msgs.con_form_oracle_epm_cloud_environment_config}"/>
+                </div>
+            </div>
+            <div class="row spContent">
+                <div class="col-sm-12">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_oracle_cloud_service_name}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpServiceName" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{msgs.help_con_form_oracle_epm_cloud_oracle_cloud_service_name}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="oracleCloudServiceName"
+                                             value="#{applicationObject.attributes['oracleCloudServiceName']}"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_identity_cloud_service_url}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpIdcsUrl" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{msgs.help_con_form_oracle_epm_cloud_identity_cloud_service_url}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="idcsUrl"
+                                             value="#{applicationObject.attributes['idcsUrl']}"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_oracle_epm_cloud_epm_url}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpEpmUrl" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{msgs.help_con_form_oracle_epm_cloud_epm_url}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="epmUrl"
+                                             value="#{applicationObject.attributes['epmUrl']}"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_oracle_epm_cloud_username}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpusername" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{msgs.help_con_form_oracle_epm_cloud_username_service}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="username"
+                                             value="#{applicationObject.attributes['username']}"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                                </h:inputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- Grant type selection -->
+            <div class="row spContent">
+                <div class="col-sm-12">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText value="#{msgs.label_grant_type}"/>
+                            </td>
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpGrantType"
+                                                styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_jwt_grant_type}"/>
+                            </td>
+                            <td>
+                                <h:selectOneMenu id="grantType" name="granttype"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 value="#{applicationObject.attributes['grant_type']}"
+                                                 class="" onchange="toggleGrantTypeView()">
+                                    <f:selectItem itemValue="JWT_BEARER" itemLabel="JWT Bearer Token"/>
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div> <!-- Grant type selection End-->
+            <!-- token -->
+            <div class="row spContent" id="credentials">
+                <div class="col-sm-12" id="jwtBearerTokenDiv">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_oracle_epm_cloud_client_id}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpClientId" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_oracle_epm_cloud_client_id}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="client_id"
+                                             value="#{applicationObject.attributes['client_id']}"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                        <tr id="clientSecretRow">
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_client_secret}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_oracle_epm_cloud_client_secret}"/>
+                            </td>
+                            <td>
+                                <sp:inputSecret id="client_secret"
+                                                value="#{applicationObject.attributes['client_secret']}"
+                                                size="120" redisplay="true" autocomplete="off"
+                                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_certificate_alias}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpcertificatealias" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_certificate_alias}"/>
+                            </td>
+                            <td>
+                                <sp:inputText id="certificate_alias"
+                                              value="#{applicationObject.attributes['certificate_alias']}"
+                                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_certificate}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpcertificate" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_certificate}"/>
+                            </td>
+                            <td>
+                                <sp:inputSecret id="public_certificate"
+                                                redisplay="true" autocomplete="off"
+                                                value="#{applicationObject.attributes['public_certificate']}"
+                                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px'
+                                              value="#{msgs.con_form_oracle_epm_cloud_private_key}"/>
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpprivateKey" styleClass="helpIcon"
+                                                url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_private_key}"/>
+                            </td>
+                            <td>
+                                <sp:inputSecret id="private_key"
+                                                redisplay="true" autocomplete="off"
+                                                value="#{applicationObject.attributes['private_key']}"
+                                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </f:view>
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .top0 {
+            margin-top: 0px !important;
+        }
+    </style>
+</ui:composition>
+
+</body>
+</html>

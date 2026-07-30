@@ -1,0 +1,413 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="ServiceNow Service Desk File Attachment Rule" type="AfterProvisioning">
+  <Description>An IdentityIQ server-side rule that is executed after the connector's provisioning method is called. This gives the customer the ability to customize or react to anything in the ProvisioningPlan AFTER it has been sent out to the specific applications.
+
+This rule will be called for any application found in a plan that also has a configured 'afterProvisioningRule' configured.</Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="plan">
+        <Description>
+          The ProvisioningPlan object on its way to the Connector.
+        </Description>
+      </Argument>
+      <Argument name="application">
+        <Description>
+          The application object that references this before/after script.
+        </Description>
+      </Argument>
+      <Argument name="result">
+        <Description>
+          The ProvisioningResult object returned by the connectors provision method. This can be null and in many cases the connector will  not return a result and instead will annotate the plan's ProvisioningResult either at the plan or account level.
+        </Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Source>
+    <![CDATA[
+        import java.io.File;
+        import java.io.FileInputStream;
+        import java.util.ArrayList;
+        import java.util.List;
+        import java.util.Base64;
+        import java.util.ArrayList;
+        import java.net.URLEncoder;
+
+        import org.apache.http.Header;
+        import org.apache.http.HttpHeaders;
+        import org.apache.http.auth.AuthScope;
+        import org.apache.http.auth.UsernamePasswordCredentials;
+        import org.apache.http.client.CredentialsProvider;
+        import org.apache.http.client.ResponseHandler;
+        import org.apache.http.client.methods.HttpPost;
+        import org.apache.http.client.methods.HttpGet;
+        import org.apache.http.entity.ByteArrayEntity;
+        import org.apache.http.impl.client.BasicCredentialsProvider;
+        import org.apache.http.impl.client.BasicResponseHandler;
+        import org.apache.http.impl.client.CloseableHttpClient;
+        import org.apache.http.impl.client.HttpClientBuilder;
+        import org.apache.http.message.BasicHeader;
+        import org.apache.http.message.BasicNameValuePair;
+        import org.apache.http.client.entity.UrlEncodedFormEntity;
+        import org.apache.http.impl.client.HttpClients;
+        import org.apache.http.HttpHost;
+        import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+        import org.apache.http.client.CredentialsProvider;
+        import org.apache.http.auth.UsernamePasswordCredentials;
+        import org.apache.http.auth.AUTH;
+        import org.apache.commons.logging.Log;
+        import org.apache.commons.logging.LogFactory;
+
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import sailpoint.service.AttachmentDTO;
+        import sailpoint.object.Attachment;
+        import sailpoint.object.Attributes;
+        import sailpoint.service.AttachmentService;
+        import sailpoint.connector.ConnectorException;
+
+        import com.google.gson.JsonObject;
+        import com.google.gson.JsonParser;
+
+        /**
+         * Field to hold all attachments in the plan.
+         */
+        List<Attachment> attachments = new ArrayList<Attachment>();
+
+        /**
+         * Field to hold all attachment names in the plan.
+         */
+        List<String> attachmentsName = new ArrayList<String>();
+
+        /**
+         * Field to hold ticket number to whome attachments will be added.
+         */
+        String ticketNumber = null;
+
+        // Fields to hold various application attributes
+        String url = null;
+        String username = null;
+        String password = null;
+        String authenticationType = null;
+        String tokenUrl = null;
+        String grantType = null;
+        String refreshToken = null;
+        String clientID = null;
+        String clientSecret = null;
+        String ticketType = null;
+        String table_name = null;
+        String accessToken = null;
+        String oauthTokenInfo = null;
+
+        /**
+         * Field to hold REST Client.
+         */
+        CloseableHttpClient client = null;
+        
+        /**
+         * HttpClientBuilder use to build CloseableHttpClient
+         */
+        HttpClientBuilder builder;
+        
+        CredentialsProvider credsProvider;
+
+        /**
+         * Scan the plan for attachments to populate the attachments and attachmentsNamelist.
+         */
+        void scanPlanforAttachment() {
+            List<AccountRequest> accountRequests = plan.getAccountRequests();
+
+            if (accountRequests != null && accountRequests.size() > 0) {
+                for (AccountRequest req : accountRequests) {
+                    if (null != req.getArguments()) {
+                        List<AttachmentDTO> attachmentDTOs = req.getArguments().get("attachments");
+                        if (null != attachmentDTOs) {
+                            for (AttachmentDTO attachmentDTO : attachmentDTOs) {
+                                // Add attachment details to the list.
+                                attachmentsName.add(attachmentDTO.getName());
+                                attachments.add(context.getObjectById(Attachment.class, attachmentDTO.getId()));
+                            }
+                        }
+                    }
+                  ticketNumber = req.getRequestID();
+                  log.debug("ServiceNow Service Desk File Attachment Rule - Ticket Number: " + ticketNumber);
+                }
+            }
+        }
+
+        /**
+         * Initialize variables from application configuration.
+         */
+        void initApplicationVariables() {
+            if (application !=null && application.getAttributes() != null ) {
+                url = application.getAttributes().get("url");
+                username = application.getAttributes().get("username");
+                password = context.decrypt(application.getAttributes().get("password"));
+                authenticationType = application.getAttributes().get("authenticationType");
+                ticketType = application.getAttributes().get("ticketType");
+
+                if ("OAuth2".equals(authenticationType)) {
+                    tokenUrl = application.getAttributes().get("token_url");
+                    clientID = application.getAttributes().get("client_id");
+                    grantType = application.getAttributes().get("grant_type");
+                    clientSecret = context.decrypt(application.getAttributes().get("client_secret"));
+                    refresh_token = context.decrypt(application.getAttributes().get("refresh_token"));
+                    oauthTokenInfo = context.decrypt(application.getAttributes().get("oauth_token_info"));
+                    JsonObject jsonObject = new JsonParser().parse(oauthTokenInfo).getAsJsonObject();
+                    accessToken = jsonObject.get("accessToken").getAsString();
+                    refreshToken = jsonObject.get("refreshToken").getAsString();
+                }
+
+                if ("serviceRequest".equals(ticketType)) {
+                    table_name = "sc_request";
+                } else if ("changeRequest".equals(ticketType)) {
+                    table_name = "change_request";
+                } else if ("incident".equals(ticketType)) {
+                    table_name = "incident";
+                }
+            } else {
+                throw new Exception("Application configuration is empty.");
+            }
+        }
+
+        /**
+         * Get the ticket sys_id.
+         */
+        String  getTicketSysID() {
+            String getSysIdUrl = url + "/api/now/table/" + table_name +"?sysparm_query=number=" + ticketNumber + "&sysparm_fields=sys_id";
+            log.debug("ServiceNow Service Desk File Attachment Rule - getTicketSysID URL: " + getSysIdUrl);
+            String responseBody = null;
+            String sys_id = null;
+
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+
+            // Added loop for token generation on expiry when authenticationType is OAuth2
+            for (int i = 0; i <= 1; i++) {
+                try {
+                    HttpGet httpGet = new HttpGet(getSysIdUrl);
+                    if ("Basic".equals(authenticationType)) {
+                        String encode = "Basic " + encryptCredentials();
+                        httpGet.addHeader("Authorization", "Basic " + encryptCredentials());
+                    } else if ("OAuth2".equals(authenticationType)) {
+                        httpGet.addHeader("Authorization", "Bearer " + accessToken);
+                    }
+
+                    responseBody = client.execute(httpGet, responseHandler);
+                    log.debug("ServiceNow Service Desk File Attachment Rule - getTicketSysID response: " + responseBody);
+
+                    // break the loop.
+                    break;
+                } catch (Exception e) {
+                    if ("OAuth2".equals(authenticationType) && e.getMessage()!= null && e.getMessage().contains("401")) {
+                        regenerateAccessTokenOnExpiry();
+                    } else {
+                        throw new ConnectorException("Exception while getting sys_id for the ticket: " + ticketNumber + ". Error message: " + e.getMessage() , e);
+                    }
+                }
+            }
+
+            if (responseBody != null) {
+                JsonObject jsonObject = new JsonParser().parse(responseBody).getAsJsonObject();
+                JsonObject obj = jsonObject.get("result").getAsJsonArray().get(0).getAsJsonObject();
+                sys_id = obj.get("sys_id").getAsString();
+            }
+
+            log.debug("ServiceNow Service Desk File Attachment Rule - sys_id: " + sys_id);
+            if (sys_id == null) {
+                throw new ConnectorException("Ticket sys_id is null for the ticket number: " + ticketNumber);
+            }
+            return sys_id;
+        }
+
+        /**
+         * Add attachment to the Ticket.
+         */
+        void addAttachmentToTicket(String sys_id) {
+            byte[] fileContent = null;
+            for (int i=0; i < attachments.size(); i++) {
+                Attachment attachment= attachments.get(i);
+                fileContent = AttachmentService.decrypt(attachment.getContent(), context);
+
+                String attachmetName = URLEncoder.encode(attachmentsName.get(i), "UTF-8");
+                String attachmentUrl= url + "/api/now/attachment/file?table_name=" + table_name + "&table_sys_id=" + sys_id + "&file_name=" + attachmetName;
+                log.debug("ServiceNow Service Desk File Attachment Rule - Attachment URL: " + attachmentUrl);
+
+                HttpPost post = new HttpPost(attachmentUrl);
+
+                post.addHeader(HttpHeaders.CONTENT_TYPE,"application/json");
+                post.addHeader(HttpHeaders.ACCEPT,"application/json");
+
+                post.setEntity(new ByteArrayEntity(fileContent));
+
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                for (int i = 0; i <= 1; i++) {
+                    try {
+                        if ("Basic".equals(authenticationType)) {
+                            Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encryptCredentials());
+                            post.setHeader(header);
+                        } else if ("OAuth2".equals(authenticationType)) {
+                            Header header = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+                            post.setHeader(header);
+                        }
+                        String responseBody = client.execute(post, responseHandler);
+                        log.debug("ServiceNow Service Desk File Attachment Rule - addAttachmentToTicket response: " + responseBody);
+
+                        // break the loop
+                        break;
+                    } catch (Exception e) {
+                        if ("OAuth2".equals(authenticationType) && e.getMessage()!= null && e.getMessage().contains("401")) {
+                            regenerateAccessTokenOnExpiry();
+                        } else {
+                            throw new ConnectorException("Failed to add attachment " + attachmetName + " to the ticket: " + ticketNumber + ". Error message: " + e.getMessage() , e);
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * For OAuth2, if accessToken is expired, regenerate it.
+         */
+        void regenerateAccessTokenOnExpiry() {
+            log.debug("ServiceNow Service Desk File Attachment Rule - Regenerate Access Token");
+            HttpPost httpPost = new HttpPost(tokenUrl);
+
+            List<NameValuePair>postParameters = new ArrayList<NameValuePair>();
+
+            postParameters.add(new BasicNameValuePair("client_id", clientID));
+            postParameters.add(new BasicNameValuePair("client_secret", clientSecret));
+
+            if ("PASSWORD".equals(grantType)) {
+                postParameters.add(new BasicNameValuePair("username", username));
+                postParameters.add(new BasicNameValuePair("password", password));
+                postParameters.add(new BasicNameValuePair("grant_type", "password"));
+            } else if ("REFRESH_TOKEN".equals(grantType)) {
+                postParameters.add(new BasicNameValuePair("refresh_token", refreshToken));
+                postParameters.add(new BasicNameValuePair("grant_type", "refresh_token"));
+            }
+
+            httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+
+            responseBody = client.execute(httpPost, responseHandler);
+
+            JsonObject jsonObject = new JsonParser().parse(responseBody).getAsJsonObject();
+            accessToken = jsonObject.get("access_token").getAsString();
+        }
+
+        /**
+         * Encrypt credentials using Base64 Encoder.
+         */
+        String encryptCredentials() throws Exception {
+            String value = username + ":" + password;
+
+            return Base64.getEncoder().encodeToString(value.getBytes("UTF-8"));
+        }
+        
+        /**
+         * Initialize rest client.
+         */
+        void initRestClient() {
+            builder = HttpClients.custom().useSystemProperties().evictExpiredConnections();
+            setProxy();
+            client = builder.build();
+        }
+        
+        /**
+         * Set proxy by checking system-level HTTPS / HTTPproxy settings. 
+         */
+        void setProxy() throws Exception {
+            final String HTTPS_PROXYHOST = "https.proxyHost";
+            final String HTTPS_PROXYPORT = "https.proxyPort";
+            final String HTTP_PROXYHOST = "http.proxyHost";
+            final String HTTP_PROXYPORT = "http.proxyPort";
+            final String NO_PROXY_HOSTS = "http.nonProxyHosts";
+            final String HTTPS_PROXYUSER = "https.proxyUser";
+            final String HTTPS_PROXYPASSWORD = "https.proxyPassword";
+            final String HTTP_PROXYUSER = "http.proxyUser";
+            final String HTTP_PROXYPASSWORD = "http.proxyPassword";
+            String proxyUser = null;
+            String proxyPassword = null;
+            HttpHost proxy = null;
+            if (System.getProperty(HTTPS_PROXYHOST) != null && System.getProperty(HTTPS_PROXYPORT) != null) {
+                proxyUser = System.getProperty(HTTPS_PROXYUSER);
+                proxyPassword = System.getProperty(HTTPS_PROXYPASSWORD);
+                proxy = new HttpHost(System.getProperty(HTTPS_PROXYHOST),
+                        Integer.parseInt(System.getProperty(HTTPS_PROXYPORT)));
+                DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+                builder.setRoutePlanner(routePlanner);
+            } else if (System.getProperty(HTTP_PROXYHOST) != null && System.getProperty(HTTP_PROXYPORT) != null) {
+                proxyUser = System.getProperty(HTTP_PROXYUSER);
+                proxyPassword = System.getProperty(HTTP_PROXYPASSWORD);
+                proxy = new HttpHost(System.getProperty(HTTP_PROXYHOST), Integer.parseInt(System.getProperty(HTTP_PROXYPORT)));
+                DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+                builder.setRoutePlanner(routePlanner);
+            }
+            
+            if (null != proxy) {
+                builder.setProxy(proxy);
+
+                if (proxyUser != null && proxyPassword != null) {
+                    credsProvider = new BasicCredentialsProvider();
+                    
+                    credsProvider.setCredentials(
+                            new AuthScope(proxy.getHostName(), proxy.getPort()),
+                            new UsernamePasswordCredentials(proxyUser, proxyPassword));
+                    
+                    builder.setDefaultCredentialsProvider(credsProvider);
+                }
+            }
+        }
+
+        ////////////////////////////////////////////////////////////
+        // main
+        ////////////////////////////////////////////////////////////
+
+        Log log = LogFactory.getLog("openconnector.connector.servicedesk.ServiceDeskConnector");
+
+        log.debug("Entering ServiceNow Service Desk File Attachment Rule.");
+        
+        // Scan plan for any attachments
+        scanPlanforAttachment();
+        
+        if (ticketNumber == null) {
+            log.warn("Ticket number not found the provisioning plan. Returning...");
+            
+            return;
+        }
+
+        if (attachments.size() == 0) {
+            log.debug("Attachments not found the provisioning plan. Returning...");
+
+            return;
+        }
+
+        // Initialize the variables from application configuration
+        initApplicationVariables();
+
+        try {
+            // Initialize Rest client
+            initRestClient();
+
+            // Add attachment to the Ticket sys_id
+            addAttachmentToTicket(getTicketSysID());
+        } finally {
+            // close the client
+            if (client != null) {
+                client.close();
+            }
+        }
+
+        log.debug("Exiting ServiceNow Service Desk File Attachment Rule.");
+    ]]>            
+  </Source>
+</Rule>

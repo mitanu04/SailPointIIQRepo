@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition created="1785394253309" id="c0a801899fb11942819fb1ca4dfd01fb" name="Refresh Role Indexes" subType="task_item_type_generic" type="Generic">
+  <Description>
+            Refresh the statistics of all roles.
+        </Description>
+  <Parent>
+    <Reference class="sailpoint.object.TaskDefinition" id="c0a801899fb11942819fb1ca4cb701d7" name="Role Index Refresh"/>
+  </Parent>
+</TaskDefinition>

@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        
+        function showOAuth2Config(temp) {
+            if(null!=temp) {
+                if(temp == "true")
+                {
+                var radioInputs = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                radioInputs.item(1).checked = true;
+                document.getElementById('userTr').style.display = '';
+                document.getElementById('passwordTr').style.display = '';               
+                document.getElementById('clientIdTr').style.display = '';
+                document.getElementById('clientSecretTr').style.display = '';
+		document.getElementById('refreshTokenTr').style.display = '';
+                document.getElementById('audienceTr').style.display = '';
+                document.getElementById('privateKeyTr').style.display = '';
+                document.getElementById('privateKeyPasswordTr').style.display = '';
+                document.getElementById('subjectTr').style.display = '';
+                document.getElementById('issuerTr').style.display = '';
+                document.getElementById('salesforceUrlDiv').style.display = 'none';
+                document.getElementById('grantTypeTr').style.display = '';
+                toggleGrantType(Ext.getDom('editForm:grant_type').value);
+                 } 
+                 else {
+                var radioInputs = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                radioInputs.item(0).checked = true;
+                document.getElementById('userTr').style.display = '';
+                document.getElementById('passwordTr').style.display = '';
+                document.getElementById('clientIdTr').style.display = 'none';
+                document.getElementById('clientSecretTr').style.display = 'none';
+	        document.getElementById('refreshTokenTr').style.display = 'none';
+                document.getElementById('audienceTr').style.display = 'none';
+                document.getElementById('privateKeyTr').style.display = 'none';
+                document.getElementById('privateKeyPasswordTr').style.display = 'none';
+                document.getElementById('subjectTr').style.display = 'none';
+                document.getElementById('issuerTr').style.display = 'none';
+                document.getElementById('salesforceUrlDiv').style.display = '';
+                document.getElementById('grantTypeTr').style.display = 'none';
+                 }
+            }
+            
+        }
+         
+        function toggleCredentials(authType) {
+            if (typeof(authType) == 'undefined') {
+                authType = "Basic";
+            }
+
+            if (authType == "Basic") {
+                var radioInputs = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                radioInputs.item(0).checked = true;
+                document.getElementById('userTr').style.display = '';
+                document.getElementById('passwordTr').style.display = '';
+                document.getElementById('clientIdTr').style.display = 'none';
+                document.getElementById('clientSecretTr').style.display = 'none';
+		document.getElementById('refreshTokenTr').style.display = 'none';
+                document.getElementById('audienceTr').style.display = 'none';
+                document.getElementById('privateKeyTr').style.display = 'none';
+                document.getElementById('privateKeyPasswordTr').style.display = 'none';
+                document.getElementById('subjectTr').style.display = 'none';
+                document.getElementById('issuerTr').style.display = 'none';
+                document.getElementById('salesforceUrlDiv').style.display = '';
+                document.getElementById('grantTypeTr').style.display = 'none';
+            } else if (authType == "OAuth2") {
+                document.getElementById('salesforceUrlDiv').style.display = 'none';
+                document.getElementById('grantTypeTr').style.display = '';
+                var radioInputs = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                radioInputs.item(1).checked = true;
+                toggleGrantType(Ext.getDom('editForm:grant_type').value);
+            }
+        }
+         
+        function toggleGrantType(grantType) {
+            if (typeof(grantType) == 'undefined') {
+                grantType = "Password";
+            }
+            if (grantType == "Password") {				
+                document.getElementById('userTr').style.display = '';
+                document.getElementById('passwordTr').style.display = '';               
+                document.getElementById('clientIdTr').style.display = '';
+                document.getElementById('clientSecretTr').style.display = '';
+                document.getElementById('refreshTokenTr').style.display = 'none';
+                document.getElementById('audienceTr').style.display = 'none';
+                document.getElementById('privateKeyTr').style.display = 'none';
+                document.getElementById('privateKeyPasswordTr').style.display = 'none';
+		document.getElementById('subjectTr').style.display = 'none';
+                document.getElementById('issuerTr').style.display = 'none';
+            } else if (grantType == "Jwt") {
+                document.getElementById('userTr').style.display = 'none';
+                document.getElementById('passwordTr').style.display = 'none';
+                document.getElementById('clientIdTr').style.display = 'none';
+                document.getElementById('clientSecretTr').style.display = 'none';
+                document.getElementById('refreshTokenTr').style.display = 'none';
+                document.getElementById('audienceTr').style.display = '';
+                document.getElementById('privateKeyTr').style.display = '';
+                document.getElementById('privateKeyPasswordTr').style.display = '';
+		document.getElementById('subjectTr').style.display = '';
+                document.getElementById('issuerTr').style.display = '';
+            } else if (grantType == "refresh_token") {
+                document.getElementById('userTr').style.display = 'none';
+                document.getElementById('passwordTr').style.display = 'none';
+                document.getElementById('clientIdTr').style.display = '';
+                document.getElementById('clientSecretTr').style.display = '';
+                document.getElementById('refreshTokenTr').style.display = '';
+                document.getElementById('audienceTr').style.display = 'none';
+                document.getElementById('privateKeyTr').style.display = 'none';
+                document.getElementById('privateKeyPasswordTr').style.display = 'none';
+		document.getElementById('subjectTr').style.display = 'none';
+                document.getElementById('issuerTr').style.display = 'none';
+            }
+        }
+        
+        Ext.onReady(function () {
+           showOAuth2Config("#{applicationObject.attributes['isOAuth2ConfigEnabled']}"); 
+           toggleCredentials("#{applicationObject.attributes['auth_type']}");
+           Ext.QuickTips.init();
+
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+               
+                 var radioInputsAuth = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                   var authType;
+                   if (radioInputsAuth.item(0).checked) {
+                       authType = "Basic";
+                   } else if (radioInputsAuth.item(1).checked) {
+                       authType = "OAuth2";
+                   }
+                   var user = getFieldValue('editForm:sfuser');
+                   var password = getFieldValue('editForm:sfpassword');
+                   var clientId = getFieldValue('editForm:clientId');
+                   var clientSecret = getFieldValue('editForm:clientSecret');
+                   var audience = getFieldValue('editForm:audience');
+                   var refreshToken = getFieldValue('editForm:refreshToken');
+		   var Subject = getFieldValue('editForm:subject');
+                   var Issuer = getFieldValue('editForm:issuer');
+    
+                   if (authType == "Basic") {
+                       Validator.validateNonBlankString(user, "#{msgs.con_form_salesforce_idadminimspecify}");
+                       Validator.validateNonBlankString(password, "#{msgs.con_form_salesforce_passadminimspecify}");
+                   } else if (authType == "OAuth2") {
+                       var grantType = document.getElementById("editForm:grant_type").value;
+                       if (grantType == "Password") {
+                           Validator.validateNonBlankString(user, "#{msgs.con_form_salesforce_idadminimspecify}");
+                           Validator.validateNonBlankString(password, "#{msgs.con_form_salesforce_passadminimspecify}");
+                           Validator.validateNonBlankString(clientId, "#{msgs.err_salesforce_missing_clientId}");
+                           Validator.validateNonBlankString(clientSecret, "#{msgs.err_salesforce_missing_client_secret}");
+                       } else if (grantType == "Jwt") {
+                           Validator.validateNonBlankString(Subject, "#{msgs.err_salesforce_missing_subject}");
+                           Validator.validateNonBlankString(Issuer, "#{msgs.err_salesforce_missing_issuer}");
+                           Validator.validateNonBlankString(audience, "#{msgs.err_salesforce_missing_audience}");
+			   var privateKeyExists = getFieldValue('editForm:privateKeyExists');
+                           if (!privateKeyExists) {
+			       var privateKey = getFieldValue('editForm:private_key');
+			       Validator.validateNonBlankString(privateKey, "#{msgs.con_form_box_prvtKeynotnull}");
+                           }
+                       } else if (grantType == "refresh_token") {
+                           Validator.validateNonBlankString(clientId, "#{msgs.err_salesforce_missing_clientId}");
+                           Validator.validateNonBlankString(clientSecret, "#{msgs.err_salesforce_missing_client_secret}");
+                           Validator.validateNonBlankString(refreshToken, "#{msgs.err_salesforce_missing_refresh_token}");
+                       }
+                   }
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               
+               }
+               //return false will kill cancel the save
+               return true;
+           });
+
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+    <c:if test="#{applicationObject.type eq 'Salesforce'}">
+        <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_salesforce_settings}"/><br/><br/>
+    </c:if>
+
+    <c:if test="#{applicationObject.type eq 'RemedyForce'}">
+        <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_remedyforce_settings}"/><br/><br/>
+    </c:if>
+
+     <div id="salesforceUrlDiv"> 
+     <table class="spTable" style="border:0px" cellspacing="0">
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_salesforce_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_url}"/>
+
+            </td>
+            <td valign="center"><h:inputText id="url"
+                  value="#{applicationObject.attributes['url']}"
+                  size="80"
+                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+              </td>
+          </tr>
+          </table>
+     </div>
+     
+    
+        <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr id="salesforceAuthDiv">
+            <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_salesforce_auth_type}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAuthType" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_salesforce_auth_type}"/>
+            </td>
+            <td>
+                        <h:selectOneRadio id="auth_type" redisplay="true"
+                                value="#{applicationObject.attributes['auth_type']}" 
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                layout="pageDirection"
+                                onchange="toggleCredentials(this.value)">
+                        <f:selectItem itemValue="Basic" itemLabel="#{msgs.con_form_salesforce_auth_type_basic}"/>       
+                        <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_salesforce_auth_type_oauth2}"/>
+                        </h:selectOneRadio>
+            </td>
+          </tr>
+   
+      <tr id="grantTypeTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_salesforce_grant_type}"/>
+              <h:outputText />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.help_con_help_salesforce_grant_type}"/>
+            </td>
+            <td>
+               <h:selectOneMenu style="height: 30px !important;line-height: 26px;
+                                vertical-align: middle !important;border: 1px solid #b5b8c8;
+                                width: 300px;" id="grant_type" 
+                                value="#{applicationObject.attributes['grant_type']}"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                onchange="toggleGrantType(this.value)">
+                                <f:selectItem itemValue="Password" itemLabel="#{msgs.con_form_salesforce_grant_type_password}"/>
+                                <f:selectItem itemValue="Jwt" itemLabel="#{msgs.con_form_salesforce_grant_type_jwt}"/>
+                                <f:selectItem itemValue="refresh_token" itemLabel="#{msgs.con_form_salesforce_grant_type_refresh_token}"/>
+               </h:selectOneMenu> 
+             </td>
+          </tr>
+    </table>
+
+        <table class="spTable" style="border:0px" cellspacing="0">
+          <tr id="userTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_user}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUser" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_user}"/>
+            </td>
+            <td>
+              <h:inputText value="#{applicationObject.attributes['user']}"
+                           size="50"
+                           id="sfuser"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="passwordTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPassword" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_password}"/>
+            </td>
+             <td>
+               <sp:inputSecret size="20" 
+                               id="sfpassword"
+                               value="#{applicationObject.attributes['password']}" redisplay="true"
+                               autocomplete="off"
+                               disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                               readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /> 
+             </td>
+          </tr>
+          </table>
+
+                  <table class="spTable" style="border: 0px" cellspacing="0">                
+                      <tr id="clientIdTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_clientId}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpClientId" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_clientId}" /></td>
+                          <td><h:inputText
+                                  value="#{applicationObject.attributes['clientId']}"
+                                  id="clientId" size="120"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+
+                      <tr id="subjectTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_subject}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpSubject" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_subject}" /></td>
+                          <td><h:inputText
+                                  value="#{applicationObject.attributes['subject']}"
+                                  id="subject" size="120"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+
+                      <tr id="issuerTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_issuer}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpIssuer" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_issuer}" /></td>
+                          <td><h:inputText
+                                  value="#{applicationObject.attributes['issuer']}"
+                                  id="issuer" size="120"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+					  
+					  
+                      <tr id="clientSecretTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_clientSecret}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpClientSecret" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_clientSecret}" /></td>
+                          <td><sp:inputSecret id="clientSecret"
+                                  value="#{applicationObject.attributes['clientSecret']}"
+                                  size="120" redisplay="true" autocomplete="off"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+                      
+                      <tr id="refreshTokenTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_refreshToken}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpRefreshToken" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_refreshToken}" /></td>
+                          <td><sp:inputSecret id="refreshToken"
+                                  value="#{applicationObject.attributes['refreshToken']}"
+                                  size="120" redisplay="true" autocomplete="off"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+                      
+                      <tr id="audienceTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                  style='padding:5px'
+                                  value="#{msgs.con_form_salesforce_audience}" /> <h:outputText
+                                  styleClass="requiredText" value="*" /></td>
+                          <td class="certScheduleHelpCol"><h:graphicImage
+                                  id="imgHlpAudience" styleClass="helpIcon"
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_audience}" /></td>
+                          <td><sp:inputText id="audience"
+                                  value="#{applicationObject.attributes['audience']}"
+                                  size="120" redisplay="true"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                      </tr>
+					   
+                      <tr id="privateKeyTr">
+                        <td class='titleColumn certScheduleTitleCol' valign="center"><h:outputText 
+			    style='padding:5px' value="#{msgs.con_form_jwt_private_key}"/><h:outputText 
+			    styleClass="requiredText" value="*" />
+                        </td>
+                        <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+        		    id="imgHlpPrivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                            alt="#{help.help_con_form_jwt_private_key}"/>
+                        </td>
+                        <td>
+                            <ui:include src="privateKey.xhtml"/>
+                        </td>
+                      </tr>			  
+          
+                      <tr id="privateKeyPasswordTr">
+                          <td class='titleColumn certScheduleTitleCol'><h:outputText 
+                              style='padding:5px' value="#{msgs.con_form_salesforce_privateKeyPassword}"/>
+                          </td>
+                          <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                                  id="imgHlpPrivateKeyPassword" styleClass="helpIcon" 
+                                  url="/images/icons/dashboard_help_16.png"
+                                  alt="#{help.help_con_form_salesforce_privateKeyPassword}"/>
+                          </td>
+                          <td>
+                                  <sp:inputSecret id="privateKeyPassword"
+                                  value="#{applicationObject.attributes['privateKeyPassword']}"
+                                  redisplay="true" size="80" autocomplete="off"
+                                  disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                  readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                          </td>
+                      </tr>
+          
+                  </table>
+         
+          <table class="spTable" style="border:0px" cellspacing="0">
+           <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_isActive}"/>
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpIsActive" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_isActive}"/>
+            </td>
+            <td>
+              <h:selectBooleanCheckbox id="isActive"
+                                       value="#{applicationObject.attributes['isActive']}" redisplay="true"
+                                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <c:if test="#{applicationObject.type eq 'Salesforce'}">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                value="#{msgs.con_form_salesforce_isfrozen_config}" /></td>
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpisfrozen" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_salesforce_isfrozen_config}" /></td>
+                        <td><h:selectBooleanCheckbox id="isFrozen"
+                                value="#{applicationObject.attributes['excludeFrozen']}" /></td>
+                    </tr>
+          </c:if>
+          <c:if test="#{applicationObject.type eq 'Salesforce'}">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                value="#{msgs.con_form_salesforce_create_contacts_config}" /></td>
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpCreateContacts" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_salesforce_create_contacts_config}" /></td>
+                        <td><h:selectBooleanCheckbox id="createContacts"
+                                value="#{applicationObject.attributes['createContacts']}" /></td>
+                    </tr>
+          </c:if>
+                    <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_SearchStringForUser}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpSearchStringUser" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_SearchStringForUser}"/>
+            </td>
+             <td>
+                <h:inputText value="#{applicationObject.attributes['SearchStringForUser']}"
+                           size="50"
+                           id="SearchStringForUser"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+             </td>
+          </tr>
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_SearchStringForProfile}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpSearchStringProfile" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_salesforce_SearchStringForProfile}"/>
+            </td>
+             <td>
+                <h:inputText value="#{applicationObject.attributes['SearchStringForProfile']}"
+                           size="50"
+                           id="SearchStringForProfile"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+             </td>
+          </tr>
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_salesforce_custom_timeout}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpCustomTimeOut" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_salesforce_custom_timeout}"/>
+            </td>
+            <td>
+              <h:inputText id="customTimeOut"
+                           value="#{applicationObject.attributes['customTimeOut']}"
+                           size="3"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+              </h:inputText>
+            </td>
+          </tr>
+
+        </table>
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

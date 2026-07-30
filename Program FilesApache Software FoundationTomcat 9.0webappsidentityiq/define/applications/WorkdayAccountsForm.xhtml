@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        
+        function showOrgFilter() {
+        	
+            if(document.getElementById("editForm:FetchAccountsByOrganization").checked == true){
+                 document.getElementById('orgFilterDiv').style.display = '';
+            } else {
+                 document.getElementById('orgFilterDiv').style.display = 'none';
+            }
+        }
+        
+        function showFutureOffsetFilter() {
+            if(document.getElementById("editForm:aggregateFutureWorkersAccount").checked == true){
+                 document.getElementById('futureOffsetInput').style.display = '';
+            } else {
+                 document.getElementById('futureOffsetInput').style.display = 'none';
+            }
+        }
+
+        function toggleOrgFilterType(orgFilterType) {
+        	if (orgFilterType === "") {
+        		orgFilterType = "Organization_Type_ID";
+            }
+        	
+        	if (orgFilterType === "Organization_Type_ID") {
+        		var radioInputsOrgFilter = Ext.getDom(document.getElementsByName('editForm:orgFilterType'));
+        		radioInputsOrgFilter.item(0).checked = true;
+        		
+                document.getElementById('orgTypeTr').style.display = '';
+                document.getElementById('orgRefTr').style.display = 'none';
+            } else if (orgFilterType === "Organization_Reference_ID") {
+            	var radioInputsOrgFilter = Ext.getDom(document.getElementsByName('editForm:orgFilterType'));
+        		radioInputsOrgFilter.item(1).checked = true;
+        		
+        		document.getElementById('orgTypeTr').style.display = 'none';
+                document.getElementById('orgRefTr').style.display = '';
+            }
+        }
+        
+        function toggleCredentials(authType) {
+            if (authType === "") {
+                authType = "Basic";
+            }
+
+            if (authType == "Basic") {
+                var radioInputs = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                radioInputs.item(0).checked = true;
+                document.getElementById('urlTr').style.display = '';
+                document.getElementById('userTr').style.display = '';
+                document.getElementById('passwordTr').style.display = '';
+                document.getElementById('grantTypeTr').style.display = 'none';
+                
+                document.getElementById('tokenEndpointTr').style.display = 'none';
+                document.getElementById('clientIdTr').style.display = 'none';
+                document.getElementById('clientSecretTr').style.display = 'none';
+                document.getElementById('refreshTokenTr').style.display = 'none';
+                
+            } else if (authType == "OAuth2") {
+            	document.getElementById('urlTr').style.display = '';
+                document.getElementById('userTr').style.display = 'none';
+                document.getElementById('passwordTr').style.display = 'none';
+                document.getElementById('grantTypeTr').style.display = '';
+                
+                document.getElementById('tokenEndpointTr').style.display = '';
+                document.getElementById('clientIdTr').style.display = '';
+                document.getElementById('clientSecretTr').style.display = '';
+                document.getElementById('refreshTokenTr').style.display = '';
+            }
+        }
+        
+        Ext.onReady(function () {
+           showOrgFilter()
+           showFutureOffsetFilter()
+           toggleCredentials("#{applicationObject.attributes['auth_type']}");
+           toggleOrgFilterType("#{applicationObject.attributes['orgFilterType']}");
+           Ext.QuickTips.init();
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var radioInputsAuth = Ext.getDom(document.getElementsByName('editForm:auth_type'));
+                   var authType;
+                   if (radioInputsAuth.item(0).checked) {
+                       authType = "Basic";
+                   } else if (radioInputsAuth.item(1).checked) {
+                       authType = "OAuth2";
+                   }
+                   
+                   var radioInputsOrgFilterType = Ext.getDom(document.getElementsByName('editForm:orgFilterType'));
+                   var orgFilterType;
+                   if (radioInputsOrgFilterType.item(0).checked) {
+                	   orgFilterType = "Organization_Type_ID";
+                   } else if (radioInputsOrgFilterType.item(1).checked) {
+                	   orgFilterType = "Organization_Reference_ID";
+                   }
+                   
+                   var host = getFieldValue('editForm:url');
+                   Validator.validateNonBlankString(host, "#{msgs.err_workday_accounts_missing_url}");
+                   
+                   var user= getFieldValue('editForm:user');
+                   var pw = getFieldValue('editForm:password');
+                   
+                   if (authType == "Basic") {
+                       Validator.validateNonBlankString(user, "#{msgs.err_workday_accounts_missing_username}");
+                       Validator.validateNonBlankString(pw, "#{msgs.err_workday_accounts_missing_password}");
+                   } else if (authType == "OAuth2") {
+                           var tokenEp = getFieldValue('editForm:tokenEndpoint');
+                           Validator.validateNonBlankString(tokenEp, "#{msgs.err_workday_accounts_missing_token_endpoint}");
+                           var clientId = getFieldValue('editForm:clientId');
+                           Validator.validateNonBlankString(clientId, "#{msgs.err_workday_accounts_missing_clientId}");
+                           var clientSecret = getFieldValue('editForm:clientSecret');
+                           Validator.validateNonBlankString(clientSecret, "#{msgs.err_workday_accounts_missing_client_secret}");
+                           var refreshToken = getFieldValue('editForm:refreshToken');
+                           Validator.validateNonBlankString(refreshToken, "#{msgs.err_workday_accounts_missing_refresh_token}");
+                   }
+                   
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+               //return false will kill cancel the save
+               return true;
+           });
+        });
+
+       //--><!]]>
+    </script>
+  
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_workday_accounts_config}"/><br/>
+
+
+      <div id="accountSettings" class='spContent'>
+        <table class="spTable" style="border:0px" cellspacing="0">
+        
+        <tr id="workdayAuthDiv">
+            <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_auth_type}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAuthType" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_auth_type}"/>
+            </td>
+            <td>
+                        <h:selectOneRadio id="auth_type" redisplay="true"
+                                value="#{applicationObject.attributes['auth_type']}" 
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                layout="pageDirection"
+                                onchange="toggleCredentials(this.value);">
+                        <f:selectItem itemValue="Basic" itemLabel="#{msgs.con_form_workday_accounts_auth_type_basic}"/>       
+                        <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_workday_accounts_auth_type_oauth2}"/>
+                        </h:selectOneRadio>
+            </td>
+          </tr>
+          
+          <tr id="grantTypeTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_grant_type}"/>
+              <h:outputText />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.help_con_form_workday_accounts_grant_type}"/>
+            </td>
+            <td>
+               <h:selectOneMenu style="height: 30px !important;line-height: 26px;
+                                vertical-align: middle !important;border: 1px solid #b5b8c8;
+                                width: 300px;" id="grant_type" 
+                                value="#{applicationObject.attributes['grant_type']}"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                onchange="toggleGrantType(this.value)">
+                                <f:selectItem itemValue="REFRESH_TOKEN" itemLabel="#{msgs.con_form_workday_accounts_grant_type_refresh_token}"/>
+               </h:selectOneMenu> 
+             </td>
+          </tr>
+          <tr id="urlTr">
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_url}"/>
+            </td>
+            <td valign="center">
+              <h:inputText id="url"
+                           value="#{applicationObject.attributes['url']}"
+                           size="120"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          </table>
+
+                <table class="spTable" style="border: 0px" cellspacing="0">
+
+                    <tr id="tokenEndpointTr">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_workday_accounts_token_endpoint}" /> <h:outputText
+                                styleClass="requiredText" value="*" /></td>
+
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpTokenEp" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_tokenEndpoint}" /></td>
+
+                        <td><h:inputText
+                                value="#{applicationObject.attributes['token_url']}"
+                                id="tokenEndpoint" size="120"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </td>
+                    </tr>
+
+                    <tr id="clientIdTr">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px' value="#{msgs.con_form_workday_accounts_clientId}" /> <h:outputText
+                                styleClass="requiredText" value="*" /></td>
+
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpClientId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_clientId}" /></td>
+
+                        <td><h:inputText
+                                value="#{applicationObject.attributes['client_id']}"
+                                id="clientId" size="120"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                    </tr>
+
+                    <tr id="clientSecretTr">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_workday_accounts_clientSecret}" /> <h:outputText
+                                styleClass="requiredText" value="*" /></td>
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpClientSecret" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_clientSecret}" /></td>
+                        <td><sp:inputSecret id="clientSecret"
+                                value="#{applicationObject.attributes['client_secret']}"
+                                size="120" redisplay="true" autocomplete="off"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                    </tr>
+                    
+                    <tr id="refreshTokenTr">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_workday_accounts_refreshToken}" /> <h:outputText
+                                styleClass="requiredText" value="*" /></td>
+                        <td class="certScheduleHelpCol"><h:graphicImage
+                                id="imgHlpRefreshToken" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_refreshToken}" /></td>
+                        <td><sp:inputSecret id="refreshToken"
+                                value="#{applicationObject.attributes['refresh_token']}"
+                                size="120" redisplay="true" autocomplete="off"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+                    </tr>
+                </table>
+           
+           
+           
+           
+           
+           
+           
+           <table class="spTable" style="border:0px" cellspacing="0">
+          <tr  id="userTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_username}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUser" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_username}"/>
+            </td>
+            <td>
+              <h:inputText value="#{applicationObject.attributes['user']}"
+                           id="user"
+                           size="120"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          
+          <tr id="passwordTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPassword" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_password}"/>
+            </td>
+             <td>
+               <sp:inputSecret size="50" 
+                               id="password"
+                               autocomplete="off"
+                               value="#{applicationObject.attributes['password']}" redisplay="true"
+                               disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                               readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/> 
+             </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_page_size}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_page_size}"/>
+            </td>
+            <td>
+              <h:inputText id="pageSize"
+                           value="#{applicationObject.attributes['pageSize']}"                              
+                           size="3"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"                          
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                           <f:validateLongRange minimum="1" maximum="999"/>
+              </h:inputText>
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_custom_timeout}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpCustomTimeOut" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{help.help_con_form_workday_accounts_custom_timeout}"/>
+            </td>
+            <td>
+              <h:inputText id="customTimeOut"
+                           value="#{applicationObject.attributes['customTimeOut']}"
+                           size="3"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+              </h:inputText>
+            </td>
+          </tr>
+          </table>
+      </div>
+          
+          <div id="filterCriteria" class='spContent'>
+                   <br />
+            <h:outputText styleClass="sectionHeader"
+                value="#{msgs.con_form_workday_filter_criteria}" />
+            <br />
+            <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_terminated_account}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAggregateTerminatedWorkersAccount" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_aggregate_terminated_account}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateTerminatedWorkersAccount"
+                  value="#{applicationObject.attributes['aggregateTerminatedWorkersAccount']}" />
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_termination_offset}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPastTerminationOffset" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_termination_offset}"/>
+            </td>
+            
+            <td>
+              <h:inputText value="#{applicationObject.attributes['pastTerminationOffset']}"
+                           id="pastTerminationOffset"
+                           size="8"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                           <f:validateLongRange minimum="0" maximum="99999"/>
+                           </h:inputText>
+            </td>
+          </tr>
+          
+           <tr>
+             <td class='titleColumn certScheduleTitleCol'>
+               <h:outputText  value="#{msgs.con_form_workday_accounts_future_offset}" />
+             </td>
+             <td class="certScheduleHelpCol">
+               <h:graphicImage id="imgHlpFetchFutureWorker" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{help.help_con_form_workday_accounts_fetch_future_offset}"/>
+             </td>
+             <td>
+               <h:selectBooleanCheckbox id="aggregateFutureWorkersAccount"
+                                       onclick="showFutureOffsetFilter()"
+                                       value="#{applicationObject.attributes['aggregateFutureWorkersAccount']}" />
+             </td>
+           </tr>
+           
+           <tr id="futureOffsetInput">
+             <td class='titleColumn certScheduleTitleCol'>
+               <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_future_offset_Input}"/>
+             </td>
+             <td class="certScheduleHelpCol">
+               <h:graphicImage id="imgHlpFutureOffset" styleClass="helpIcon"
+                              url="/images/icons/dashboard_help_16.png"
+                              alt="#{help.help_con_form_workday_accounts_future_offset}"/>
+             </td>
+             <td>
+               <h:inputText value="#{applicationObject.attributes['futureHiringOffset']}"
+                           id="futureHiringOffset"
+                           size="8"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                <f:validateLongRange minimum="0" maximum="99999"/>
+               </h:inputText>
+             </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_service_center_representative_account}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAggregateSCRAccount" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_aggregate_service_center_representative_account}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateServiceCenterRepresentativeAccount"
+                  value="#{applicationObject.attributes['aggregateServiceCenterRepresentativeAccount']}" />
+            </td>
+          </tr>
+
+           <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_external_learning_users_account}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateLMSUsers" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_external_learning_users_account}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateExternalUsersAccount"
+                           value="#{applicationObject.attributes['aggregateExtendedEnterpriseLearnerUsersAccount']}" />
+            </td>
+          </tr>
+		  
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_implementer_users_account}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateImplementerUsers" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_implementer_users_account}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateImplementerUsersAccount"
+                           value="#{applicationObject.attributes['aggregateImplementerUsersAccount']}" />
+            </td>
+          </tr>
+		  
+		    <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_integration_users_account}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateIntegrationUsers" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_integration_users_account}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateIntegrationUsersAccount"
+                           value="#{applicationObject.attributes['aggregateIntegrationUsersAccount']}" />
+            </td>
+          </tr>
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_prospect_accounts}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateProspectAccounts" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_prospect_accounts}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateProspectAccounts"
+                           value="#{applicationObject.attributes['aggregateProspectAccounts']}" />
+            </td>
+          </tr>
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_applicant_accounts}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateApplicantAccounts" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_applicant_accounts}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateApplicantAccounts"
+                           value="#{applicationObject.attributes['aggregateApplicantAccounts']}" />
+            </td>
+          </tr>
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_preMatriculant_accounts}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregatePreMatriculantAccounts" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_preMatriculant_Accounts}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregatePreMatriculantAccounts"
+                           value="#{applicationObject.attributes['aggregatePreMatriculantAccounts']}" />
+            </td>
+          </tr>
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_aggregate_matriculant_accounts}" />
+            </td>
+            <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpAggregateMatriculantAccounts" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_workday_accounts_aggregate_matriculant_accounts}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="aggregateMatriculantAccounts"
+                           value="#{applicationObject.attributes['aggregateMatriculantAccounts']}" />
+            </td>
+          </tr>
+
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText  value="#{msgs.con_form_workday_accounts_fetch_accounts_by_organization}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAggregateFetchAccountByOrg" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_fetch_accounts_by_organization}"/>
+            </td>
+            <td>
+                <h:selectBooleanCheckbox id="FetchAccountsByOrganization"
+                  onclick="showOrgFilter()"
+                  value="#{applicationObject.attributes['FetchAccountsByOrganization']}" />
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="orgFilterDiv" class='spContent'>
+        <table class="spTable" style="border: 0px" cellspacing="0">
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_organization_filter_type}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpOrgFilterType" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_organization_filter_type}"/>
+            </td>
+            <td>
+                        <h:selectOneRadio id="orgFilterType" redisplay="true"
+                                value="#{applicationObject.attributes['orgFilterType']}" 
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                layout="pageDirection"
+                                onchange="toggleOrgFilterType(this.value);">
+                        <f:selectItem itemValue="Organization_Type_ID" itemLabel="#{msgs.con_form_workday_accounts_organization_type}"/>       
+                        <f:selectItem itemValue="Organization_Reference_ID" itemLabel="#{msgs.con_form_workday_accounts_organization_reference}"/>
+                        </h:selectOneRadio>
+            </td>
+          </tr>
+          
+          <tr id="orgTypeTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_organization_type}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpOrgType" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_organization_type}"/>
+            </td>
+            
+            <td>
+              <h:inputTextarea value="#{applicationObject.attributes['organizationTypeIDList']}"
+                           id="Organization_Type_ID_List"
+                           rows="4" 
+                           style="width:300px;"
+                           converter="NewLineList"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                           </h:inputTextarea>
+            </td>
+          </tr>
+          
+          <tr id="orgRefTr">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_workday_accounts_organization_reference}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpOrgRef" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_workday_accounts_organization_reference}"/>
+            </td>
+            
+            <td>
+              <h:inputTextarea value="#{applicationObject.attributes['organizationReferenceIDList']}"
+                           id="Organization_Reference_ID_List"
+                           rows="4" 
+                           style="width:300px;"
+                           converter="NewLineList"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                           </h:inputTextarea>
+            </td>
+          </tr>
+          
+        </table>
+      </div>
+           
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

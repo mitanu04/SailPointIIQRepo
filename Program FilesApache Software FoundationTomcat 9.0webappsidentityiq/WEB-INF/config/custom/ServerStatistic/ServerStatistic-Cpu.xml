@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ServerStatistic PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ServerStatistic name="cpu" snapshotName="1785407048773" value="11.7" valueType="double">
+  <Host>
+    <Reference class="sailpoint.object.Server" name="DESKTOP-9ICGL95"/>
+  </Host>
+  <MonitoringStatisticRef>
+    <Reference class="sailpoint.object.MonitoringStatistic" name="cpu"/>
+  </MonitoringStatisticRef>
+</ServerStatistic>

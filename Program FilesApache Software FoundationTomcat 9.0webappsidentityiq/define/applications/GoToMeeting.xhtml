@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+
+           var host = getFieldValue('editForm:goToMeetingUrl');
+           if (host.length == 0) {
+               Ext.getDom('editForm:goToMeetingUrl').value = 'https://api.getgo.com/admin/rest';
+           }
+
+           var tokenUrl = getFieldValue('editForm:token_url');
+           if (tokenUrl.length == 0) {
+               Ext.getDom('editForm:token_url').value = 'https://api.getgo.com/oauth/v2/token';
+           }
+
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var host = getFieldValue('editForm:goToMeetingUrl');
+                   var oAuthHost = getFieldValue('editForm:token_url');
+                   var clientId = getFieldValue('editForm:client_id');
+                   var clientSecret = getFieldValue('editForm:client_secret');
+                   var refreshToken = getFieldValue('editForm:refresh_token');
+                   var account_id = getFieldValue('editForm:account_id');
+
+                   Validator.validateNonBlankString(host, "#{msgs.con_form_gotomeeting_error_url}");
+                   Validator.validateNonBlankString(oAuthHost, "#{msgs.con_form_gotomeeting_error_oauthhost_required}");
+                   Validator.validateNonBlankString(clientId, "#{msgs.con_form_gotomeeting_error_clientid_required}");
+                   Validator.validateNonBlankString(clientSecret, "#{msgs.con_form_gotomeeting_error_clientsecret_required}");
+                   Validator.validateNonBlankString(refreshToken, "#{msgs.con_form_gotomeeting_error_refreshToken_required}");
+                   Validator.validateNonBlankString(account_id, "#{msgs.con_form_gotomeeting_error_accountID_required}");
+
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+
+               //return false will kill cancel the save
+               return true;
+           });
+
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_gotomeeting_connection_settings}"/><br/><br/>
+
+
+      <div id="accountSettings" class='spContent'>
+        <table class="spTable" style="border:0px" cellspacing="0">
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccessToken" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_url}"/>
+
+            </td>
+            <td>
+              <h:inputText id="goToMeetingUrl"
+                           value="#{applicationObject.attributes['goToMeetingUrl']}"
+                           redisplay="true"
+                           size="80"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <tr id="oauthHostRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_token_host}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpOauthHost" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_oauth_host}"/>
+            </td>
+            <td>
+              <h:inputText id="token_url"
+                           value="#{applicationObject.attributes['token_url']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <tr id="clientIdRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_client_id}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientId" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_client_id}"/>
+            </td>
+            <td>
+              <h:inputText id="client_id"
+                           value="#{applicationObject.attributes['client_id']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <tr id="clientSecretRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_client_secret}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_client_secret}"/>
+            </td>
+            <td>
+              <sp:inputSecret id="client_secret"
+                              value="#{applicationObject.attributes['client_secret']}"
+                              size="20" redisplay="true" autocomplete="off"
+                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <tr id="refreshTokenRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_refresh_token}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpIssuer" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_refresh_token}"/>
+            </td>
+            <td>
+              <sp:inputSecret id="refresh_token"
+                              value="#{applicationObject.attributes['refresh_token']}"
+                              size="20" redisplay="true" autocomplete="off"
+                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr id="accountIDRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_gotomeeting_account_id}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccountID" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_account_id}"/>
+            </td>
+            <td>
+              <h:inputText id="account_id"
+                              value="#{applicationObject.attributes['account_id']}"
+                              redisplay="true" autocomplete="off"
+                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="Page Size"/>
+            </td>
+             <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_gotomeeting_page_size}"/>
+
+            </td>
+            <td>
+              <h:inputText id = "pageSize"
+                           value="#{applicationObject.attributes['pageSize']}"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                           <f:validateLongRange minimum="1" maximum="120"/>
+                           </h:inputText>
+            </td>
+            </tr>
+
+        </table>
+
+      </div>
+
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

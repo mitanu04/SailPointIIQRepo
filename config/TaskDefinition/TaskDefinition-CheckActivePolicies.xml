@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition created="1785394253330" id="c0a801899fb11942819fb1ca4e1201fe" name="Check Active Policies" subType="task_item_type_identity" type="Identity">
+  <Attributes>
+    <Map>
+      <entry key="checkPolicies" value="true"/>
+    </Map>
+  </Attributes>
+  <Description>
+            Check default policies and refresh the policy violation
+            status on each identity.
+        </Description>
+  <Parent>
+    <Reference class="sailpoint.object.TaskDefinition" id="c0a801899fb11942819fb1ca4c0a01c2" name="Identity Refresh"/>
+  </Parent>
+</TaskDefinition>

@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2021 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      helpKey = 'APPLICATION';
+
+      function getFieldValue(fieldname) {
+          var val = null;
+          var field = Ext.getDom(fieldname);
+          if ( field ) {
+              val = field.value;
+          }
+          return val;
+      }
+
+      Ext.onReady(function () {
+        Ext.QuickTips.init();
+        // This is our validation hook
+        Page.on('beforeSave', function() {
+          if (!hasCredentialConfiguration()) {
+
+            var host = getFieldValue('editForm:host');
+            var tokenUrl = getFieldValue('editForm:token_url');
+            var clientId = getFieldValue('editForm:client_id');
+            var clientSecret = getFieldValue('editForm:client_secret');
+            var scope = getFieldValue('editForm:scope');
+
+            Validator.validateNonBlankString(host, "#{msgs.con_form_meditech_host_null}");
+            Validator.validateNonBlankString(tokenUrl, "#{msgs.con_form_meditech_token_url_null}");
+            Validator.validateNonBlankString(clientId, "#{msgs.con_form_meditech_client_id_null}");
+            Validator.validateNonBlankString(clientSecret, "#{msgs.con_form_meditech_client_secret_null}");
+            Validator.validateNonBlankString(scope, "#{msgs.con_form_meditech_scope_null}");
+
+            var errors = Validator.getErrors();
+              if (errors && errors.length > 0) {
+                Validator.displayErrors('appErrorsTop');
+                return false;
+              }
+          }
+          return true;
+        });
+      });
+      //--><!]]>
+    </script>
+
+    <f:view>
+     <div id="meditechConnectivitySettings" class='spContent'>
+        <h:outputText styleClass="sectionHeader" value="Connection Settings" />
+        <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr id="meditechURLRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_api_url}" />
+              <h:outputText styleClass="requiredText" value="*" /></td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                 alt="#{help.help_con_meditech_host}" />
+            </td>
+            <td>
+              <h:inputText id="host" value="#{applicationObject.attributes['host']}" size="40" redisplay="true"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="authTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_auth_type}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_meditech_auth_type}" />
+            </td>
+            <td>
+              <h:selectOneMenu id="authenticationType"
+                value="#{applicationObject.attributes['authenticationType']}"
+                redisplay="true"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_meditech_oauth2}"/>
+              </h:selectOneMenu>
+            </td>
+          </tr>
+
+          <tr id="grantTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_grant_type}" /></td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_meditech_grant_type}" /></td>
+            <td>
+              <h:selectOneMenu id="grant_type"  value="#{applicationObject.attributes['grant_type']}"
+                redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                <f:selectItem itemValue="CLIENT_CREDENTIALS" itemLabel="#{msgs.con_form_meditech_client_credentails}" />
+              </h:selectOneMenu></td>
+          </tr>
+
+          <tr id="tokenUrlRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_token_url}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpTokenUrl" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_meditech_token_url}" />
+            </td>
+            <td>
+              <h:inputText id="token_url" value="#{applicationObject.attributes['token_url']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="clientIdRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_client_ID}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientId" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_meditech_client_ID}" />
+            </td>
+            <td>
+              <h:inputText id="client_id" value="#{applicationObject.attributes['client_id']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="clientSecretRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_client_secret}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_meditech_client_secret}" />
+            </td>
+            <td>
+              <sp:inputSecret id="client_secret" value="#{applicationObject.attributes['client_secret']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" redisplay="true" autocomplete="off" />
+            </td>
+          </tr>
+
+          <tr id="scopeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_scope}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpScope" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_meditech_scope}" />
+            </td>
+            <td>
+              <h:inputTextarea id="scope"  value="#{applicationObject.attributes['scope']}" rows="5" cols="80" style="width: 35%;" 
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}" readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="pageSizeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_page_size}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                 url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_meditech_page_size}" />
+            </td>
+            <td>
+              <h:inputText id="pageSize" value="#{applicationObject.attributes['pageSize']}" size="20"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+               <f:validateLongRange minimum="1" maximum="100" />
+              </h:inputText>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="meditechAggrgationFilterSettings" class='spContent'>
+       <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_meditech_agg_filter_label}" />
+       <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr id="accountUNVFilterRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_meditech_account_agg_filter}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccountUNVFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+               alt="#{help.help_con_meditech_account_agg_constraint}" />
+            </td>
+            <td>
+              <h:inputText id="accountAggFilter"
+                value="#{applicationObject.attributes['accountAggFilter']}"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          </table>
+       </div>
+
+    </f:view>
+  </ui:composition>
+
+</body>
+</html>

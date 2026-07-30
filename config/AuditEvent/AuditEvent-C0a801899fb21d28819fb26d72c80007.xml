@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE AuditEvent PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<AuditEvent action="ServerUpDown" created="1785404945096" id="c0a801899fb21d28819fb26d72c80007" serverHost="DESKTOP-9ICGL95" source="DESKTOP-9ICGL95" target="ServerUp"/>

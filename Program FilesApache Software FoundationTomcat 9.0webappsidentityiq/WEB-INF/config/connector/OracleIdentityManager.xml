@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.integration.oim.OIMConnector" featuresString="PROVISIONING, PROXY, ENABLE, UNLOCK" name="OIM Template" type="Oracle Identity Manager">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="OIMAttributesForm.xhtml"/>
+        <entry key="accountStatus">
+          <value>
+            <List>
+              <String>Provisioning</String>
+              <String>Revoked</String>
+            </List>
+          </value>
+        </entry>
+        <entry key="version" value="v2"/>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="Display Name" identityAttribute="User Login" nativeObjectType="User" objectType="account">
+        <AttributeDefinition internalName="Users.First Name" name="First Name" type="string">
+          <Description>The user's first name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Middle Name" name="Middle Name" type="string">
+          <Description>The user's middle name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Last Name" name="Last Name" type="string">
+          <Description>The user's last name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Xellerate Type" name="Xellerate Type" type="string">
+          <Description>The user's Xellerate type</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Email" name="Email" type="string">
+          <Description>The user's email address </Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Manager Login" name="Manager" type="string">
+          <Description>The user's manager's name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Organizations.Organization Name" name="Organization" type="string">
+          <Description>The user's organization's name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Role" name="User Type" type="string">
+          <Description>The user's type</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Display Name" name="Display Name" type="string">
+          <Description>The user's display name in the OIM system</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.User ID" name="User Login" type="string">
+          <Description>The user's login name for OIM</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Start Date" name="Start Date" type="date">
+          <Description>The user's start date</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.End Date" name="End Date" type="date">
+          <Description>The user's termination date</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Provisioning Date" name="Provisioning Date" type="date">
+          <Description>Date the user was first provisioned</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Users.Deprovisioning Date" name="Deprovisioning Date" type="date">
+          <Description>Date the user was deprovisioned</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" internalName="Groups.Group Name" managed="true" multi="true" name="Roles" schemaObjectType="group" type="string">
+          <Description>Roles assigned to the user</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="Display Name" identityAttribute="Name" nativeObjectType="Role" objectType="group"
+              descriptionAttribute="Description">
+        <AttributeDefinition internalName="Groups.Group Name" name="Name" type="string">
+          <Description>The role's name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Groups.Role Display Name" name="Display Name" type="string">
+          <Description>The role's display name in the OIM system</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Groups.E-mail" name="Email" type="string">
+          <Description>The role's email address</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="Groups.Role Description" name="Description" type="string">
+          <Description>Brief description of the role</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="Create Oracle Identity Manager User" schemaObjectType="account" usage="Create">
+        <Field displayName="con_prov_policy_oim_cp_ln" name="Users.Last Name" required="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_mi_cp_org" name="Organizations.Key" required="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_mi_cp_ut" name="Users.Role" required="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_mi_cp_xt" name="Users.Xellerate Type" required="true" section="" type="string"/>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies","Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='Oracle Identity Manager' connectorName="Oracle Identity Manager"
+	type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="Oracle Identity Manager Settings" label="con_form_oim_config_title">
+		<Section name="Oracle Identity Manager Settings" label="con_form_oim_config_title">
+		  <Field name="version" hidden="true">
+			<Field name="host" displayName="con_form_oim_host" type="text" required="true" helpKey="help_con_form_oim_host"/>
+			<Field name="port" displayName="con_form_oim_port" type="text" required="true" helpKey="help_con_form_oim_port"/>
+			<Field name="username" displayName="con_form_oim_username" type="text" required="true" helpKey="help_con_form_oim_username" parentKey="version" parentValue="v2" />
+			<Field name="password" displayName="con_form_oim_password" type="secret" required="true" helpKey="help_con_form_oim_password" parentKey="version" parentValue="v2" />
+			<Field name="path" displayName="con_form_oim_file_path" type="text" required="true" helpKey="help_con_form_oim_conf_file_path" parentKey="version" parentValue="v2" />
+			<Field name="pageSize" displayName="con_form_oim_page_size" type="number" helpKey="help_con_form_oim_page_size" parentKey="version" parentValue="v2" />
+		</Section>
+	</Menu>
+	<Menu name="Aggregation Settings" label="con_form_agg_settings_title" parentKey="version" parentValue="v2">
+		<Section name="Aggregation Settings" label="con_form_agg_settings_title">
+			<Field name="aggregateInactiveOimUsers" displayName="con_form_oim_agg_inactive_oim_user" type="checkbox" helpKey="help_con_form_oim_agg_inactive_user"/>
+			<Field name="aggregateTargetAccounts" displayName="con_form_oim_agg_target_accounts" type="checkbox" helpKey="help_con_form_oim_agg_target_accounts"/>
+		</Section>
+	</Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

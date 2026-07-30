@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+  <script type="text/javascript">
+    <!--//--><![CDATA[//><!--
+    helpKey = 'APPLICATION';
+
+    function getFieldValue(field) {
+      var val = null;
+      var fileName = Ext.getDom(field);
+      if ( fileName ) {
+        val = fileName.value;
+      }
+      return val;
+    }
+
+    function toggleCredentials(authMethod) {
+      var keyIDRowObj = Ext.get('keyIDRow');
+      var secretRowObj = Ext.get('secretRow');
+      var roleRequired = Ext.get('roleRequired');
+      var imgHlpDomain = Ext.get('editForm:imgHlpDomain');
+      var imgHlpDomainForArn = Ext.get('editForm:imgHlpDomainForArn');
+      var label = Ext.getDom('editForm:roleNameOrArn');
+
+      if (authMethod == "") {
+        authMethod = "IAM User";
+      }
+        if (authMethod == "IAM User") {
+            keyIDRowObj.setVisibilityMode(Ext.Element.DISPLAY);
+            keyIDRowObj.show();
+            secretRowObj.setVisibilityMode(Ext.Element.DISPLAY);
+            secretRowObj.show();
+            roleRequired.hide();
+            imgHlpDomain.show();
+            imgHlpDomainForArn.hide();
+            label.innerHTML = "#{msgs.con_form_new_AWSIdentityCenter_Config_Role_Name}";
+        }
+        if (authMethod == "IAM Role") {
+            keyIDRowObj.setVisibilityMode(Ext.Element.DISPLAY);
+            keyIDRowObj.hide();
+            secretRowObj.setVisibilityMode(Ext.Element.DISPLAY);
+            secretRowObj.hide();
+            roleRequired.show();
+            imgHlpDomain.hide();
+            imgHlpDomain.setStyle("display", "none");
+            imgHlpDomainForArn.show();
+            label.innerHTML = "#{msgs.con_form_new_AWSIdentityCenter_Config_Role_ARN}";
+        }
+      }
+
+    Ext.onReady(function () {
+      var region = getFieldValue('editForm:region').trim();
+      if(!region){
+        document.getElementById('editForm:region').value = 'us-east-1';
+      }
+      Ext.QuickTips.init();
+
+      toggleCredentials('#{applicationObject.attributes['authMethod']}');
+      // This is our validation hook
+      Page.on('beforeSave', function() {
+        if (!hasCredentialConfiguration()) {
+          var authMethod = getFieldValue('editForm:authMethod');
+          if (authMethod == "IAM User") {
+            var id = getFieldValue('editForm:kid');
+            Validator.validateNonBlankString(id, "#{msgs.con_form_AWSIdentityCenter_AccessIDnotnull}");
+
+            var secret = getFieldValue('editForm:secret');
+            Validator.validateNonBlankString(secret, "#{msgs.con_form_AWSIdentityCenter_Secretkeynotnull}");
+
+            var region = getFieldValue('editForm:region');
+            Validator.validateNonBlankString(region, "#{msgs.con_form_AWSIdentityCenter_regionNameIdnotnull}");
+
+          }
+          else if(authMethod == "IAM Role") {
+            var roleName = getFieldValue('editForm:roleName');
+            Validator.validateNonBlankString(roleName, "#{msgs.con_form_AWSIdentityCenter_roleNameIdnotnull}");
+
+            var region = getFieldValue('editForm:region');
+            Validator.validateNonBlankString(region, "#{msgs.con_form_AWSIdentityCenter_regionNameIdnotnull}");
+          }
+
+          var errors = Validator.getErrors();
+          if (errors && errors.length > 0) {
+            Validator.displayErrors('appErrorsTop');
+            return false;
+          }
+        }
+        //return false will kill cancel the save
+        return true;
+      });
+    });
+
+    //--><!]]>
+  </script>
+  <f:view>
+
+    <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_new_AWSIdentityCenter_setting}"/><br/><br/>
+
+
+    <!-- connection info -->
+    <div id="accountSettings" class="spContent">
+      <table class="spTable" style="border:0px" cellspacing="0">
+
+        <tr id="authMethodRow">
+          <td class="titleColumn certScheduleTitleCol">
+            <h:outputText style='padding:5px' value="#{msgs.con_form_AWSIdentityCenter_Auth_Method}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpAuthMethod" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{msgs.help_con_AWSIdentityCenter_authMethod}"/>
+          </td>
+
+          <td>
+            <h:selectOneMenu id="authMethod"
+                             value="#{applicationObject.attributes['authMethod']}"
+                             redisplay="true"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             onchange="toggleCredentials(this.value)">
+              <f:selectItem itemValue="IAM User"
+                            itemLabel="#{msgs.con_form_AWSIdentityCenter_authMethod_IAM_User}" />
+              <f:selectItem itemValue="IAM Role"
+                            itemLabel="#{msgs.con_form_AWSIdentityCenter_authMethod_IAM_Role}" />
+            </h:selectOneMenu>
+          </td>
+        </tr>
+
+        <tr id="keyIDRow">
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' value="#{msgs.con_form_AWSIdentityCenter_keyID}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpAccessKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{msgs.help_con_AWSIdentityCenter_key}"/>
+          </td>
+
+          <td valign="center">
+            <h:inputText id="kid"
+                         value="#{applicationObject.attributes['kid']}"
+                         size="80"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+
+        <tr id="secretRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_AWSIdentityCenter_SecretKey}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{msgs.help_con_AWSIdentityCenter_secretkey}"/>
+          </td>
+
+          <td>
+            <sp:inputSecret id="secret"
+                            value="#{applicationObject.attributes['secret']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+
+        <tr id="roleNameRow">
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' id="roleNameOrArn" value="#{msgs.con_form_new_AWSIdentityCenter_Config_Role_Name}"/>
+            <span id="roleRequired"><h:outputText styleClass="requiredText" value="*"/>
+            </span>
+          </td>
+
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpDomain" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_AWSIdentityCenter_Config_Role_Name}"/>
+
+            <h:graphicImage id="imgHlpDomainForArn" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_AWSIdentityCenter_Config_Role_ARN}"/>
+          </td>
+
+          <td valign="center">
+            <h:inputText id="roleName"
+                         value="#{applicationObject.attributes['roleName']}"
+                         size="80"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+
+        <tr id="externalIdRow">
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' value="#{msgs.con_form_new_AWSIdentityCenter_Config_ExternalId}"/>
+          </td>
+
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpExternalId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_AWSIdentityCenter_Config_ExternalId}"/>
+
+          </td>
+          <td valign="center">
+            <sp:inputSecret id="externalId"
+                            value="#{applicationObject.attributes['externalId']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' value="Region"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpRegion" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_AWSIdentityCenter_Region}"/>
+          </td>
+
+          <td valign="center">
+            <h:inputText id="region"
+                         value="#{applicationObject.attributes['region']}"
+                         size="40"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <!-- Aggregation Settings info -->
+    <div id="aggregationSettings" class='spContent'>
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_AWSIdentityCenter_aggregation_settings}"/>
+      <table class="spTable" style="border: 0px" cellspacing="0">
+
+        <tr id="pageSizeRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_AWSIdentityCenter_page_size}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_AWSIdentityCenter_page_size}" />
+          </td>
+          <td>
+            <h:inputText id="pageSize" value="#{applicationObject.attributes['pageSize']}" size="20"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+              <f:validateLongRange minimum="0" maximum="1000"/>
+            </h:inputText>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Provisioning Settings info -->
+    <div id="ProvisioningSettings" class='spContent'>
+    <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_AWSIdentityCenter_Provisioning_settings}"/>
+    <table class="spTable" style="border: 0px" cellspacing="0">
+
+    <tr>
+      <td class='titleColumn certScheduleTitleCol'><h:outputText
+          style='padding:5px'
+          value="#{msgs.con_form_AWSIdentityCenter_Enable_Local_Identity_Center_User_Provisioning}" />
+      </td>
+      <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+          id="imgHlpaggregatePrimaryEmployment" styleClass="helpIcon"
+          url="/images/icons/dashboard_help_16.png"
+          alt="#{msgs.help_con_AWSIdentityCenter_Enable_Local_Identity_Center_User_Provisioning}" />
+      </td>
+      <td><h:selectBooleanCheckbox id="Provision_External_IdP_Users"
+                                   value="#{applicationObject.attributes['ProvisionExternalIdPUsers']}"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+      </td>
+    </tr>
+    </table>
+    </div>
+
+  </f:view>
+</ui:composition>
+
+</body>
+</html>

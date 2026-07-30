@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!--
+  ~ (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!--
+  Initialization file for SailPoint Access History, this enables Access History and dependencies.
+-->
+<sailpoint>
+  <ImportAction name="merge">
+    <Configuration name="SystemConfiguration">
+      <Attributes>
+        <Map>
+          <entry key="accessHistoryEnabled" value="true" />
+          <entry key="enableInterceptedDeleteCapture" value="true" />
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+</sailpoint>

@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Policy PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Policy certificationActions="Mitigated,Delegated" configPage="advancedPolicy.xhtml" created="1785394250499" executor="sailpoint.policy.GenericPolicyExecutor" id="c0a801899fb11942819fb1ca4303011b" name="Advanced Template" state="Inactive" template="true" type="Advanced" typeKey="policy_type_advanced" violationOwnerType="Manager"/>

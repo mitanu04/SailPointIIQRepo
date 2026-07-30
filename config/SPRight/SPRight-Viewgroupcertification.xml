@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246462" displayName="right_view_group_certification" id="c0a801899fb11942819fb1ca333e002b" name="ViewGroupCertification">
+  <Description>right_desc_view_group_certification</Description>
+</SPRight>

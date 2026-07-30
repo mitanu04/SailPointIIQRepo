@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2023 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:a4j="http://richfaces.org/a4j" xmlns:sp="http://sailpoint.com/ui">
+<body>
+<ui:composition>
+    <script type="text/javascript">
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+                val = fileName.value;
+            }
+            return val;
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            //Setting pageSize 200 by default for new application.
+            let pageSize = getFieldValue('editForm:pageSize');
+            if (!pageSize) {
+                Ext.getDom('editForm:pageSize').value = '200';
+            }
+        });
+    </script>
+    <f:view>
+        <h:outputText styleClass="sectionHeader"
+                      value="#{msgs.con_form_successfactors_lms_config}"/>
+        <br/>
+
+        <!-- Connection Credentials -->
+        <div id="accountSettings" class='spContent'>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_successfactors_lms_url}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUrl" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_successfactors_lms_url}"/>
+                    </td>
+
+                    <td valign="center">
+                        <h:inputText id="baseurl"
+                                     value="#{applicationObject.attributes['baseURL']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_successfactors_lms_grant_type}"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpGrantType" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_successfactors_lms_grant_type}"/>
+                    </td>
+                    <td valign="center">
+                        <h:selectOneMenu id="grantType"
+                                         value="#{applicationObject.attributes['grantType']}"
+                                         redisplay="true"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            <f:selectItem itemValue="BasicAuthentication"
+                                          itemLabel="#{msgs.con_form_successfactors_lms_client_creds}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_successfactors_lms_userid}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUserID" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_successfactors_lms_userid}"/>
+                    </td>
+
+                    <td valign="center">
+                        <h:inputText id="userId"
+                                     value="#{applicationObject.attributes['userId']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_successfactors_lms_companyid}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpCompanyId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_successfactors_lms_companyid}"/>
+                    </td>
+                    <td valign="center">
+                        <h:inputText id="companyId"
+                                     value="#{applicationObject.attributes['companyId']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_successfactors_lms_clientid}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpClientId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_successfactors_lms_clientid}"/>
+                    </td>
+                    <td valign="center">
+                        <h:inputText id="clientId"
+                                     value="#{applicationObject.attributes['clientId']}" size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_successfactors_lms_client_secret}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpClientSecret" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.con_form_successfactors_lms_client_secret}"/>
+                    </td>
+
+                    <td>
+                        <sp:inputSecret id="clientSecret"
+                                        value="#{applicationObject.attributes['clientSecret']}"
+                                        redisplay="true" size="80" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="aggregationSettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_successfactors_lms_aggregation_settings}"/>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'><h:outputText
+                            style='padding:5px'
+                            value="#{msgs.con_form_successfactors_lms_aggregate_inactive_users}" />
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                            id="imgHlpaggregatePrimaryEmployment" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{msgs.help_con_successfactors_lms_aggregate_inactive_users}" />
+                    </td>
+                    <td><h:selectBooleanCheckbox id="aggregate_inactive_users"
+                                                 value="#{applicationObject.attributes['aggregateInactiveUsers']}"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_successfactors_lms_page_size}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{msgs.help_con_form_successfactors_lms_page_size}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="pageSize"
+                                     value="#{applicationObject.attributes['pageSize']}"
+                                     size="10"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                        </h:inputText>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </f:view>
+</ui:composition>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ (c) Copyright 2024 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, SYNC_PROVISIONING, SEARCH, NO_PERMISSIONS_PROVISIONING, DIRECT_PERMISSIONS" icon="internetIcon" name="AWS IAM Identity Center" type="AWS IAM Identity Center">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.awsidentitycenter.AWSIdentityCenterConnector"/>
+        <entry key="formPath" value="AWSIdentityCenterForm.xhtml"/>
+        <entry key="encrypted" value="secret,externalId"/>
+        <entry key="pageSize" value="100"/>
+        <entry key="isUpgraded">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="DisplayName" identityAttribute="UserId" nativeObjectType="User" objectType="account">
+        <AttributeDefinition name="UserId" remediationModificationType="None" required="true" type="string">
+          <Description>The unique ID of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="DisplayName" remediationModificationType="None" required="true" type="string">
+          <Description>A user-friendly display name for the user, is often used in interfaces where a readable name is preferred over technical identifiers.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="FirstName" remediationModificationType="None" required="true" type="string">
+          <Description>First name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="LastName" remediationModificationType="None" required="true" type="string">
+          <Description>Last name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="External ID List" remediationModificationType="None" required="true" type="string" multi="true">
+          <Description>External ID List of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="UserName" remediationModificationType="None" required="true" type="string">
+          <Description>The friendly name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Email" remediationModificationType="None" required="true" type="string">
+          <Description>Email address of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AccountType" remediationModificationType="None" required="true" type="string">
+          <Description>Specifies whether the account is Federated, Local Federated, or Local, indicating the method of user authentication.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Title" remediationModificationType="None" required="true" type="string">
+          <Description>Title of the User</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" multi="true" name="Groups" remediationModificationType="None" schemaObjectType="group" type="string">
+          <Description>A list of groups to which the user belongs, indicating their roles or organisational membership.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" multi="true" name="AccountPermissionSet" remediationModificationType="None" schemaObjectType="AccountPermissionSet" type="string">
+          <Description>A list of accounts assigned to the user through Identity Center Permission Sets, reflecting the user's permissions and access rights.</Description>
+        </AttributeDefinition>
+      </Schema>
+
+      <Schema displayAttribute="GroupName" descriptionAttribute="Description" identityAttribute="GroupId" nativeObjectType="group" objectType="group" >
+        <AttributeDefinition name="GroupId" remediationModificationType="None" required="true" type="string">
+          <Description>The Unique Identifier for the group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="GroupName" remediationModificationType="None" required="true" type="string">
+          <Description>The display name of the group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AccountPermissionSet" indexed="true" remediationModificationType="None" multi="true" entitlement="true" required="true" type="string">
+          <Description>Accounts and Permission Sets assigned to this group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Description" remediationModificationType="None" type="string">
+          <Description>Description of the group</Description>
+        </AttributeDefinition>
+      </Schema>
+
+      <Schema displayAttribute="DisplayName" descriptionAttribute="Description" identityAttribute="AccountPermissionSetId" nativeObjectType="group" objectType="AccountPermissionSet">
+        <AttributeDefinition name="DisplayName" remediationModificationType="None" type="string">
+          <Description>The Display Name of the Permission Set</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AccountPermissionSetId" remediationModificationType="None" type="string">
+          <Description>Unique Id for the Permission Set</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Description" remediationModificationType="None" type="string">
+          <Description>Description of the AccountPermissionSet</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" indexed="true" multi="true" name="AWS Managed Policies" remediationModificationType="None" type="string">
+          <Description>AWS Managed policies</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" indexed="true" multi="true" name="Customer Managed Policies" remediationModificationType="None" type="string">
+          <Description>Customer Managed policies</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" indexed="true" name="Inline Policy" remediationModificationType="None" type="string">
+          <Description>Customer Managed policies</Description>
+        </AttributeDefinition>
+      </Schema>
+
+    </Schemas>
+    <Templates>
+      <Template name="account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_prov_policy_AWSIdentityCenter_UserName"
+               helpKey="help_con_form_AWSIdentityCenter_UserName" name="UserName" required="true" type="string"/>
+        <Field displayName="con_prov_policy_AWSIdentityCenter_Email" helpKey="help_con_form_AWSIdentityCenter_Email" name="Email" required="true" reviewRequired="true" type="string">
+          <ValidationScript>
+            <Source>
+              import java.util.regex.Matcher;
+              import java.util.regex.Pattern;
+
+              String error = null;
+              String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+              Pattern pattern = Pattern.compile(regex);
+              Matcher matcher = pattern.matcher(Email);
+
+              if (Email != null) {
+                if (!matcher.matches()) {
+                  error = Email + " is not a valid format of email address";
+                }
+              }
+
+              return error;
+            </Source>
+          </ValidationScript>
+        </Field>
+        <Field displayName="con_prov_policy_AWSIdentityCenter_FirstName" helpKey="help_con_form_AWSIdentityCenter_FirstName" name="FirstName" required="true" type="string"/>
+        <Field displayName="con_prov_policy_AWSIdentityCenter_LastName" helpKey="help_con_form_AWSIdentityCenter_LastName" name="LastName" required="true" type="string"/>
+        <Field displayName="con_prov_policy_AWSIdentityCenter_DisplayName" helpKey="help_con_form_AWSIdentityCenter_DisplayName" name="DisplayName" required="true" type="string"/>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies, Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='AWS IAM Identity Center' connectorName="AWS IAM Identity Center"
+	type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="AWS Identity Center Settings" label="con_form_new_AWSIdentityCenter_setting">
+		<Section name="AWS Identity Center Settings" label="con_form_new_AWSIdentityCenter_setting">
+			<Field name="authMethod" displayName="con_form_AWSIdentityCenter_Auth_Method" type="select"
+				required="true" defaultValue="IAM User" helpKey="help_con_AWSIdentityCenter_authMethod">
+				<AllowedValues>
+					<Option label="con_form_AWSIdentityCenter_authMethod_IAM_User" value="IAM User" />
+					<Option label="con_form_AWSIdentityCenter_authMethod_IAM_Role" value="IAM Role" />
+				</AllowedValues>
+			</Field>
+
+			<!-- IAM User Credentials section -->
+			<Field name="kid" displayName="con_form_AWSIdentityCenter_keyID" type="text"
+				required="true" parentKey="authMethod" parentValue="IAM User" helpKey="help_con_AWSIdentityCenter_key"/>
+			<Field name="secret" displayName="con_form_AWSIdentityCenter_SecretKey" type="secret"
+				required="true" parentKey="authMethod" parentValue="IAM User" helpKey="help_con_AWSIdentityCenter_secretkey"/>
+			<Field name="roleName" displayName="con_form_new_AWSIdentityCenter_Config_Role_Name" type="text"
+				parentKey="authMethod" parentValue="IAM User" helpKey="help_con_form_AWSIdentityCenter_Config_Role_Name"/>
+
+			<!-- IAM Role Credentials section -->
+			<Field name="roleName" displayName="con_form_new_AWSIdentityCenter_Config_Role_ARN" type="text" required="true"
+				parentKey="authMethod" parentValue="IAM Role" helpKey="help_con_form_AWSIdentityCenter_Config_Role_ARN"/>
+
+			<!-- External Id -->
+			<Field name="externalId" displayName="con_form_new_AWSIdentityCenter_Config_ExternalId" type="secret"
+				helpKey="help_con_form_AWSIdentityCenter_Config_ExternalId"/>
+
+			<!-- Region Name -->
+			<Field name="region" displayName="region" type="text" required="true" defaultValue="us-east-1"
+				helpKey="help_con_form_AWSIdentityCenter_Region"/>
+		</Section>
+	</Menu>
+	<Menu name="Aggregation Settings" label="con_form_AWSIdentityCenter_aggregation_settings">
+		<Section name="Aggregation Settings" label="con_form_AWSIdentityCenter_aggregation_settings">
+			<Field name="pageSize" displayName="con_form_AWSIdentityCenter_page_size" type="number"
+				min="0" max="1000" defaultValue="100" helpKey="help_con_form_AWSIdentityCenter_page_size"/>
+		</Section>
+	</Menu>
+	<Menu name="Provisioning Settings" label="con_form_AWSIdentityCenter_Provisioning_settings">
+		<Section name="Provisioning Settings" label="con_form_AWSIdentityCenter_Provisioning_settings">
+			<Field name="ProvisionExternalIdPUsers" displayName="con_form_AWSIdentityCenter_Enable_Local_Identity_Center_User_Provisioning"
+			  type="checkbox" helpKey="help_con_AWSIdentityCenter_Enable_Local_Identity_Center_User_Provisioning" />
+		</Section>
+	</Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

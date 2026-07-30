@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE JasperTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<JasperTemplate name="UserGridBusinessRoleReport">
+  <DesignXml>&lt;?xml version="1.0" encoding="UTF-8"  ?>
+&lt;!-- Created with iReport - A designer for JasperReports -->
+&lt;!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+&lt;!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+&lt;jasperReport
+		 name="UserGridBusinessRoleReport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="210"
+		 pageHeight="25"
+		 columnWidth="210"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	&lt;property name="ireport.scriptlethandling" value="0" />
+	&lt;property name="ireport.encoding" value="UTF-8" />
+	&lt;import value="java.util.*" />
+	&lt;import value="net.sf.jasperreports.engine.*" />
+	&lt;import value="net.sf.jasperreports.engine.data.*" />
+	&lt;import value="sailpoint.reporting.datasource.*" />
+
+	&lt;style 
+		name="SubReportTitle"
+		isDefault="false"
+		fontName="Arial"
+		fontSize="14"
+		isBold="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="NormalText"
+		isDefault="false"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="SailPointBlueBackWhiteFront"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#025588"
+		vAlign="Middle"
+		leftPadding="5"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		
+		isBlankWhenNull="true"
+	>
+					&lt;box leftPadding="5">&lt;/box>
+	&lt;/style>
+	&lt;style 
+		name="alternateText"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+
+		&lt;conditionalStyle>
+			&lt;conditionExpression>&lt;![CDATA[new Boolean($P{rowcount}.intValue() % 2 == 0)&#x5D;]>&lt;/conditionExpression>
+			&lt;style 
+				isDefault="false"
+				backcolor="#E6EFF3"
+			>
+			&lt;/style>
+		&lt;/conditionalStyle>
+	&lt;/style>
+	&lt;style 
+		name="SectionHeading"
+		isDefault="false"
+		backcolor="#0066CC"
+		fontName="Arial"
+		fontSize="14"
+	>
+	&lt;/style>
+	&lt;style 
+		name="Heading"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#CCDEE7"
+		fontName="Arial"
+		fontSize="14"
+		isBold="true"
+	>
+	&lt;/style>
+
+	&lt;parameter name="id" isForPrompting="true" class="java.lang.String">
+		&lt;defaultValueExpression >&lt;![CDATA["2c9081ba0e099848010e09991168001a"&#x5D;]>&lt;/defaultValueExpression>
+	&lt;/parameter>
+	&lt;parameter name="rowcount" isForPrompting="true" class="java.lang.Integer">
+		&lt;defaultValueExpression >&lt;![CDATA[new Integer("1")&#x5D;]>&lt;/defaultValueExpression>
+	&lt;/parameter>
+	&lt;parameter name="businessRole" isForPrompting="false" class="java.lang.String">
+		&lt;defaultValueExpression >&lt;![CDATA["businessRole"&#x5D;]>&lt;/defaultValueExpression>
+	&lt;/parameter>
+
+	&lt;field name="bundle" class="java.lang.String"/>
+
+		&lt;background>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/background>
+		&lt;title>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/title>
+		&lt;pageHeader>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/pageHeader>
+		&lt;columnHeader>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/columnHeader>
+		&lt;detail>
+			&lt;band height="25"  isSplitAllowed="true" >
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="NormalText"
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="200"
+						height="20"
+						key="textField"
+						isPrintWhenDetailOverflows="true"/>
+					&lt;box leftPadding="5" topPadding="3">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement textAlignment="Left" verticalAlignment="Top">
+						&lt;font fontName="Arial" size="10"/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{bundle}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+			&lt;/band>
+		&lt;/detail>
+		&lt;columnFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/columnFooter>
+		&lt;pageFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/pageFooter>
+		&lt;summary>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/summary>
+&lt;/jasperReport>
+</DesignXml>
+</JasperTemplate>

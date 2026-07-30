@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+ <Application connector="sailpoint.connector.AirwatchConnector" featuresString="PROXY" name="Airwatch MIM" type="Airwatch MIM">
+   <Attributes>
+     <Map>
+       <entry key="formPath" value="AirwatchAttributesForm.xhtml" />
+       <entry key="retryableErrors">
+        <value>
+          <List>
+            <String>Unrecognized SSL message</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="encrypted" value="adminPassword,apikey"/>
+	</Map>
+   </Attributes>
+   <Schemas>
+     <Schema displayAttribute="UserName" identityAttribute="Id" nativeObjectType="User" objectType="account">
+       <AttributeDefinition name="Id" type="string"/>                     
+       <AttributeDefinition name="UserName" type="string"/>
+		<AttributeDefinition name="FirstName" type="string"/>
+       <AttributeDefinition name="LastName" type="string"/>
+       <AttributeDefinition name="Status" type="string"/>                      
+       <AttributeDefinition name="Group" type="string"/>
+       <AttributeDefinition name="Email" type="string"/>
+       <AttributeDefinition name="SecurityType" type="string"/>
+       <AttributeDefinition name="ContactNumber" type="string"/>                  
+       <AttributeDefinition name="EmailUserName" type="string"/>
+       <AttributeDefinition entitlement="true" name="Role" type="string"/>            
+     </Schema>
+  </Schemas>
+   <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies, Inc.  All rights reserved. -->
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='Airwatch MIM' connectorName="Airwatch MIM"
+	type="SourceConfig" directConnect="true" fileUpload="false" status="released" shortDesc="ShortDesc">
+	<Menu name="Airwatch Configuration Settings" label="con_form_air_configuration_setting">
+		<Section name="Airwatch Configuration Settings" label="con_form_air_configuration_setting" >
+			<Field name="config_host" displayName="con_form_air_watch_host" type="text" required="true" helpKey="help_con_form_air_watch_host" />
+			<Field name="admin" displayName="con_form_air_watch_admin" type="text" required="true" helpKey="help_con_form_air_watch_admin"/>
+			<Field name="adminPassword" displayName="con_form_air_watch_password" type="secret" required="true" helpKey="help_con_form_air_watch_password" />
+			<Field name="apikey" displayName="con_form_air_watch_api_key" type="secret" required="true" helpKey="help_con_form_air_watch_api_key"/>
+		</Section>
+	</Menu>
+</Form>]]>
+   </Settings>
+</Application> 
+</ImportAction>

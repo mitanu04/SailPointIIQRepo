@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+<sailpoint>
+
+  <SPRight name="FullAccessCAMConfiguration" displayName="right_full_access_cam_configuration">
+    <Description>right_desc_full_access_cam_configuration</Description>
+  </SPRight>
+
+  <Capability name="CAMServicesAdministrator" displayName="capability_cam_administrator">
+    <Description>capability_desc_cam_administrator</Description>
+      <RightRefs>
+        <!-- Edit CAM Configuration -->
+        <Reference class="sailpoint.object.SPRight" name="FullAccessCAMConfiguration" />
+      </RightRefs>
+  </Capability>
+
+</sailpoint>

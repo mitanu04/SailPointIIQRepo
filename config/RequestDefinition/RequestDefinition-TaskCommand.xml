@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250600" executor="sailpoint.request.TaskCommandExecutor" id="c0a801899fb11942819fb1ca4368012d" name="Task Command">
+  <Attributes>
+    <Map>
+      <entry key="hostSpecific" value="true"/>
+      <entry key="maxThreads" value="-1"/>
+    </Map>
+  </Attributes>
+</RequestDefinition>

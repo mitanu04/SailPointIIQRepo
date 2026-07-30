@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TimePeriod PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TimePeriod classifier="TimeOfDayRange" created="1785394250413" id="c0a801899fb11942819fb1ca42ad0111" name="non_office_hours">
+  <Attributes>
+    <Map>
+      <entry key="endTime">
+        <value>
+          <Date>25200000</Date>
+        </value>
+      </entry>
+      <entry key="startTime">
+        <value>
+          <Date>54000000</Date>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</TimePeriod>

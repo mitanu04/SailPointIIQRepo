@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+    <Application connector="sailpoint.connector.OpenConnectorAdapter"
+                 featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE" icon="internetIcon" name="SAP Concur"
+                 type="SAP Concur">
+        <Attributes>
+            <Map>
+                <entry key="jsonPathMapping">
+                    <value>
+                        <Map>
+                            <entry key="emails.work.value" value="emails[*][?(@.type==&apos;work&apos;)].value"/>
+                            <entry key="addresses.country" value="addresses[*][?(@.type==&apos;work&apos;)].country"/>
+                            <entry key="addresses.postalCode" value="addresses[*][?(@.type==&apos;work&apos;)].postalCode"/>
+                            <entry key="addresses.region" value="addresses[*][?(@.type==&apos;work&apos;)].region"/>
+                            <entry key="addresses.streetAddress" value="addresses[*][?(@.type==&apos;work&apos;)].streetAddress"/>
+                            <entry key="addresses.type" value="addresses[*][?(@.type==&apos;work&apos;)].type"/>
+                            <entry key="companyId"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:enterprise:2.0:User&apos;].companyId"/>
+                            <entry key="startDate"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:enterprise:2.0:User&apos;].startDate"/>
+                            <entry key="terminationDate"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:enterprise:2.0:User&apos;].terminationDate"/>
+                            <entry key="roles" value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:Role&apos;].roles[*]"/>
+                            <entry key="biManager.value"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].biManager.value"/>
+                            <entry key="reimbursementCurrency"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].reimbursementCurrency"/>
+                            <entry key="country"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].country"/>
+                            <entry key="locale"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].locale"/>
+                            <entry key="reimbursementType"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].reimbursementType"/>
+                            <entry key="ledgerCode"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].ledgerCode"/>
+                            <entry key="cashAdvanceAccountCode"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].cashAdvanceAccountCode"/>
+                            <entry key="approvers"
+                                   value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:Approver&apos;].report[*].approver.value"/>
+                            <entry key="entitlements" value="entitlements"/>
+                            <entry key="timezone" value="timezone"/>
+                            <entry key="testEmployee" value="[&apos;urn:ietf:params:scim:schemas:extension:spend:2.0:User&apos;].testEmployee"/>
+                        </Map>
+                    </value>
+                </entry>
+                <entry key="aggregateInactiveUsers">
+                    <value>
+                        <Boolean>false</Boolean>
+                    </value>
+                </entry>
+                <entry key="relaxConfiguration" value="true"/>
+                <entry key="skipGrpUpdate" value="true"/>
+                <entry key="usePatch" value="true"/>
+                <entry key="authType" value="OAuth2Login"/>
+                <entry key="grant_type" value="REFRESH_TOKEN"/>
+                <entry key="encrypted" value="client_secret,oauthBearerToken,oauthTokenInfo,refresh_token,private_key,private_key_password,additional_payload,oauth2password"/>
+                <entry key="connectorClass" value="openconnector.connector.sapconcur.SAPConcurConnector"/>
+                <entry key="pageSize" value="50"/>
+                <entry key="explicitAttributesRequest"/>
+                <entry key="formPath" value="SAPConcurConfigForm.xhtml"/>
+                <entry key="load-by-sysclassloader">
+                    <value>
+                        <List>
+                            <String>json.jar</String>
+                        </List>
+                    </value>
+                </entry>
+                <entry key="skipGrpUpdate" value="false"/>
+            </Map>
+        </Attributes>
+        <Schemas>
+            <Schema displayAttribute="Login Name" identityAttribute="Id" nativeObjectType="User"
+                    objectType="account">
+                <AttributeDefinition name="Id" type="string" internalName="id">
+                    <Description>A unique identifier for the user</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Login Name" type="string" internalName="userName">
+                    <Description>The user's login name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Active" type="boolean" internalName="active">
+                    <Description>The user's active status</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="First Name" type="string" internalName="name.givenName">
+                    <Description>The user's first fame</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Last Name" type="string" internalName="name.familyName">
+                    <Description>The user's last name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Display Name" type="string" internalName="displayName">
+                    <Description>The user's display name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Formatted Name" type="string" internalName="name.formatted">
+                    <Description>The user's formatted name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Email" type="string" internalName="emails.work.value">
+                    <Description>The user's work email address</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="manager.value" name="Manager Id" type="string">
+                    <Description>The user's manager id</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Country" type="string" internalName="addresses.country">
+                    <Description>The user's Country, expressed as a two-letter country code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Postal Code" type="string" internalName="addresses.postalCode">
+                    <Description>The user's ZIP or postal code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Region" type="string" internalName="addresses.region">
+                    <Description>The user's state or region</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Street Address" type="string" internalName="addresses.streetAddress">
+                    <Description>The user's street name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Phone Number" type="string" internalName="phoneNumbers.work.primary.value">
+                    <Description>The user's primary phone number</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Timezone" type="string" internalName="timezone">
+                    <Description>The user's timezone</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Start Date" type="string" internalName="startDate">
+                    <Description>The user's start date</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Termination Date" type="string" internalName="terminationDate">
+                    <Description>The user's termination date</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Employee ID" type="string" internalName="employeeNumber">
+                    <Description>The user's employee number</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Job Title" type="string" internalName="title">
+                    <Description>The user's job title</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Cost Center" type="string" internalName="costCenter">
+                    <Description>The user's cost center</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Role Name" type="string" multi="true" internalName="roles" entitlement="true" managed="true" schemaObjectType="role">
+                    <Description>The user's Role assignments</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Entitlements" type="string" multi="true" internalName="entitlements">
+                    <Description>The user's entitlements or modules assignments</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Groups" type="string" multi="true">
+                    <Description>Groups linked to the user through role assignments</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Reimbursement Currency" type="string" internalName="reimbursementCurrency">
+                    <Description>Three-digit currency code in the list of system reimbursement currencies</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Country/Region of Residence" type="string" internalName="country">
+                    <Description>Two-letter country code of Expense Country</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Default Language" type="string" internalName="locale">
+                    <Description>Locale from the list of configured locales as defined in [RFC5646]. Example: en-US</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Reimbursement Type" type="string" internalName="reimbursementType">
+                    <Description>The user's reimbursement type</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Ledger" type="string" internalName="ledgerCode">
+                    <Description>The user's ledger</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Cash Advance Account Code" type="string" internalName="cashAdvanceAccountCode">
+                    <Description>The user's cash advance account code</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Is Test Employee" internalName="testEmployee" type="boolean">
+                    <Description>Indicates if the user is a test employee</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="BI Manager" type="string" internalName="biManager.value">
+                    <Description>The user's Business Intelligence manager</Description>
+                </AttributeDefinition>
+            </Schema>
+            <Schema displayAttribute="Role Name" featuresString="PROVISIONING" identityAttribute="Role Code"
+                    includePermissions="true" instanceAttribute="" nativeObjectType="Group" objectType="role">
+                <AttributeDefinition name="Role Code" type="string">
+                    <Description>A unique identifier for the role</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Role Name" type="string">
+                    <Description>The roles's full name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Description" type="string">
+                    <Description>The role's Usage</Description>
+                </AttributeDefinition>
+            </Schema>
+        </Schemas>
+        <Templates>
+            <Template name="Create" schemaObjectType="account" usage="Create">
+                    <Field displayName="con_prov_policy_user_create_concur_login_name"
+                           helpKey="help_con_prov_policy_user_create_concur_login_name" name="userName"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_first_name"
+                           helpKey="help_con_prov_policy_user_create_concur_first_name" name="name.givenName"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_last_name"
+                           helpKey="help_con_prov_policy_user_create_concur_last_name" name="name.familyName"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_email"
+                           helpKey="help_con_prov_policy_user_create_concur_email" name="emails.work.value"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_emp_id"
+                           helpKey="help_con_prov_policy_user_create_concur_emp_id" name="employeeNumber"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_reg_of_residence"
+                           helpKey="help_con_prov_policy_user_create_concur_reg_of_residence" name="country"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_reimb_curr"
+                           helpKey="help_con_prov_policy_user_create_concur_reimb_curr" name="reimbursementCurrency"
+                           required="true" type="string"/>
+                    <Field displayName="con_prov_policy_user_create_concur_def_langu"
+                           helpKey="help_con_prov_policy_user_create_concur_def_langu" name="locale"
+                           required="true" type="string" value="en-US"/>
+                    <Field displayName="con_prov_policy_user_create_concur_test_employee"
+                       helpKey="help_con_prov_policy_user_create_concur_test_employee" name="testEmployee"
+                       reviewRequired="true" type="boolean"/>
+            </Template>
+        </Templates>
+        <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+    name='SAP Concur' connectorName="SAP Concur"
+    shortDesc="ShortDesc" type="SourceConfig" directConnect="true" status="released" fileUpload="false">
+
+  <Menu name="SAP Concur Settings" label="con_form_sap_concur_config_title">
+    <Section name="SAP Concur Settings" label="con_form_sap_concur_config_title" sectionInfo="con_form_sap_concur_config_title" docLinkLabel="docLinkLabel_AuthenticationSettings" docLink="https://documentation.sailpoint.com/connectors/sap/concur/help/">
+      <Field name="host" displayName="con_form_sap_concur_base_url" type="url" required="true" placeHolder="placeHolder_host"
+      helpKey="con_help_sap_concur_base_url" />
+     
+      <Field name="grant_type" displayName="con_form_sap_concur_grant_type" type="select" defaultValue="REFRESH_TOKEN" readOnly="true"
+      helpKey="help_con_sap_concur_grant_type">
+        <AllowedValues>
+          <Option label="con_form_sap_concur_grant_type_refresh_token" value="REFRESH_TOKEN"/>
+        </AllowedValues>
+      </Field>
+
+      <Field name="companyId" displayName="con_form_sap_concur_company_id" type="text" helpKey="help_con_sap_concur_company_id"
+				required="true" />
+
+      <!-- Fields for grant_type 'Refresh_Token' -->
+      <Field name="client_id" displayName="con_form_sap_concur_client_id" type="text" required="true" parentKey="grant_type" parentValue="REFRESH_TOKEN"
+      helpKey="help_con_sap_concur_client_id"/>
+      <Field name="client_secret" displayName="con_form_sap_concur_client_secret" type="secret" required="true" parentKey="grant_type" parentValue="REFRESH_TOKEN"
+      helpKey="help_con_sap_concur_client_secret"/>
+      <Field name="refresh_token" displayName="con_form_sap_concur_grant_type_refresh_token" type="secret" required="true" parentKey="grant_type" parentValue="REFRESH_TOKEN"
+      helpKey="help_con_sap_concur_refresh_token"/>
+      
+      
+      <Field name="aggregateInactiveUsers" type="checkbox" defaultValue="false" displayName="con_form_sap_concur_include_inactive_users"
+      helpKey="help_con_sap_concur_include_inactive_users"/>
+      <Field name="pageSize" displayName="con_form_sap_concur_page_size" type="number" defaultValue="50" min="10" max="100"
+      helKey="help.help_con_sap_concur_page_size"  saveAsString="true"/>
+   </Section>
+  </Menu>
+</Form>]]>
+        </Settings>
+</Application>
+</ImportAction>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247860" displayName="capability_syslog_admin" id="c0a801899fb11942819fb1ca38b400e5" name="SyslogAdministrator">
+  <Description>capability_desc_managed_attribute_provisioning_admin</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33860037" name="ViewSyslog"/>
+  </RightRefs>
+</Capability>

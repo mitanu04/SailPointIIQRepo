@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Policy PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Policy certificationActions="Remediated,Mitigated,Delegated" configPage="sodpolicy.xhtml" created="1785394250441" executor="sailpoint.policy.SODPolicyExecutor" id="c0a801899fb11942819fb1ca42c90114" name="SOD Template" state="Inactive" template="true" type="SOD" typeKey="policy_type_sod" violationOwnerType="Manager"/>

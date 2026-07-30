@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TimePeriod PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TimePeriod classifier="DateSet" created="1785394250397" id="c0a801899fb11942819fb1ca429d010d" name="holidays">
+  <Attributes>
+    <Map>
+      <entry key="dates">
+        <value>
+          <List>
+            <Date>1167602400000</Date>
+            <Date>1168812000000</Date>
+            <Date>1171836000000</Date>
+            <Date>1180299600000</Date>
+            <Date>1183496400000</Date>
+            <Date>1188766800000</Date>
+            <Date>1191790800000</Date>
+            <Date>1194818400000</Date>
+            <Date>1195682400000</Date>
+            <Date>1198533600000</Date>
+          </List>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</TimePeriod>

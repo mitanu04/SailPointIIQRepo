@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2017 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+
+<body>
+  <ui:composition>
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      helpKey = 'APPLICATION';
+
+      function getFieldValue(fieldname) {
+          var val = null;
+          var field = Ext.getDom(fieldname);
+          if ( field ) {
+              val = field.value;
+          }
+          return val;
+      }
+
+        function toggleCredentials(authType) {
+            var oktaAPIKeyRow = Ext.get('oktaAPIKeyRow');
+            var grantTypeRow = Ext.get('grantTypeRow');
+            var tokenUrlRow = Ext.get('tokenUrlRow');
+            var scopeRow = Ext.get('scopeRow');
+            var jwtHeaderRow = Ext.get('jwtHeaderRow');
+            var audienceRow = Ext.get('audienceRow');
+            var issuerRow = Ext.get('issuerRow');
+            var subjectRow = Ext.get('subjectRow');
+            var pvtKeyRow = Ext.get('pvtKeyRow');
+            var pvtKeyPwdRow = Ext.get('pvtKeyPwdRow');
+
+            if (authType == "") {
+                authType = "API Token";
+            }
+
+            if (authType == "API Token") {
+                oktaAPIKeyRow.setVisibilityMode(Ext.Element.DISPLAY);
+                oktaAPIKeyRow.show();
+                grantTypeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                grantTypeRow.hide();
+                tokenUrlRow.setVisibilityMode(Ext.Element.DISPLAY);
+                tokenUrlRow.hide();
+                scopeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                scopeRow.hide();
+                jwtHeaderRow.setVisibilityMode(Ext.Element.DISPLAY);
+                jwtHeaderRow.hide();
+                audienceRow.setVisibilityMode(Ext.Element.DISPLAY);
+                audienceRow.hide();
+                issuerRow.setVisibilityMode(Ext.Element.DISPLAY);
+                issuerRow.hide();
+                subjectRow.setVisibilityMode(Ext.Element.DISPLAY);
+                subjectRow.hide();
+                pvtKeyRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyRow.hide();
+                pvtKeyPwdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyPwdRow.hide();
+            } if (authType == "OAuth2") {
+                oktaAPIKeyRow.setVisibilityMode(Ext.Element.DISPLAY);
+                oktaAPIKeyRow.hide();
+                grantTypeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                grantTypeRow.show();
+                tokenUrlRow.setVisibilityMode(Ext.Element.DISPLAY);
+                tokenUrlRow.show();
+                scopeRow.setVisibilityMode(Ext.Element.DISPLAY);
+                scopeRow.show();
+                jwtHeaderRow.setVisibilityMode(Ext.Element.DISPLAY);
+                jwtHeaderRow.show();
+                audienceRow.setVisibilityMode(Ext.Element.DISPLAY);
+                audienceRow.show();
+                issuerRow.setVisibilityMode(Ext.Element.DISPLAY);
+                issuerRow.show();
+                subjectRow.setVisibilityMode(Ext.Element.DISPLAY);
+                subjectRow.show();
+                pvtKeyRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyRow.show();
+                pvtKeyPwdRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyPwdRow.show();
+            }
+         }
+
+         Ext.onReady(function () {
+          Ext.QuickTips.init();
+          toggleCredentials('#{applicationObject.attributes["authtype"]}');
+
+          var pageSize = getFieldValue('editForm:pageSize');
+          if (pageSize.length == 0) {
+              // Maximum page size supported by Okta is 200, hence keeping default value is 200.
+              Ext.getDom('editForm:pageSize').value = '200';
+          }
+
+          // This is our validation hook
+          Page.on('beforeSave', function() {
+              if (!hasCredentialConfiguration()) {
+                  var host = getFieldValue('editForm:host');
+                  Validator.validateNonBlankString(host, "Host URL cannot be null!");
+
+                  var authType = getFieldValue('editForm:authType');
+                  if (authType == "API Token") {
+                      var apiToken = getFieldValue('editForm:apiToken');
+                      Validator.validateNonBlankString(apiToken, "API Token cannot be null!");
+                  } else {
+                      var tokeUrl = getFieldValue('editForm:tokeUrl');
+                      var scope = getFieldValue('editForm:scope');
+                      var jwtHeader = getFieldValue('editForm:jwtHeader');
+                      var audience = getFieldValue('editForm:audience');
+                      var issuer = getFieldValue('editForm:issuer');
+                      var subject = getFieldValue('editForm:subject');
+                      var pvtkeyPsw = getFieldValue('editForm:private_key_password');
+
+                      Validator.validateNonBlankString(tokeUrl, "#{msgs.con_form_okta_token_url_null}");
+                      Validator.validateNonBlankString(scope, "#{msgs.con_form_okta_scope_null}");
+                      Validator.validateNonBlankString(jwtHeader, "#{msgs.con_form_okta_jwt_header_null}");
+                      Validator.validateNonBlankString(audience, "#{msgs.con_form_okta_audience_null}");
+                      Validator.validateNonBlankString(issuer, "#{msgs.con_form_okta_issuer_null}");
+                      Validator.validateNonBlankString(subject, "#{msgs.con_form_okta_subject_null}");
+                      Validator.validateNonBlankString(pvtkeyPsw, "#{msgs.con_form_okta_private_key_password_null}");
+                  }
+
+                  var errors = Validator.getErrors();
+                  if (errors && errors.length > 0) {
+                      Validator.displayErrors('appErrorsTop');
+                      return false;
+                  }
+              }
+              return true;
+          });
+      });
+
+      //--><!]]>
+    </script>
+    <f:view>
+      <div id="oktaConnectivitySettings" class='spContent'>
+        <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} Connection Settings" />
+        <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr id="oktaURLRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_okta_api_host_name}" />
+              <h:outputText styleClass="requiredText" value="*" /></td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                 alt="#{help.help_con_okta_host}" />
+            </td>
+            <td>
+              <h:inputText id="host" value="#{applicationObject.attributes['host']}" size="40" redisplay="true"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="authTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_auth_type}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_okta_auth_type}" />
+            </td>
+            <td>
+              <h:selectOneMenu id="authType"
+                value="#{applicationObject.attributes['authtype']}"
+                redisplay="true"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                onchange="toggleCredentials(this.value)">
+                <f:selectItem itemValue="API Token" itemLabel="#{msgs.con_okta_api_token}" />
+                <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_okta_oauth2}"/>
+              </h:selectOneMenu>
+            </td>
+          </tr>
+
+          <tr id="oktaAPIKeyRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_okta_api_token}" />
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUser" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                 alt="#{help.help_con_okta_api_token}" /></td>
+            <td>
+              <sp:inputSecret id="apiToken" value="#{applicationObject.attributes['apiToken']}" size="40"
+                redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                autocomplete="off"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="grantTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_grant_type}" /></td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_okta_grant_type}" /></td>
+            <td>
+              <h:selectOneMenu id="grant_type"  value="#{applicationObject.attributes['grant_type']}"
+                redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                onchange="toggleCredentials(this.value)">
+                <f:selectItem itemValue="client_credentials" itemLabel="#{msgs.con_form_okta_client_credentails}" />
+              </h:selectOneMenu></td>
+          </tr>
+
+          <tr id="tokenUrlRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_token_url}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpTokenUrl" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_token_url}" />
+            </td>
+            <td>
+              <h:inputText id="tokeUrl" value="#{applicationObject.attributes['tokenUrl']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="scopeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_scope}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpScope" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_scope}" />
+            </td>
+            <td>
+              <h:inputTextarea id="scope"  value="#{applicationObject.attributes['scope']}" rows="5" cols="80" style="width: 35%;" 
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}" readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="jwtHeaderRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_jwt_header}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpJwtHeader" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_jwt_header}" />
+            </td>
+            <td>
+             <h:inputTextarea id="jwtHeader"  value="#{applicationObject.attributes['jwtHeader']}" rows="5" cols="80" style="width: 35%;" 
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}" readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="audienceRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_audience}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAudience" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_audience}" />
+            </td>
+            <td>
+              <h:inputText id="audience" value="#{applicationObject.attributes['audience']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="issuerRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_issuer}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpIssuer" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_issuer}" />
+            </td>
+            <td>
+              <h:inputText id="issuer" value="#{applicationObject.attributes['issuer']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="subjectRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_subject}" /> 
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpSubject" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png" 
+                alt="#{help.help_con_okta_subject}" />
+            </td>
+            <td>
+              <h:inputText id="subject" value="#{applicationObject.attributes['subject']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="pvtKeyRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_privateKey}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpPrivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_okta_private_key}"/>
+            </td>
+            <td>
+              <ui:include src="privateKey.xhtml"/>
+            </td>
+          </tr>
+
+          <tr id="pvtKeyPwdRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_pvt_key_psw}"/>
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpPrivateKeyPassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                              alt="#{help.help_con_okta_pvt_key_psw}"/>
+            </td>
+            <td>
+              <sp:inputSecret id="private_key_password"
+                           value="#{applicationObject.attributes['private_key_password']}"
+                           redisplay="true" size="80" autocomplete="off"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr id="pageSizeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_page_size}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon"
+                 url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_okta_page_size}" />
+            </td>
+            <td>
+              <h:inputText id="pageSize" value="#{applicationObject.attributes['pageSize']}" size="20"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+               <f:validateLongRange minimum="1" maximum="200" />
+              </h:inputText>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="oktaAggrgationFilterSettings" class='spContent'>
+       <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_okta_agg_filter_label}" />
+       <table class="spTable" style="border: 0px" cellspacing="0">
+          <tr id="accountFilterRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_account_agg_filter}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccountFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+               alt="#{help.help_con_okta_account_agg_constraint}" />
+            </td>
+            <td>
+              <h:inputText id="accountAggFilter"
+                value="#{applicationObject.attributes['accountAggFilter']}"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+          
+           <tr id="groupFilterRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_group_agg_filter}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGroupFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+               alt="#{help.help_con_okta_group_agg_constraint}" />
+            </td>
+            <td>
+              <h:inputText id="groupAggFilter"
+                value="#{applicationObject.attributes['groupAggFilter']}"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="applicationFilterRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_okta_app_agg_filter}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAppFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+               alt="#{help.help_con_okta_app_agg_constraint}" />
+            </td>
+            <td>
+              <h:inputText id="applicationAggFilter"
+                value="#{applicationObject.attributes['applicationAggFilter']}"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+          </table>
+       </div>
+    </f:view>
+  </ui:composition>
+</body>
+</html>

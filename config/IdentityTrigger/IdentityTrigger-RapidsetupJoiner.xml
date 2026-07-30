@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<IdentityTrigger created="1785394274010" handler="sailpoint.api.AsynchronousWorkflowTriggerHandler" id="c0a801899fb11942819fb1ca9eda0352" name="RapidSetup Joiner" type="RapidSetup">
+  <Description>Rapid Setup Joiner processed a lifecycle event.</Description>
+  <HandlerParameters>
+    <Attributes>
+      <Map>
+        <entry key="businessProcess" value="joiner"/>
+        <entry key="workflow" value="RapidSetup - Joiner"/>
+      </Map>
+    </Attributes>
+  </HandlerParameters>
+</IdentityTrigger>

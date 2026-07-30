@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2021 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+<body>
+
+<ui:composition>
+
+  <div class="spTabledContent" style="margin:5px">
+    <table class="spTable" cellspacing="0">
+      <tr>
+        <th>
+          <h:outputText value="#{msgs.workItemComments}"/>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <ui:repeat value="#{workItem.commentList}" var="comment">
+            <li class="lcmComments">
+              <li rendered="#{comment.author != null || comment.date != null}">
+                <h:outputText rendered="#{comment.author != null}" value="#{msgs.from} #{comment.author} "
+                              style="font-weight: bold;"/>
+                <h:outputText rendered="#{comment.date != null}" value="#{msgs.on} #{comment.date}" style="font-weight: bold;">
+                  <f:convertDateTime type="both" dateSe="short" timeStyle="long" timeZone="#{identity.userTimeZone}"/>
+                </h:outputText>
+              </li>
+              <li>
+                <h:outputText value="#{comment.comment}"/>
+              </li>
+            </li>
+          </ui:repeat>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</ui:composition>
+
+</body>
+</html>

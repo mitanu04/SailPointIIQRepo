@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE JasperTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<JasperTemplate name="CertificationDetailViolationsSubReport">
+  <DesignXml>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CertificationDetailViolationsSubReport" pageWidth="762" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="762" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="sailpoint.reporting.scriptlet.CertificationDetailReportScriptlet">
+	&lt;property name="ireport.scriptlethandling" value="2"/>
+	&lt;property name="ireport.encoding" value="UTF-8"/>
+	&lt;property name="ireport.zoom" value="1.0"/>
+	&lt;property name="ireport.x" value="0"/>
+	&lt;property name="ireport.y" value="0"/>
+	&lt;import value="net.sf.jasperreports.engine.*"/>
+	&lt;import value="java.util.*"/>
+	&lt;import value="net.sf.jasperreports.engine.data.*"/>
+	&lt;style name="title" isBlankWhenNull="true" fontName="Arial" fontSize="24" isBold="true"/>
+	&lt;style name="v-bandedTextRed" mode="Opaque" forecolor="#EE0000" backcolor="#FFFFFF" isBlankWhenNull="true" fontName="Arial" fontSize="9">
+		&lt;box>
+			&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+			&lt;bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#DDDDDD"/>
+		&lt;/box>
+		&lt;conditionalStyle>
+			&lt;conditionExpression>&lt;![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)&#x5D;]>&lt;/conditionExpression>
+			&lt;style backcolor="#EEEEEE"/>
+		&lt;/conditionalStyle>
+	&lt;/style>
+	&lt;style name="v-bandedText" mode="Opaque" forecolor="#000000" backcolor="#FFFFFF" isBlankWhenNull="true" fontName="Arial" fontSize="9">
+		&lt;box>
+			&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+			&lt;bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#DDDDDD"/>
+		&lt;/box>
+		&lt;conditionalStyle>
+			&lt;conditionExpression>&lt;![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)&#x5D;]>&lt;/conditionExpression>
+			&lt;style backcolor="#EEEEEE"/>
+		&lt;/conditionalStyle>
+	&lt;/style>
+	&lt;style name="spBlue" mode="Opaque" forecolor="#FFFFFF" backcolor="#1A7182" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="9" isBold="true"/>
+	&lt;style name="spLightBlue" mode="Opaque" forecolor="#333333" backcolor="#C2DCE0" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spGreen" mode="Opaque" forecolor="#FFFFFF" backcolor="#5A8429" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spLightGreen" mode="Opaque" forecolor="#333333" backcolor="#CFDCBF" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spOrange" mode="Opaque" forecolor="#FFFFFF" backcolor="#F45D14" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spLightOrange" mode="Opaque" forecolor="#333333" backcolor="#F4C3AB" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spYellow" mode="Opaque" forecolor="#333333" backcolor="#F3B833" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spLightYellow" mode="Opaque" forecolor="#333333" backcolor="#F3DDAA" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="spRed" mode="Opaque" forecolor="#FFFFFF" backcolor="#B40B0E" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true"/>
+	&lt;style name="body" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="9"/>
+	&lt;style name="bodySmall" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="10"/>
+	&lt;style name="bodyGray" mode="Opaque" forecolor="#000000" backcolor="#DDDDDD" markup="none" isBlankWhenNull="true" fontName="Arial" fontSize="12"/>
+	&lt;style name="footer" forecolor="#000000" fontName="Arial" fontSize="10"/>
+	&lt;parameter name="Context" class="sailpoint.api.SailPointContext" isForPrompting="false">
+		&lt;parameterDescription>&lt;![CDATA[Context&#x5D;]>&lt;/parameterDescription>
+	&lt;/parameter>
+	&lt;field name="action" class="sailpoint.object.CertificationAction"/>
+	&lt;field name="action.status.messageKey" class="java.lang.String"/>
+	&lt;field name="action.actorName" class="java.lang.String"/>
+	&lt;field name="action.comments" class="java.lang.String"/>
+	&lt;field name="owner.name" class="java.lang.String"/>
+	&lt;field name="delegation.ownerName" class="java.lang.String"/>
+	&lt;field name="delegation.comments" class="java.lang.String"/>
+	&lt;field name="delegated" class="java.lang.Boolean"/>
+	&lt;field name="policyViolation" class="sailpoint.object.PolicyViolation"/>
+	&lt;field name="parent" class="sailpoint.object.CertificationEntity"/>
+	&lt;variable name="policyViolationView" class="sailpoint.web.policy.ViolationViewBean" resetType="Page">
+		&lt;variableExpression>&lt;![CDATA[$P{REPORT_SCRIPTLET}.getViolationBean($P{Context}, $F{policyViolation})&#x5D;]>&lt;/variableExpression>
+	&lt;/variable>
+	&lt;group name="headerGroup" isReprintHeaderOnEachPage="true" minHeightToStartNewPage="10">
+		&lt;groupExpression>&lt;![CDATA[&#x5D;]>&lt;/groupExpression>
+		&lt;groupHeader>
+			&lt;band height="57" splitType="Prevent">
+				&lt;staticText>
+					&lt;reportElement key="header-6" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" x="278" y="39" width="35" height="18"/>
+					&lt;box topPadding="3" leftPadding="5">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#DDDDDD"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement textAlignment="Left" verticalAlignment="Middle">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;text>&lt;![CDATA[&#x5D;]>&lt;/text>
+				&lt;/staticText>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-6" style="bodyGray" positionType="Float" mode="Opaque" x="0" y="17" width="500" height="21" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_section_violations}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-7" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="39" width="85" height="18"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_col_decision}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-8" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="85" y="39" width="101" height="18"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_col_decision_maker}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-9" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="186" y="39" width="92" height="18"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_col_violation}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-10" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="313" y="39" width="201" height="18"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_col_rule}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					&lt;reportElement key="detail-11" style="spGreen" positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="514" y="39" width="241" height="18"/>
+					&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+						&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+						&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+						&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font fontName="Arial" size="9" isBold="true"/>
+					&lt;/textElement>
+					&lt;textFieldExpression>&lt;![CDATA[$R{rept_cert_decisions_subreport_col_comments}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+			&lt;/band>
+		&lt;/groupHeader>
+		&lt;groupFooter>
+			&lt;band splitType="Prevent"/>
+		&lt;/groupFooter>
+	&lt;/group>
+	&lt;background>
+		&lt;band splitType="Stretch"/>
+	&lt;/background>
+	&lt;title>
+		&lt;band splitType="Stretch"/>
+	&lt;/title>
+	&lt;pageHeader>
+		&lt;band splitType="Stretch"/>
+	&lt;/pageHeader>
+	&lt;columnHeader>
+		&lt;band splitType="Stretch"/>
+	&lt;/columnHeader>
+	&lt;detail>
+		&lt;band height="15" splitType="Prevent">
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="detail-1" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="85" y="0" width="101" height="15"/>
+				&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement verticalAlignment="Top">
+					&lt;font fontName="Arial" isBold="false"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$F{delegated}.booleanValue() ? $F{delegation.ownerName} : $F{action.actorName}&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="detail-2" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="186" y="0" width="92" height="15"/>
+				&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement verticalAlignment="Top">
+					&lt;font fontName="Arial" isBold="false"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$V{policyViolationView}.getPolicy().getName()&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="detail-3" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="85" height="15"/>
+				&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement verticalAlignment="Top">
+					&lt;font fontName="Arial" isBold="false"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$F{delegated}.booleanValue() ? $R{cert_action_delegated} : $P{REPORT_SCRIPTLET}.getDecisionDescription($F{action},$P{REPORT_LOCALE})&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="detail-4" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="514" y="0" width="228" height="15" isPrintWhenDetailOverflows="true"/>
+				&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement verticalAlignment="Top">
+					&lt;font isBold="false"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$F{delegated}.booleanValue() ? $F{delegation.comments}: $F{action.comments}&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="textField-1" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" x="514" y="0" width="241" height="15"/>
+				&lt;box bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement>
+					&lt;font fontName="Arial" size="9"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$P{REPORT_SCRIPTLET}.getComments($P{Context}, $F{action}, $F{parent}, $P{REPORT_LOCALE})&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="textField-2" style="v-bandedText" positionType="Float" stretchType="RelativeToBandHeight" x="313" y="0" width="201" height="15"/>
+				&lt;box bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement>
+					&lt;font fontName="Arial" size="9"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$V{policyViolationView}.getSummary()&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+			&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				&lt;reportElement key="detail-5" style="v-bandedTextRed" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="278" y="0" width="35" height="15"/>
+				&lt;box topPadding="3" leftPadding="5" bottomPadding="3">
+					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#DDDDDD"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				&lt;/box>
+				&lt;textElement verticalAlignment="Top">
+					&lt;font fontName="Arial" isBold="true"/>
+				&lt;/textElement>
+				&lt;textFieldExpression>&lt;![CDATA[$P{REPORT_SCRIPTLET}.isNewPolicyViolation($P{Context}, $F{parent}, $F{policyViolation}) ? "[new]" : ""&#x5D;]>&lt;/textFieldExpression>
+			&lt;/textField>
+		&lt;/band>
+	&lt;/detail>
+	&lt;columnFooter>
+		&lt;band splitType="Prevent"/>
+	&lt;/columnFooter>
+	&lt;pageFooter>
+		&lt;band splitType="Stretch"/>
+	&lt;/pageFooter>
+	&lt;summary>
+		&lt;band splitType="Stretch"/>
+	&lt;/summary>
+&lt;/jasperReport>
+</DesignXml>
+</JasperTemplate>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+ <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, ENABLE" name="Jack Henry" type="Jack Henry" icon="internetIcon">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.jackhenry.JackHenryConnector"/>
+        <entry key="formPath" value="JackHenryAttributesForm.xhtml"/>
+        <entry key="encrypted" value="password"/>
+      </Map>
+    </Attributes>
+   <Schemas>
+   <Schema displayAttribute="User_Name" identityAttribute="User_Number" nativeObjectType="user" objectType="account">
+    <AttributeDefinition displayName="User Number" name="User_Number" type="string">
+      <Description>User Number.</Description>
+    </AttributeDefinition>
+    <AttributeDefinition name="User_Name" type="string">
+      <Description>Name of the User.</Description>
+    </AttributeDefinition>
+    <AttributeDefinition name="User_ActiveMode" type="string">
+      <Description>User Status (Active, Inactive, Frozen).</Description>
+    </AttributeDefinition>
+    <AttributeDefinition name="User_Email" type="string">
+      <Description>E-mail address of the user.</Description>
+    </AttributeDefinition>
+    <AttributeDefinition name="User_JobTitle" type="string">
+      <Description>Job Title of the user.</Description>
+    </AttributeDefinition>
+    <AttributeDefinition name="User_Type" type="string">
+      <Description>Options for the user type in the corporate interface.</Description>
+    </AttributeDefinition>
+    <AttributeDefinition entitlement="true" managed="true" multi="true" name="User_PrivilegeGroup" schemaObjectType="group" type="string">
+      <Description>Defines if the user is a member of one or more of the 999 corresponding privilege groups.</Description>
+    </AttributeDefinition>
+   </Schema>
+    <Schema aggregationType="group" displayAttribute="Name" identityAttribute="Id" includePermissions="true" nativeObjectType="User_PrivilegeGroup" objectType="group" permissionsRemediationModificationType="None">
+      <AttributeDefinition name="Id" type="string">
+        <Description>PrivilegeGroup Id.</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="Name" type="string">
+        <Description>PrivilegeGroup Name.</Description>
+      </AttributeDefinition>
+    </Schema>
+   </Schemas>
+   <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='Jack Henry' connectorName="Jack Henry"
+      type="SourceConfig" directConnect="true" status="released" fileUpload="false">
+
+	<Menu name="Connection Settings" label="con_form_jack_henry_account_config">
+        <Section name="Connection Settings" label="con_form_jack_henry_account_config" sectionInfo="sectionInfo_Authentication"
+          docLinkLabel="docLinkLabel_Authentication" docLink="https://documentation.sailpoint.com/connectors/jack_henry/symitar/help/">
+			<Field name="host" displayName="con_form_jack_henry_account_url" helpKey="help_con_form_jack_henry_account_url" type="url" required="true" />
+			<Field name="password" displayName="con_form_jack_henry_account_password" helpKey="help_con_form_jack_henry_account_password" type="secret" required="true"/>
+			<Field name="deviceType" displayName="con_form_jack_henry_account_device_type" helpKey="help_con_form_jack_henry_account_device_type" type="text" required="true"/>
+			<Field name="deviceNumber" displayName="con_form_jack_henry_account_device_number" helpKey="help_con_form_jack_henry_account_device_number" type="text" required="true"/>
+			<Field name="fileName" displayName="con_form_jack_henry_account_file_name" helpKey="help_con_form_jack_henry_account_file_name" type="text" required="true"/>
+			<Field name="connectionTimeout" displayName="con_form_jack_henry_connection_timeout" helpKey="help_con_form_jack_henry_account_connection_timeout" type="number" min="1" saveAsString="true" />
+        </Section>
+	</Menu>
+	<Menu name="Aggregation Filter Settings" label="con_form_jack_henry_filters">
+		<Section name="Aggregation Filter Settings" label="con_form_jack_henry_filters">
+            <Field name="aggregateInactiveUsers" displayName="con_form_jack_henry_include_inactive_users" helpKey="help_con_form_jack_henry_account_inclued_inactive" type="checkbox"/>
+            <Field name="aggregateFrozenUsers" displayName="con_form_jack_henry_include_frozen_users" helpKey="help_con_form_jack_henry_account_inclued_frozen" type="checkbox"/>
+        </Section>
+    </Menu>
+</Form>]]>
+   </Settings>
+ </Application>
+</ImportAction>

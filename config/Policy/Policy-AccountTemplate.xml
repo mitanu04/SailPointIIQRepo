@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Policy PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Policy certificationActions="Mitigated,Delegated" configPage="genericpolicy.xhtml" created="1785394250474" executor="sailpoint.policy.AccountPolicyExecutor" id="c0a801899fb11942819fb1ca42ea0118" name="Account Template" state="Inactive" template="true" type="Account" typeKey="policy_type_account" violationOwnerType="Manager">
+  <GenericConstraints>
+    <GenericConstraint created="1785394250474" id="c0a801899fb11942819fb1ca42ea0119" name="Multiple Application Accounts" violationOwnerType="None"/>
+  </GenericConstraints>
+</Policy>

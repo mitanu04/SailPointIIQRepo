@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+    <Application connector="sailpoint.connector.OpenConnectorAdapter"
+                 featuresString="PROVISIONING, SYNC_PROVISIONING, ENABLE" icon="internetIcon" name="SAP BTP Cockpit Cloud Foundry"
+                 type="SAP BTP Cockpit Cloud Foundry">
+        <Attributes>
+            <Map>
+                <entry key="connectorClass" value="openconnector.connector.sapbtpcockpitcloudfoundry.SAPBtpCockpitCFConnector"/>
+                <entry key="encrypted" value="scim0_client_secret"/>
+                <entry key="pageSize" value="100"/>
+                <entry key="formPath" value="SAPBTPAttributes.xhtml"/>
+                <entry key="relaxConfiguration" value="true"/>
+                <entry key="accountType" value="Sub-Account"/>
+            </Map>
+        </Attributes>
+        <Schemas>
+            <Schema displayAttribute="User Name" identityAttribute="ID" nativeObjectType="User"
+            objectType="account">
+                <AttributeDefinition name="ID" type="string" internalName="id">
+                    <Description>A unique identifier for the user</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="User Name" type="string" internalName="userName">
+                    <Description>The user's login name or user name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="First Name" type="string" internalName="name.givenName">
+                    <Description>The user's first name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Last Name" type="string" internalName="name.familyName">
+                    <Description>The user's last name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition name="Email" type="string" internalName="emails.value">
+                    <Description>The user's work email address</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="verified" name="Verified" type="string">
+                    <Description>The user's email verification status</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="origin" name="Origin" type="string">
+                    <Description>The user's identity provider origin key</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="active" name="Active" type="string">
+                    <Description>The user's active status</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="zoneId" name="Tenant ID" type="string">
+                    <Description>The user's tenant ID</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="meta.version" name="Version" type="string">
+                    <Description>The user's record version</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="meta.created" name="Created On" type="string">
+                    <Description>The user's record creation date and time</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="meta.lastModified" name="Last Updated" type="string">
+                    <Description>The user's record last modified date and time</Description>
+                </AttributeDefinition>
+                <AttributeDefinition entitlement="true" internalName="groups" managed="true" multi="true" name="Role Collections" schemaObjectType="group" type="string">
+                    <Description>Groups linked to the user through role assignments</Description>
+                </AttributeDefinition>
+            </Schema>
+            <Schema displayAttribute="Display Name" identityAttribute="ID" objectType="group" nativeObjectType="group">
+                <AttributeDefinition name="ID" internalName="id"  type="String">
+                    <Description>A unique identifier for the group</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="displayName" name="Display Name" required="true" type="string">
+                    <Description>The group's display name</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="description" name="Description" type="string">
+                    <Description>The group's description</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="members" name="Members" multi="true" type="string">
+                    <Description>The members associated with the group</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="roleReference" multi="true" name="Roles" type="string">
+                    <Description>The Roles associated with the group</Description>
+                </AttributeDefinition>
+                <AttributeDefinition internalName="mapped entitlements" multi="true" name="Mapped entitlements" type="string">
+                    <Description>The indirect or dynamic assignments associated with group</Description>
+                </AttributeDefinition>
+            </Schema>
+        </Schemas>
+        <Templates>
+            <Template name="Create" schemaObjectType="account" usage="Create">
+                <Field displayName="User Name"
+                           helpKey="help_con_prov_policy_user_create_btp_user_name" name="User Name"
+                           required="true" type="string"/>
+                <Field displayName="First Name"
+                           helpKey="help_con_prov_policy_user_create_btp_first_name" name="First Name"
+                           required="true" type="string"/>
+                <Field displayName="Last Name"
+                           helpKey="help_con_prov_policy_user_create_btp_last_name" name="Last Name"
+                           required="true" type="string"/>
+                <Field displayName="Email"
+                           helpKey="help_con_prov_policy_user_create_btp_email" name="Email"
+                           required="true" type="string"/>
+                <Field displayName="Origin"
+                           helpKey="help_con_prov_policy_user_create_btp_origin" name="Origin"
+                           required="true" type="string"/>
+                <Field displayName="Zone ID"
+                           helpKey="help_con_prov_policy_user_create_btp_zon_id" name="Tenant ID"
+                           required="false" type="string"/>
+            </Template>
+        </Templates>
+        <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2024 SailPoint Technologies","Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name='SAP BTP Cockpit Cloud Foundry' connectorName="SAP BTP Cockpit Cloud Foundry"
+	type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+
+	<Menu name="SAP BTP Cockpit Cloud Foundry Connection Settings" label="con_form_sap_btp_connection_settings">
+		<Section name="SAP BTP Cockpit Cloud Foundry Connection Settings" label="con_form_sap_btp_connection_settings">
+			<Field name="accountType" displayName="con_form_sap_btp_account_type" type="radio" required="true"
+				defaultValue="Sub-Account" helpKey="help_con_form_sap_btp_account_type">
+				<AllowedValues>
+          <Option label="con_form_sap_btp_global_account" value="Global Account"/>
+          <Option label="con_form_sap_btp_directory" value="Directory"/>
+					<Option label="con_form_sap_btp_sub_account" value="Sub-Account"/>
+        </AllowedValues>
+			</Field>
+			<Field name="scim0_host" displayName="con_form_sap_btp_base_url" type="text" required="true" helpKey="help_con_form_sap_btp_base_url"/>
+			<Field name="scim0_token_url" displayName="con_form_sap_btp_token_url" type="text" required="true" helpKey="help_con_form_sap_btp_token_url"/>
+			<Field name="scim0_authType" displayName="con_form_sap_btp_authentication_method" type="select" required="true"
+				defaultValue="OAuth2Login" helpKey="help_con_form_sap_btp_authentication_method">
+				<AllowedValues>
+          <Option label="OAuth 2.0" value="OAuth2Login"/>
+        </AllowedValues>
+			</Field>
+			<Field name="scim0_grant_type" displayName="con_form_sap_btp_grant_type" type="text" required="true"
+				defaultValue="client_credentials" helpKey="help_con_form_sap_btp_grant_type">
+				<AllowedValues>
+          <Option label="Client Credentials" value="client_credentials"/>
+        </AllowedValues>
+			</Field>
+			<Field name="scim0_client_id" displayName="con_form_sap_btp_client_id" type="text" required="true" helpKey="help_con_form_sap_btp_user"/>
+			<Field name="scim0_client_secret" displayName="con_form_sap_btp_client_secret" type="secret" required="true" helpKey="help_con_form_sap_btp_password"/>
+		</Section>
+	</Menu>
+	<Menu name="Page Size Settings" label="con_form_sap_btp_page_size_settings">
+		<Section name="Page Size Settings" label="con_form_sap_btp_page_size_settings">
+			<Field name="pageSize" displayName="con_form_sap_btp_page_size" type="number"
+			  defaultValue="100" min="10" max="500" helpKey="help_con_form_sap_btp_page_size_settings"/>
+		</Section>
+	</Menu>
+</Form>]]>
+        </Settings>
+    </Application>
+</ImportAction>

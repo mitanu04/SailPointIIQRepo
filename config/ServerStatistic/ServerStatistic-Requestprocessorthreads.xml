@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ServerStatistic PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ServerStatistic created="1785407048775" id="c0a801899fb21d28819fb28d8c47003d" name="requestProcessorThreads" snapshotName="1785407048773" value="0" valueType="int">
+  <Host>
+    <Reference class="sailpoint.object.Server" id="c0a801899fb11dc6819fb1ce0f790000" name="DESKTOP-9ICGL95"/>
+  </Host>
+  <MonitoringStatisticRef>
+    <Reference class="sailpoint.object.MonitoringStatistic" id="c0a801899fb11942819fb1ca44bc013c" name="requestProcessorThreads"/>
+  </MonitoringStatisticRef>
+</ServerStatistic>

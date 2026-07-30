@@ -1,0 +1,11 @@
+
+-- In order to drop the identityiq database, Postgres requires a connection to a database other than the one being dropped.
+
+-- You must switch here to a different non-SailPoint database connection while dropping the
+-- SailPoint databases. If postgres/postgres isn't available, change the line below to a
+-- different available connection.
+
+\connect postgres postgres;
+ALTER DATABASE identityiq OWNER TO postgres;
+DROP DATABASE IF EXISTS identityiq;
+DROP USER IF EXISTS identityiq;

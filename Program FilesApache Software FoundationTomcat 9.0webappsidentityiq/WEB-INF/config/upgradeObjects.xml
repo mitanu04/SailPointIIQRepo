@@ -1,0 +1,397 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<!-- (c) Copyright 2020 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<!--
+  This is used by 'iiq upgrade' to drive upgrading the schema and data between revisions.
+  There are two files that define the upgrade: upgrade.xml and upgradeObjects.xml.
+  upgrade.xml is processed in a special way before Hibernate is started so that changes can be made at the JDBC level.
+  These files should only contain <ImportAction> elements that use the "execute" command to call upgrader classes.
+  *DO NOT PUT STATIC XML OBJECTS IN UPGRADE.XML*
+  upgradeObjects.xml is included by upgrade.xml and will be imported after Hibernate is started. Any changes to objects
+  that can be represented as static XML or as ImportActions with the "merge" command must go in these files to ensure
+  that they are parsed after Hibernate has been started so that references can be resolved.
+-->
+<sailpoint>
+
+  <!--
+     This will reimport some updated objects
+     and should be safe to do for every release.
+   -->
+  <ImportAction name='include' value='WEB-INF/config/authorization.xml' />
+  <ImportAction name='include' value='WEB-INF/config/reportDefinitions.xml' />
+  <ImportAction name='include' value='WEB-INF/config/tasks.xml' />
+  <ImportAction name='include' value='WEB-INF/config/reportTasks.xml' />
+  <ImportAction name='include' value='WEB-INF/config/archiveReports.xml'/>
+  <ImportAction name='include' value='WEB-INF/config/rules.xml' />
+  <ImportAction name='include' value='WEB-INF/config/workflowRules.xml' />
+  <ImportAction name='include' value='WEB-INF/config/workflowSubs.xml' />
+  <ImportAction name='include' value='WEB-INF/config/workflowRegistry.xml' />
+  <ImportAction name='include' value='WEB-INF/config/workflow.xml' />
+  <ImportAction name='include' value='WEB-INF/config/form.xml' />
+  <ImportAction name='include' value='WEB-INF/config/reportForms.xml' />
+  <ImportAction name='include' value='WEB-INF/config/emailtemplates.xml' />
+  <ImportAction name='include' value='WEB-INF/config/adaptiveCardNotificationTemplates.xml' />
+  <ImportAction name='include' value='WEB-INF/config/defaultPasswordPolicies.xml' />
+  <ImportAction name='include' value='WEB-INF/config/connectorRegistry.xml' />
+  <ImportAction name='include' value='WEB-INF/config/connectorRegistryDeprecated.xml' />
+  <ImportAction name='include' value='WEB-INF/config/accesshistory/yaml-accesshistory.xml' />
+  <ImportAction name='include' value='WEB-INF/config/accesshistory/tasks-accesshistory.xml' />
+  <!-- Controlled Availability for Connectors -->
+  <ImportAction name='include' value='WEB-INF/config/connectorRegistryCAConnectors.xml' />
+  <ImportAction name='include' value='WEB-INF/config/reportRules.xml' />
+  <ImportAction name="include" value="WEB-INF/config/lcmForms.xml" />
+  <ImportAction name="include" value="WEB-INF/config/sendEmailPostActionRule.xml" />
+  <ImportAction name="include" value="WEB-INF/config/cefActivityTransformRule.xml" />
+  <ImportAction name="include" value="WEB-INF/config/cefActivityCorrelationRule.xml" />
+  <ImportAction name="include" value="WEB-INF/config/workflowConfigForms.xml" />
+  <!-- Scim configuration -->
+  <ImportAction name='include' value='WEB-INF/config/scimConfiguration.xml' />
+  <!-- Applications Builder Rule XML -->
+  <ImportAction name="include" value="WEB-INF/config/applicationBuilderRule.xml" />
+  <ImportAction name="merge">
+      <Configuration name="SystemConfiguration">
+          <Attributes>
+              <Map>
+                  <entry key="htmlSanitizerPolicies">
+                      <value>
+                          <List>
+                              <String>BLOCKS</String>
+                              <String>FORMATTING</String>
+                              <String>STYLE_ELEMENTS</String>
+                          </List>
+                      </value>
+                  </entry>
+                  <entry key='workItemForwardAdaptiveCardNotification' value='Work Item Forward Adaptive Card' />
+                  <entry key='lcmIdentityUpdateApprovalAdaptiveCardNotification' value='LCM Identity Update Approval Adaptive Card' />
+                  <entry key='workItemAssignmentAdaptiveCardNotification' value="Work Item Assignment Adaptive Card"/>
+                  <entry key='workItemAssignmentRemovalAdaptiveCardNotification' value="Work Item Assignment Removal Adaptive Card"/>
+               </Map>
+            </Attributes>
+      </Configuration>
+  </ImportAction>
+  <ImportAction name="merge">
+    <Configuration name="WebResource">
+      <Attributes>
+        <Map>
+          <entry key="webResources">
+            <value>
+              <List>
+                <WebResource rights="FullAccessBeansPage, FullAccessThreadsPage, FullAccessAboutPage, FullAccessMemoryPage, FullAccessMetersPage, FullAccessLoggingPage, FullAccessDatabasePage, FullAccessDebugPage" url="debug/index.*">
+                  <ChildResources>
+                    <String>debug/connections.*</String>
+                  </ChildResources>
+                </WebResource>
+                <WebResource rights="GenAIEntitlementAdministrator, ManagedAttributePropertyAdministrator" url="define/groups/entitlementDescription.*" />
+              </List>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+  <SPRight name="ViewAccessConnectionsPage" displayName="right_view_access_connections_page">
+    <Description>right_desc_view_access_connections_page</Description>
+  </SPRight>
+
+  <Rule language="beanshell" name="No One" type="IdentitySelector">
+    <Description>
+      No identities are selected by this IdentitySelector rule
+    </Description>
+    <Signature returnType="boolean">
+      <Inputs>
+        <Argument name='context'>
+          <Description>
+            A sailpoint.api.SailPointContext.
+          </Description>
+        </Argument>
+        <Argument name="identity">
+          <Description>
+            The identity to evaluate
+          </Description>
+        </Argument>
+      </Inputs>
+    </Signature>
+    <Source>
+      <![CDATA[
+      // always return false
+      return false;
+    ]]>
+    </Source>
+  </Rule>
+
+  <ImportAction name='merge'>
+    <UIConfig name='UIConfig'>
+      <Attributes>
+        <Map>
+          <entry key="uiDataOwnerCertificationExportColumns">
+            <value>
+              <List>
+                <ColumnConfig headerKey="cert_item_tbl_header_value" dataIndex="displayName" percentWidth="20" property="IIQ_displayName" evaluator="sailpoint.web.view.certification.CertificationItemDisplayNameColumn" sortable="true" hideable="true" hidden="true" sortProperty="type,bundle,exceptionApplication,exceptionAttributeName,exceptionAttributeValue,exceptionPermissionTarget,exceptionPermissionRight,violationSummary,id" secondarySort="parent.lastname,parent.firstname,type"/>
+                <ColumnConfig headerKey="cert_item_tbl_header_identity" dataIndex="Identity-displayName" hideable="true" hidden="true" property="Identity.displayName" sortProperty="Identity.displayName" sortable="true"/>
+                <ColumnConfig headerKey="manager" dataIndex="Identity-manager-displayName" hideable="true" hidden="true" property="Identity.manager.displayName" sortProperty="Identity.manager.displayName" sortable="true"/>
+                <ColumnConfig headerKey="cert_item_tbl_header_accountid" dataIndex="nativeIdentity" property="exceptionEntitlements.nativeIdentity" sortable="true" hideable="true" hidden="true" secondarySort="exceptionApplication,parent.lastname,parent.firstname,type,IIQ_displayName" />
+                <ColumnConfig headerKey="cert_item_tbl_header_instance" dataIndex="instance" property="exceptionEntitlements.instance" sortable="true" hideable="true" hidden="true" secondarySort="exceptionApplication,parent.lastname,parent.firstname,type,IIQ_displayName"/>
+                <ColumnConfig headerKey="cert_item_tbl_header_account" dataIndex="IIQ_accountKey" property="IIQ_accountKey" sortable="true" hideable="true" hidden="true" sortProperty="exceptionEntitlements.displayName,exceptionApplication,exceptionEntitlements.instance" secondarySort="parent.lastname,parent.firstname,type,IIQ_displayName" groupProperty="exceptionApplication,exceptionEntitlements.nativeIdentity,exceptionEntitlements.instance" renderer="certItemAccount" evaluator="sailpoint.web.view.certification.CertificationItemAccountKeyColumn" />
+                <ColumnConfig headerKey="cert_item_tbl_header_attribute" dataIndex="exceptionAttributeName"  property="exceptionAttributeName" sortable="true" hideable="true" secondarySort="parent.lastname,parent.firstname,type,IIQ_displayName"/>
+              </List>
+            </value>
+          </entry>
+          <entry key="uiApprovalItemsColumnsRole">
+            <value>
+              <List>
+                <ColumnConfig dataIndex="sunrise" headerKey="my_approvals_start_date" dateStyle="shortDate" />
+                <ColumnConfig dataIndex="sunset" headerKey="my_approvals_end_date" dateStyle="shortDate" />
+              </List>
+            </value>
+          </entry>
+          <entry key="uiApprovalItemsColumnsEntitlement">
+            <value>
+              <List>
+                <ColumnConfig dataIndex="sunrise" headerKey="my_approvals_start_date" dateStyle="shortDate" />
+                <ColumnConfig dataIndex="sunset" headerKey="my_approvals_end_date" dateStyle="shortDate" />
+              </List>
+            </value>
+          </entry>
+        <entry key="applicationsActivityDataTableColumns">
+          <value>
+            <List>
+              <ColumnConfig headerKey="name" property="name" sortable="true" hideable="true"/>
+              <ColumnConfig headerKey="type" property="type" sortable="true" hideable="true"/>
+              <ColumnConfig headerKey="modified" property="modified" sortable="true" hideable="true"/>
+            </List>
+          </value>
+        </entry>
+        <entry key="applicationsUnstructuredTableTableColumns">
+          <value>
+            <List>
+              <ColumnConfig headerKey="name" property="name" sortable="true" hideable="true"/>
+              <ColumnConfig headerKey="type" property="type" sortable="true" hideable="true"/>
+              <ColumnConfig headerKey="modified" property="modified" sortable="true" hideable="true"/>
+            </List>
+          </value>
+        </entry>
+        <entry key="applicationsPasswordPolicyTableColumns">
+          <value>
+            <List>
+              <ColumnConfig headerKey="name" property="passwordPolicy.name" sortable="true" hideable="true"/>
+              <ColumnConfig headerKey="description" property="passwordPolicy.description" sortable="true" hideable="true"/>
+            </List>
+          </value>
+        </entry>
+
+          <entry key="entitlementCatalogTableColumns">
+            <value>
+              <List>
+                <ColumnConfig headerKey="description" flex="1" minWidth="100" dataIndex="description" property="attributes" sortable="false" hideable="true" renderer="SailPoint.Define.Grid.Group.renderEntitlementDescription"/>
+                <ColumnConfig dataIndex="aiGeneratedDescriptionLocales" fieldOnly="true" property="attributes"/>
+              </List>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </UIConfig>
+  </ImportAction>
+
+   <ImportAction name='merge'>
+    <Configuration name='IdentitySelectorConfiguration'>
+      <Attributes>
+        <Map>
+          <entry key="identityFilters">
+            <value>
+              <Map>
+                <entry key="RoleOwner">
+                  <value>
+                    <IdentityFilter name="RoleOwner">
+                      <IncludedFilterReferences>
+                        <String>IncludeWorkGroups</String>
+                      </IncludedFilterReferences>
+                      <FilterSrc>
+                        <FilterSource>
+                          <BasicFilter>
+                            <Filter operation="JOIN" property="id" joinProperty="Bundle.owner.id"/>
+                          </BasicFilter>
+                        </FilterSource>
+                      </FilterSrc>
+                      <OrderBy>
+                        <String>firstname</String>
+                        <String>lastname</String>
+                        <String>name</String>
+                        <String>id</String>
+                      </OrderBy>
+                    </IdentityFilter>
+                  </value>
+                </entry>
+              </Map>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+
+	<ImportAction name="merge">
+		<Configuration name="PublishersConfiguration">
+		</Configuration>
+	</ImportAction>
+
+
+	<TaskDefinition executor="sailpoint.task.DataExtractExecutor"
+									name="Data Extract"
+									progressInterval="5000" progressMode="String"
+									template="true" type="System"
+									formPath="/monitor/tasks/dataExtract.xhtml"
+									resultRenderer="dataExtractResult.xhtml">
+		<Description>
+			Template for Data Extract Task.
+		</Description>
+		<Attributes>
+			<Map>
+				<entry key="enableNamedTimestamp" value="true"/>
+				<entry key="lossLimit">
+					<value>
+						<Integer>2500</Integer>
+					</value>
+				</entry>
+				<entry key="maxExtractPartitions">
+					<value>
+						<Integer>50</Integer>
+					</value>
+				</entry>
+				<entry key="maxFailuresAbsolute">
+					<value>
+						<Integer>500</Integer>
+					</value>
+				</entry>
+				<entry key="maxFailuresPercent">
+					<value>
+						<Integer>5</Integer>
+					</value>
+				</entry>
+				<entry key="maxObjectAttempts">
+					<value>
+						<Integer>5</Integer>
+					</value>
+				</entry>
+				<entry key="maxObjectsPerExtractPartition">
+					<value>
+						<Integer>50000</Integer>
+					</value>
+				</entry>
+				<entry key="minExtractPartitions">
+					<value>
+						<Integer>5</Integer>
+					</value>
+				</entry>
+			</Map>
+		</Attributes>
+		<Signature>
+			<Inputs>
+				<Argument filterString="type == YAMLConfig.Type.Extract &amp;&amp; subtype.isNull()" helpKey="help_task_data_extract_config" name="configuration" required="true" type="YAMLConfig">
+					<Prompt>task_in_data_extract_config</Prompt>
+				</Argument>
+				<Argument name="publisher" required="true" type="string" helpKey="help_task_data_extract_publisher">
+					<Prompt>task_in_data_extract_publisher</Prompt>
+				</Argument>
+			</Inputs>
+			<Returns>
+				<Argument name="totalDeletionExtractedObjects" type="int">
+					<Prompt>task_out_data_extract_totalDeletionExtractedObjects</Prompt>
+				</Argument>
+				<Argument name="totalDeletionExtractedObjectsDispatched" type="int">
+					<Prompt>task_out_data_extract_totalDeletionExtractedObjectsDispatched</Prompt>
+				</Argument>
+				<Argument name="totalObjectMessages" type="int">
+					<Prompt>task_out_data_extract_totalObjectMessages</Prompt>
+				</Argument>
+				<Argument name="totalModifiedObjectMessages" type="int">
+					<Prompt>task_out_data_extract_totalModifiedObjectMessages</Prompt>
+				</Argument>
+				<Argument name="totalReattemptObjectMessages" type="int">
+					<Prompt>task_out_data_extract_totalReattemptObjectMessages</Prompt>
+				</Argument>
+				<Argument name="totalSeenObjects" type="int">
+					<Prompt>task_out_data_extract_totalSeenObjects</Prompt>
+				</Argument>
+				<Argument name="totalUnseenObjects" type="int">
+					<Prompt>task_out_data_extract_totalUnseenObjects</Prompt>
+				</Argument>
+				<Argument name="totalExtractedObjects" type="int">
+					<Prompt>task_out_data_extract_totalExtractedObjects</Prompt>
+				</Argument>
+				<Argument name="totalExtractedObjectsNotFound" type="int">
+					<Prompt>task_out_data_extract_totalExtractedObjectsNotFound</Prompt>
+				</Argument>
+				<Argument name="totalExtractedObjectsFailed" type="int">
+					<Prompt>task_out_data_extract_totalExtractedObjectsFailed</Prompt>
+				</Argument>
+				<Argument name="totalExtractedObjectsPublished" type="int">
+					<Prompt>task_out_data_extract_totalExtractedObjectsPublished</Prompt>
+				</Argument>
+				<Argument name="totalPublishingFails" type="int">
+					<Prompt>task_out_data_extract_totalPublishingFails</Prompt>
+				</Argument>
+				<Argument name="droppedObjects" type="int">
+					<Prompt>task_out_data_extract_totalDroppedObjects</Prompt>
+				</Argument>
+				<Argument name="extractDetails" type="complex"/>
+			</Returns>
+		</Signature>
+	</TaskDefinition>
+
+	<!--
+  RequestDefinition for Data Extract partition creation
+  -->
+	<RequestDefinition name="Data Extract Partition Creator"
+										 executor="sailpoint.request.DataExtractPartitioningRequestExecutor"
+										 retryMax="20">
+		<Attributes>
+			<Map>
+				<entry key='maxThreads' value='5'/>
+			</Map>
+		</Attributes>
+	</RequestDefinition>
+
+	<!--
+   RequestDefinition for Data Extract intercepted delete
+  -->
+	<RequestDefinition name="Intercepted Delete Processor"
+										 executor="sailpoint.request.InterceptedDeleteRequestExecutor"
+										 retryMax="20">
+		<Attributes>
+			<Map>
+				<entry key='maxThreads' value='5'/>
+			</Map>
+		</Attributes>
+	</RequestDefinition>
+
+  <ImportAction name="merge">
+    <Configuration name="SystemConfiguration">
+      <Attributes>
+        <Map>
+          <entry key="teamsAuthWrapperAddress" value="https://microsoft-teams-bridge.sailpoint.com" />
+          <entry key="allowedEntraJavaxFacesResources">
+            <value>
+              <List>
+                <String>jquery/jquery.js.jsf</String>
+                <String>jsf.js.jsf</String>
+              </List>
+            </value>
+          </entry>
+          <entry key="teamsSAMLEnabled">
+            <value>
+              <Boolean>false</Boolean>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Configuration>
+  </ImportAction>
+
+  <ImportAction name="merge">
+    <Configuration name="TeamsSAML">
+    </Configuration>
+  </ImportAction>
+
+</sailpoint>

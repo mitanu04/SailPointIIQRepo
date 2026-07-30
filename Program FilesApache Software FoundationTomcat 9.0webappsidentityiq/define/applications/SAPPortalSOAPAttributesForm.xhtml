@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+
+        function toggleCredentials(authType) {
+            var clientId = Ext.get('clientId');
+            var clientSecret = Ext.get('clientSecret');
+            var grantType = Ext.get('grantTypeRow');
+            var accessToken = Ext.get('accessToken');
+            var refreshToken = Ext.get('refreshToken');
+            var userName = Ext.get('userName');
+            var passwrod = Ext.get('password');
+
+            if (authType == "") {
+                authType = "Basic Authentication";
+            }
+
+            if (authType == "Basic Authentication") {
+                userName.setVisibilityMode(Ext.Element.DISPLAY);
+                userName.show();
+                passwrod.setVisibilityMode(Ext.Element.DISPLAY);
+                passwrod.show();
+                clientId.setVisibilityMode(Ext.Element.DISPLAY);
+                clientId.hide();
+                clientSecret.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecret.hide();
+                grantType.setVisibilityMode(Ext.Element.DISPLAY);
+                grantType.hide();
+                accessToken.setVisibilityMode(Ext.Element.DISPLAY);
+                accessToken.hide();
+                refreshToken.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshToken.hide();
+            } if (authType == "OAuth2") {
+                userName.setVisibilityMode(Ext.Element.DISPLAY);
+                userName.hide();
+                passwrod.setVisibilityMode(Ext.Element.DISPLAY);
+                passwrod.hide();
+                clientId.setVisibilityMode(Ext.Element.DISPLAY);
+                clientId.show();
+                clientSecret.setVisibilityMode(Ext.Element.DISPLAY);
+                clientSecret.show();
+                grantType.setVisibilityMode(Ext.Element.DISPLAY);
+                grantType.show();
+                accessToken.setVisibilityMode(Ext.Element.DISPLAY);
+                accessToken.show();
+                refreshToken.setVisibilityMode(Ext.Element.DISPLAY);
+                refreshToken.show();
+            }
+         }
+
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+           toggleCredentials('#{applicationObject.attributes["authenticationType"]}');
+
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var authType = getFieldValue('editForm:authType');
+                   if (authType == "Basic Authentication") {
+                       var host = getFieldValue('editForm:url');
+                       Validator.validateNonBlankString(host, "The SAP host must be specified!");
+
+                       var user= getFieldValue('editForm:user');
+                       Validator.validateNonBlankString(user, "The user that should be used connect to the web service must be specified!");
+
+                       var pw = getFieldValue('editForm:password');
+                       Validator.validateNonBlankString(pw, "User's password must be specified!");
+                   } else {
+                       var host = getFieldValue('editForm:url');
+                       Validator.validateNonBlankString(host, "The SAP host must be specified!");
+                       var clientID= getFieldValue('editForm:clientid');
+                       Validator.validateNonBlankString(clientID, "#{msgs.con_form_sap_portal_client_id_null}");
+                       var clientsecret= getFieldValue('editForm:clientsecret');
+                       Validator.validateNonBlankString(clientsecret, "#{msgs.con_form_sap_portal_client_secret_null}");
+                       var accesstoken= getFieldValue('editForm:accesstoken');
+                       Validator.validateNonBlankString(accesstoken, "#{msgs.con_form_sap_portal_access_token_null}");
+                       var refreshtoken= getFieldValue('editForm:refreshtoken');
+                       Validator.validateNonBlankString(refreshtoken, "#{msgs.con_form_sap_portal_refresh_token_null}");
+                   }
+                   
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+               //return false will kill cancel the save
+               return true;
+           });
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_portal_soap_settings}"/><br/><br/>
+
+
+      <div id="accountSettings" class='spContent'>
+        <table class="spTable" style="border:0px" cellspacing="0">
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_soap_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_sap_portal_soap_url}"/>
+
+            </td>
+            <td valign="center">
+              <h:inputText id="url"
+                           value="#{applicationObject.attributes['host']}"
+                           size="80"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <!-- New Oauth2.0 Support start-->
+          <tr id="authTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_authentication_type}" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_auth_method}" />
+            </td>
+            <td>
+              <h:selectOneMenu id="authType"
+                value="#{applicationObject.attributes['authenticationType']}"
+                redisplay="true"
+                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                onchange="toggleCredentials(this.value)">
+                <f:selectItem itemValue="Basic Authentication" itemLabel="#{msgs.con_form_sap_portal_basic_authentication}" />
+                <f:selectItem itemValue="OAuth2" itemLabel="#{msgs.con_form_sap_portal_auth2}"/>
+              </h:selectOneMenu>
+            </td>
+          </tr>
+          <!-- New Oauth2.0 Support end-->
+
+          <tr id="userName">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_user}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpUser" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_sap_portal_soap_user}"/>
+            </td>
+            <td>
+              <h:inputText value="#{applicationObject.attributes['user']}"
+                           id="user"
+                           size="20"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr id="password">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPassword" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_sap_password}"/>
+            </td>
+             <td>
+               <sp:inputSecret size="50" 
+                               id="password"
+                               autocomplete="off"
+                               value="#{applicationObject.attributes['password']}" redisplay="true"
+                               disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                               readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/> 
+             </td>
+          </tr>
+
+          <!-- New attributes for auth2 start -->
+          <tr id="grantTypeRow">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_grant_type}" /></td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGrantType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_grant_type}" /></td>
+            <td>
+              <h:selectOneMenu id="grant_type"  value="#{applicationObject.attributes['grant_type']}"
+                redisplay="true" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                onchange="toggleCredentials(this.value)">
+                <f:selectItem itemValue="Refresh Token / Auth Code" itemLabel="#{msgs.con_form_sap_portal_client_credentails}" />
+              </h:selectOneMenu></td>
+          </tr>
+
+          <tr id="clientId">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_client_id}" />
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientId" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_client_id}" />
+            </td>
+            <td>
+              <h:inputText id="clientid" value="#{applicationObject.attributes['client_id']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+            </td>
+          </tr>
+
+          <tr id="clientSecret">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_client_secret}" />
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_client_secret}" />
+            </td>
+            <td>
+              <sp:inputSecret id="clientsecret" value="#{applicationObject.attributes['client_secret']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" redisplay="true" autocomplete="off"/>
+            </td>
+          </tr>
+
+          <tr id="accessToken">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_access_token}" />
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccessToken" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_access_token}" />
+            </td>
+            <td>
+              <sp:inputSecret id="accesstoken" value="#{applicationObject.attributes['access_token']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" redisplay="true" autocomplete="off"/>
+            </td>
+          </tr>
+
+          <tr id="refreshToken">
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_refresh_token}" />
+              <h:outputText styleClass="requiredText" value="*" />
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpRefreshToken" styleClass="helpIcon"  url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_sap_portal_refresh_token}" />
+            </td>
+            <td>
+              <sp:inputSecret id="refreshtoken" value="#{applicationObject.attributes['refresh_token']}" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" redisplay="true" autocomplete="off"/>
+            </td>
+          </tr>
+          <!-- New attributes for auth2 end -->
+
+        </table>
+     </div>
+
+     <div id="sapPortalAggregationSettings" class='spContent'>
+       <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_portal_agg_filter_label}" />
+       <table class="spTable" style="border: 0px" cellspacing="0">
+
+       <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_account_filterString}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpAccountFilter" 
+                              styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_sap_portal_account_filterString}"/>
+            </td>
+            <td>
+              <h:inputText value="#{applicationObject.attributes[sp:concat('account.','filterString')]}"
+                           size="80"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_sap_portal_group_filterString}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpGroupFilter" 
+                              styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{msgs.con_help_sap_portal_group_filterString}"/>
+            </td>
+
+            <td>
+              <h:inputText value="#{applicationObject.attributes[sp:concat('group.','filterString')]}"
+                           size="80"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+     </table>
+     </div>
+
+   </f:view>
+ </ui:composition>
+
+</body>
+</html>

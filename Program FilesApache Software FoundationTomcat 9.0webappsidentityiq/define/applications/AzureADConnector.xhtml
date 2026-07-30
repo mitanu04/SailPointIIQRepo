@@ -1,0 +1,1201 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+		
+		 function enablePIMOption() {
+              if(!document.getElementById("editForm:enablePIM").checked == true) {
+                  Ext.fly("AzureADPIMActiveandEligibleRolesFilter").addCls("hidden");
+                  Ext.fly("AzurePIMActiveandEligibleRolesFilter").addCls("hidden");
+              } else {
+                  Ext.fly("AzureADPIMActiveandEligibleRolesFilter").removeCls("hidden");
+                  Ext.fly("AzurePIMActiveandEligibleRolesFilter").removeCls("hidden");
+              }	
+		  }  
+            
+          function enableTeamsNotificationOption() {
+              if(!document.getElementById("editForm:enableTeamsNotifications").checked == true) {
+                  Ext.fly("teamsBotUrl").addCls("hidden");
+                  Ext.fly("tenantIdRow").addCls("hidden");
+                  Ext.fly("teamsBotIdRow").addCls("hidden");
+                  Ext.fly("teamsAppProxyIdRow").addCls("hidden");
+                  Ext.fly("teamsSecretRow").addCls("hidden");
+              } else {
+                  Ext.fly("teamsBotUrl").removeCls("hidden");
+                  Ext.fly("tenantIdRow").removeCls("hidden");
+                  Ext.fly("teamsBotIdRow").removeCls("hidden");
+                  Ext.fly("teamsAppProxyIdRow").removeCls("hidden");
+                  Ext.fly("teamsSecretRow").removeCls("hidden");
+              }
+          }
+
+        function enableTeamGovernanceOption() {
+            if(!document.getElementById("editForm:manageO365Groups").checked == true) {
+                Ext.fly("teamsGovernance").addCls("hidden");
+            }else {
+                Ext.fly("teamsGovernance").removeCls("hidden");
+                enableChannelFilterOption();
+            }
+        }
+
+      function enableChannelFilterOption() {
+          if (!document.getElementById("editForm:enableTeamsGovernance").checked == true) {
+              Ext.fly("channelFilter").addCls("hidden");
+          } else {
+              Ext.fly("channelFilter").removeCls("hidden");
+          }
+      }
+
+      function enableAccessPackage() {
+          if(!document.getElementById("editForm:enableAccessPackageManagement").checked == true) {
+              Ext.fly("hiddenaccesspackage").addCls("hidden");
+          }else {
+              Ext.fly("hiddenaccesspackage").removeCls("hidden");
+          }
+      }
+
+      function enableAdministrativeUnits() {
+          if(!document.getElementById("editForm:enableAdministrativeUnits").checked == true) {
+              Ext.fly("hiddenadminunits").addCls("hidden");
+          }else {
+              Ext.fly("hiddenadminunits").removeCls("hidden");
+          }
+      }
+        
+        function checkExchangeOnlineConfig() {
+            if(!document.getElementById("editForm:manageEXO").checked == true) {
+                Ext.fly("exchangeOnlineDiv").addCls("hidden");
+            }else {
+                Ext.fly("exchangeOnlineDiv").removeCls("hidden");
+            }
+            toggleEXOAuthenticationType();
+			MailContactGovernance();
+        }
+
+      function toggleEXOAuthenticationType() {
+          // if the checkbox for manage Exch online is not checked, then 
+          // we need to hide all the related divs that are required for 
+          // data related to authentication for exo.
+          if(!document.getElementById("editForm:manageEXO").checked == true) {
+              Ext.fly("exo-basic-authentication").addCls("hidden");
+              Ext.fly("exo-modern-authentication").addCls("hidden");
+              return;
+          }
+
+          var authenticationType = getFieldValue("editForm:exoAuthenticationType");
+
+          if(null == authenticationType || authenticationType == ""){
+              authenticationType = "BASIC_AUTHENTICATION";
+          }
+
+          var basicAuthentication = (authenticationType == "BASIC_AUTHENTICATION");
+          var modernAuthentication = (authenticationType == "CERTIFICATE_BASED_AUTHENTICATION");
+
+          if(basicAuthentication) {
+              Ext.fly("exo-basic-authentication").removeCls("hidden");
+              Ext.fly("exo-modern-authentication").addCls("hidden");
+          } else if(modernAuthentication) {
+              Ext.fly("exo-basic-authentication").addCls("hidden");
+              Ext.fly("exo-modern-authentication").removeCls("hidden");
+          }
+		}
+	 // Fuction to toggle MailContactFilter text box.
+	    function MailContactGovernance() {
+              if(!document.getElementById("editForm:manageEXO").checked == true) {
+                  Ext.fly("MailContactGovernance").addCls("hidden");
+				  } else {
+                  Ext.fly("MailContactGovernance").removeCls("hidden");
+             }
+			 MailContactFilter();
+		   }
+			 function MailContactFilter() {
+			 if(document.getElementById("editForm:manageEXO").checked==true && document.getElementById("editForm:MailContactGovernance").checked==true){
+			         Ext.fly("MailContactFilter").removeCls("hidden");
+			     }else{
+				     Ext.fly("MailContactFilter").addCls("hidden");
+				 }
+		     }
+		 // Handle the Grant Type change in dropdown - show hide respective views
+            function toggleGrantTypeView() {
+            var grantType = getFieldValue("editForm:grantType"); 
+            var clientCred = (grantType == "CLIENT_CREDENTIALS" );
+            var saml = (grantType == "SAML_BEARER_ASSERTION" );
+            var refreshToken = (grantType == "REFRESH_TOKEN" ) ;
+            var certificateCred = (grantType == "CERTIFICATE_CREDENTIALS" ) ;
+            
+            if(!clientCred && !saml && !refreshToken && !certificateCred) {
+                    clientCred = true;
+                    document.getElementById("editForm:grantType:0").checked = true;
+            }
+            
+            if(saml) {
+                Ext.fly("authServerDiv").removeCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").removeCls("hidden");
+            }else if(clientCred){
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").removeCls("hidden");
+            } else if(refreshToken) {
+                Ext.fly("refreshTokenDiv").removeCls("hidden");
+                Ext.fly("clientSecretRow").removeCls("hidden");
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+            }  else if(certificateCred) {
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("clientSecretRow").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").removeCls("hidden");    
+            }
+        }
+        
+        function isSAMLAssertionGrantType() {
+            return "SAML_BEARER_ASSERTION" == getFieldValue("editForm:grantType");
+        }
+        function isJWTGrantType() {
+            return "CERTIFICATE_CREDENTIALS" == getFieldValue("editForm:grantType");
+        }
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+           
+           
+           toggleGrantTypeView();
+           checkExchangeOnlineConfig();
+           enableTeamGovernanceOption();
+           enableTeamsNotificationOption();
+		   enablePIMOption();
+		   MailContactGovernance();
+		   MailContactFilter();
+           enableAccessPackage();
+            enableAdministrativeUnits();
+
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var clientID = getFieldValue('editForm:clientID');
+                   Validator.validateNonBlankString(clientID, "#{msgs.err_azure_ad_missing_clientID}");
+
+                   // If teams notifications is enabled make sure the BOT url is configured
+                   if(document.getElementById("editForm:enableTeamsNotifications").checked == true) {
+                       var botUrl = getFieldValue('editForm:teamsBotUrlInput');
+                       Validator.validateNonBlankString(botUrl, "#{msgs.err_azure_ad_missing_bot_url}");
+
+                       var tenantId = getFieldValue('editForm:tenantId');
+                       Validator.validateNonBlankString(tenantId, "#{msgs.err_azure_ad_missing_tenant_id}");
+
+                       var botSecret = getFieldValue('editForm:teamsBotSecret');
+                       Validator.validateNonBlankString(botSecret,  "#{msgs.err_azure_ad_missing_bot_secret}");
+                   }
+
+                   if(!isJWTGrantType()) {
+                       var clientSecret = getFieldValue('editForm:clientSecret');
+                       Validator.validateNonBlankString(clientSecret, "#{msgs.err_azure_ad_missing_clientSecret}");
+                    }
+
+                        var domainName = getFieldValue('editForm:domainName');
+                        Validator.validateNonBlankString(domainName, "#{msgs.err_azure_ad_missing_domainName}");
+
+                   if(isSAMLAssertionGrantType()) {
+                            var authURL = getFieldValue('editForm:authURL');
+                            Validator.validateNonBlankString(authURL, "#{msgs.err_azure_ad_missing_authorization_url}");
+                            
+                            var username = getFieldValue('editForm:username');
+                            Validator.validateNonBlankString(username, "#{msgs.err_azure_ad_missing_username}");
+                            
+                            var password = getFieldValue('editForm:password');
+                            Validator.validateNonBlankString(password, "#{msgs.err_azure_ad_missing_password}");
+                            
+                            var samlRequest = getFieldValue('editForm:samlRequestBody');
+                            Validator.validateNonBlankString(samlRequest, "#{msgs.err_azure_ad_missing_saml_request_body}");
+                        }
+                        
+                        if(getFieldValue("editForm:grantType") == "REFRESH_TOKEN") {
+                            var refreshToken = getFieldValue('editForm:refresh_token');
+                            Validator.validateNonBlankString(refreshToken, "#{msgs.err_azure_ad_missing_refresh_token}");
+                        }
+                        
+                        if(isJWTGrantType()){
+                         
+                           var clientCertExists = getFieldValue("editForm:clientCertExists");
+                           if (!clientCertExists) {
+                             var certificate = getFieldValue("editForm:clientCertificate");
+                             Validator.validateNonBlankString(certificate, '#{msgs.err_msg_client_cert_cert_empty}');
+                           }
+
+                            var privateKeyExists = getFieldValue('editForm:privateKeyExists');
+                            if (!privateKeyExists) {
+                              var privateKey = getFieldValue('editForm:private_key');
+                              Validator.validateNonBlankString(privateKey, "#{msgs.err_azure_ad_missing_private_key}");
+                            }
+
+                            var privateKeyPassword = getFieldValue('editForm:privateKeyPassword');
+                            Validator.validateNonBlankString(privateKeyPassword,  "#{msgs.err_azure_ad_missing_private_key_password}");
+                        }
+                        
+                        if(document.getElementById("editForm:manageEXO").checked == true) {
+                            var authenticationType = getFieldValue("editForm:exoAuthenticationType");
+                            if(authenticationType == "BASIC_AUTHENTICATION"){
+                                var exchangeUserName = getFieldValue('editForm:exo_user');
+                                Validator.validateNonBlankString(exchangeUserName, "#{msgs.err_azure_ad_missing_username}");
+
+                                var exchangeUserPassword = getFieldValue('editForm:exo_password');
+                                Validator.validateNonBlankString(exchangeUserPassword, "#{msgs.err_azure_ad_missing_password}");
+                            }
+
+                            if(authenticationType == "CERTIFICATE_BASED_AUTHENTICATION"){
+                                var certificateThumbPrint = getFieldValue('editForm:exo_cert_thumbprint');
+                                Validator.validateNonBlankString(certificateThumbPrint, "Certificate Thumbprint cannot be null!");
+                            }
+                            
+                            var IQServiceHost = getFieldValue('editForm:IQServiceHost');
+                            Validator.validateNonBlankString(IQServiceHost, "#{msgs.err_azure_ad_missing_manage_exchange_iqservicehost}");
+                            
+                            var IQServicePort = getFieldValue('editForm:IQServicePort');
+                            Validator.validateNonBlankString(IQServicePort,  "#{msgs.err_azure_ad_missing_manage_exchange_iqserviceport}");
+                        }
+
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+
+               //return false will kill cancel the save
+               return true;
+           });
+
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+        <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} #{msgs.label_configuration}"/><br/><br/>
+        <div class="" id="credentialsContainer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="Connector Credentials"/>
+                </div>
+            </div>
+        <!-- Grant type selection -->
+            <div class ="row spContent">
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText style='padding:5px' value="#{msgs.label_auth_method}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                    <h:graphicImage id="imgHlpIndexGDetails_authMethod" styleClass="helpIcon"
+                         url="/images/icons/dashboard_help_16.png"
+                         alt="#{help.help_con_form_rws_authentication_method}" />
+                   </td>
+                   <td>
+                        <h:outputText style='font-weight:bold' value="OAuth 2.0" />
+                   </td>
+                </tr>
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText value="#{msgs.label_grant_type}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpGrantType"
+                       styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                       alt="#{help.help_con_form_oauth2_grant_type}" />
+                   </td>
+                   <td>
+                    <h:selectOneMenu id="grantType" name="granttype"
+                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       value="#{applicationObject.attributes['grantType']}"
+                       class="" onchange="toggleGrantTypeView()">
+                       <f:selectItem itemValue = "CLIENT_CREDENTIALS" itemLabel = "Client Credentials" /> 
+                       <f:selectItem itemValue = "SAML_BEARER_ASSERTION" itemLabel = "SAML Bearer Assertion" />
+                       <f:selectItem itemValue = "REFRESH_TOKEN" itemLabel = "Refresh Token / Auth Code" /> 
+                       <f:selectItem itemValue = "CERTIFICATE_CREDENTIALS" itemLabel = "JWT Certificate Credentials" /> 
+                   </h:selectOneMenu>
+                   </td>
+                </tr>
+                </table>
+                </div>
+            </div> <!-- Grant type selection End-->
+            <!-- Credentials -->
+            <div class ="row spContent" id="credentials">
+                <div class="col-sm-12" id="clientCredentialsDiv">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_client_ID}"/>   
+                            <h:outputText styleClass="requiredText" value="*"/>           
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpClientID" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_client_ID}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id="clientID"
+                            value="#{applicationObject.attributes['clientID']}"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr id="clientSecretRow">
+                        <td class='titleColumn certScheduleTitleCol'>
+                               <h:outputText style='padding:5px' value="#{msgs.con_form_azure_client_secret}"/>
+                               <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                               <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                                alt="#{help.help_con_form_azure_client_secret}"/>
+                        </td>
+                        <td>
+                             <sp:inputSecret id="clientSecret"
+                                 value="#{applicationObject.attributes['clientSecret']}"
+                                 redisplay="true"
+                                 size="80"
+                                 autocomplete="off"
+                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_domain_name}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>   
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpDomainName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_domain_name}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "domainName"
+                            value="#{applicationObject.attributes['domainName']}"
+                            size="20"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+
+
+                </table>
+              
+                </div>
+        
+                <!-- Auth Server Div -->
+                <div class="col-sm-12" id="authServerDiv">
+                <table class="spTable" style="border:0px" cellspacing="0">
+            
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_authURL}"/>   
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpEndPoint" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_authURL}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id="authURL"
+                            value="#{applicationObject.attributes['authURL']}"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_username}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>                     
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthUser" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_username}"/>
+                        </td>
+                        <td>
+                            <sp:inputText id="username"
+                            value="#{applicationObject.attributes['username']}"
+                            redisplay="true"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_password}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthPwd" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_password}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="password"
+                            value="#{applicationObject.attributes['password']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_samlRequestBody}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthReq" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_samlRequestBody}"/>
+
+                        </td>
+                        <td>
+                            <h:inputTextarea id = "samlRequestBody"
+                             value="#{applicationObject.attributes['samlRequestBody']}"
+                            size="120"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+                    
+                <!-- Auth Code(Refresh Token) grant type-->
+                <div class="col-sm-12" id="refreshTokenDiv">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_azure_refreshToken}"/>   
+                                <h:outputText styleClass="requiredText" value="*"/>
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpToken" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_azure_refreshToken}"/>
+
+                            </td>
+                            <td>
+                                <sp:inputSecret id="refresh_token"
+                                   value="#{applicationObject.attributes['refresh_token']}"
+                                   redisplay="true"
+                                   size="80"
+                                   autocomplete="off"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                 <!-- Certificate Credentials grant type flow -->
+               <div class="col-sm-12" id="certificateCredentialsDiv">
+                 <c:set target="${applicationObject.attributes}" property="clientCertAuthEnabled" value="true" />
+                 <table class="spTable" style="border:0px" cellspacing="0">
+                   <tr>
+                     <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_azure_certificate}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                     </td>
+                     <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpCert" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                          alt="#{help.help_con_form_azure_certificate}"/>
+                     </td>
+                     <td>
+                        <div>
+                          <c:if test="${applicationObject.attributes['clientCertificate'] ne null}">
+                            <h:inputHidden id="clientCertExists" value="true" />
+                            <div>
+                              <b>
+                                <h:outputFormat value="#{msgs.con_form_client_cert_present}">
+                                  <f:param value="#{applicationObject.attributes['clientCertUploadedOn']}" />
+                                </h:outputFormat>
+                              </b>
+                              <br />
+                              <h:outputFormat value="#{msgs.con_form_client_cert_certselectnew}" />
+                            </div>
+                          </c:if>
+                          <h:inputTextarea id="clientCertificate"
+                            value="#{applicationObject.attributes['client_cert_to_update']}"
+                            rows="5" cols="100" style="width: 35%;"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </div>
+                     </td>
+                   </tr>
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key}" />
+                      <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpprivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                        alt="#{help.help_con_form_jwt_private_key}" />
+                    </td>
+                    <td>
+                      <ui:include src="privateKey.xhtml" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key_password}" />
+                      <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpprivatekeypassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                        alt="#{help.help_con_form_jwt_private_key_password}" />
+                    </td>
+                    <td>
+                      <sp:inputSecret id="privateKeyPassword" value="#{applicationObject.attributes['privateKeyPassword']}"
+                        size="20" redisplay="true" autocomplete="off"
+                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                 </tr>
+                 </table>
+               </div>
+            </div><!-- credentials Ends-->
+            <div class ="row spContent">
+               <div class="col-sm-12" id="caeDiv">
+                   <table class="spTable" style="border:0px" cellspacing="0">
+                       <tr>
+                           <td class='titleColumn certScheduleTitleCol'>
+                               <h:outputText style='padding:5px' value="#{msgs.con_form_azure_enable_cae}"/>
+                           </td>
+                           <td class="certScheduleHelpCol">
+                               <h:graphicImage id="imgHlpcae" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                               alt="#{help.help_con_azure_enable_cae}"/>
+                           </td>
+                           <td>
+                               <h:selectBooleanCheckbox id="isCaeEnabled" value="#{applicationObject.attributes['isCaeEnabled']}"></h:selectBooleanCheckbox>
+                           </td>
+                       </tr>
+                   </table>
+               </div>
+            </div>
+        </div> <!-- Connector Credentials Container End-->
+        <div class="" id="additionalConfigurationContainer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="Additional Configuration"/>
+                </div>
+            </div>
+            <div class ="row spContent"  >
+            
+                <div class="col-sm-12">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_azure_manage_exchangeonline}"/>   
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpManageExchangeOnline" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_azure_manage_exchangeonline}" />
+
+                            </td>
+                            <td>
+                                <h:selectBooleanCheckbox id="manageEXO" onclick="checkExchangeOnlineConfig()"
+                                 value="#{applicationObject.attributes['manageExchangeOnline']}" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Exchange online configuration-->
+
+                <div class="col-sm-12" id="exchangeOnlineDiv">
+                    <div class ="row spContent">
+                        <div class="col-sm-12">
+                            <table class="spTable" style="border:0px" cellspacing="0">
+                                <tr>
+                                    <td class='titleColumn certScheduleTitleCol'>
+                                        <h:outputText value="#{msgs.label_auth_method}" />
+                                    </td>
+                                    <td class="certScheduleHelpCol">
+                                        <h:graphicImage id="imgHlpEXOAuthType"
+                                                        styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                                        alt="#{help.help_con_form_exo_authentication_type}" />
+                                    </td>
+                                    <td>
+                                        <h:selectOneMenu id="exoAuthenticationType" name="exoAuthenticationType"
+                                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                         value="#{applicationObject.attributes['exoAuthenticationType']}"
+                                                         class="" onchange="toggleEXOAuthenticationType()">
+                                            <f:selectItem itemValue = "BASIC_AUTHENTICATION" itemLabel = "Basic Authentication" />
+                                            <f:selectItem itemValue = "CERTIFICATE_BASED_AUTHENTICATION" itemLabel = "Certificate Based Authentication" />
+                                        </h:selectOneMenu>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" id="exo-basic-authentication">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_azure_exo_user}"/>
+                                <h:outputText styleClass="requiredText" value="*" />
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpEXOUser" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_azure_exo_user}"/>
+                            </td>
+                            <td>
+                                <h:inputText id="exo_user"
+                                             value="#{applicationObject.attributes['exchangeUserName']}"
+                                             redisplay="true"
+                                             size="80"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="#{msgs.con_form_azure_exo_password}"/>
+                                <h:outputText styleClass="requiredText" value="*" />
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpEXOPass" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_azure_exo_password}"/>
+
+                            </td>
+                            <td>
+                                <sp:inputSecret id="exo_password"
+                                               value="#{applicationObject.attributes['exchangeUserPassword']}"
+                                               redisplay="true"
+                                               size="80"
+                                               autocomplete="off"
+                                               disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                               readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-sm-12" id="exo-modern-authentication">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr>
+                            <td class='titleColumn certScheduleTitleCol'>
+                                <h:outputText style='padding:5px' value="Certificate Thumbprint"/>
+                                <h:outputText styleClass="requiredText" value="*" />
+                            </td>
+
+                            <td class="certScheduleHelpCol">
+                                <h:graphicImage id="imgHlpEXOCertThumbprint" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                                alt="#{help.help_con_form_azure_exo_cert_thumbrprint}"/>
+
+                            </td>
+                            <td>
+                                <h:inputText id="exo_cert_thumbprint"
+                                             value="#{applicationObject.attributes['exoCertificateThumbprint']}"
+                                             redisplay="true"
+                                             size="80"
+                                             autocomplete="off"
+                                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+				<div class="col-sm-12" id="mailContact-section">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                        <tr id="MailContactGovernance" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_Mail_Contact_Governance}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpMailContactGovernance" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_azure_Mail_Contact_Governance}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="MailContactGovernance" onclick="MailContactFilter()"
+                            value="#{applicationObject.attributes['enableMailContactGovernance']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+					<tr id="MailContactFilter" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_Mail_Contact_filter}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpMailContactFilter" styleClass="helpIcon"
+                                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_azure_Mail_Contact_filter}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "MailContactFilterText"
+                                         value="#{applicationObject.attributes['mailContactFilter']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+					</tr>
+					</table>
+					</div>
+                <!-- Exchange online configuration: Complete -->
+            
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <ui:include src="iqserviceconfig.xhtml">
+                        <ui:param name="IQServiceHostHelpTextKey" value="#{help.hepl_con_azure_iqservice_host}"></ui:param>
+                    </ui:include>
+                  
+                  <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_manage_O365Group}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpO365Group" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_azure_manage_O365Group}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="manageO365Groups" onclick="enableTeamGovernanceOption()"
+                            value="#{applicationObject.attributes['manageO365Groups']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+                  
+                    <tr id="teamsGovernance" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_enable_teams_governance}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpTeamGovernance" styleClass="helpIcon" 
+                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_azure_enable_teams_governance}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="enableTeamsGovernance" onclick="enableChannelFilterOption()"
+                            value="#{applicationObject.attributes['enableTeamsGovernance']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                    <tr id="channelFilter" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_channel_filter}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpChannelFilter" styleClass="helpIcon"
+                                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_azure_channel_filter}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "channelFilterText"
+                                         value="#{applicationObject.attributes['channelFilter']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                    <tr id="teamsNotifications" >
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_enable_teams_notifications}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpTeamsNotifications" styleClass="helpIcon"
+                                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_azure_enable_teams_notifications}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="enableTeamsNotifications" onclick="enableTeamsNotificationOption()" value="#{applicationObject.attributes['enableTeamsNotifications']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                    <tr id="teamsBotUrl" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_teams_bot_url}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpTeamsBotUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_teams_bot_url}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "teamsBotUrlInput"
+                                         value="#{applicationObject.attributes['teamsBotUrl']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                    <tr id="tenantIdRow" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_tenant_id}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpTenantId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_azure_tenant_id}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "tenantId"
+                                         value="#{applicationObject.attributes['tenantId']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                  <tr id="teamsBotIdRow" class="hidden">
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_azure_teams_bot_id}"/>
+                      <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpTeamsBotId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                      alt="#{help.help_con_form_azure_teams_bot_id}"/>
+
+                    </td>
+                    <td>
+                      <h:inputText id = "teamsBotId"
+                                   value="#{applicationObject.attributes['teamsBotId']}"
+                                   size="20"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                      </h:inputText>
+                    </td>
+                  </tr>
+
+                  <tr id="teamsAppProxyIdRow" class="hidden">
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_azure_teams_app_proxy_id}"/>
+                      <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpTeamsAppProxyId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                      alt="#{help.help_con_form_azure_teams_app_proxy_id}"/>
+
+                    </td>
+                    <td>
+                      <h:inputText id = "teamsAppProxyId"
+                                   value="#{applicationObject.attributes['teamsAppProxyId']}"
+                                   size="20"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                      </h:inputText>
+                    </td>
+                  </tr>
+
+                    <tr id="teamsSecretRow" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_teams_bot_secret}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpTeamsBotSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_azure_teams_bot_secret}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="teamsBotSecret"
+                                            value="#{applicationObject.attributes['teamsBotSecret']}"
+                                            redisplay="true"
+                                            autocomplete="off"
+                                            size="80"
+                                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr id="AzurePIM" >
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_azure_enable_azure_pim}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAzurePIM" styleClass="helpIcon"
+                                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_azure_enable_azure_pim}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="enablePIM" onclick="enablePIMOption()" value="#{applicationObject.attributes['enablePIM']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+					
+					<tr id="AzureADPIMActiveandEligibleRolesFilter" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_AzureAD_PIM_Active_and_Eligible_Roles_Filter}"/>
+                        </td>
+						
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAzureADPIMActiveandEligibleRolesFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_AzureAD_PIM_Active_and_Eligible_Roles_Filter}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "AzureADPIMActiveandEligibleRolesFilter"
+                                         value="#{applicationObject.attributes['azureADRolesFilter']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                    <tr id="AzurePIMActiveandEligibleRolesFilter" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_Azure_PIM_Active_and_Eligible_Roles_Filter}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAzurePIMActiveandEligibleRolesFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_Azure_PIM_Active_and_Eligible_Roles_Filter}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "AzurePIMActiveandEligibleRolesFilter"
+                                         value="#{applicationObject.attributes['azureRolesFilter']}"
+                                         size="20"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_manage_b2cTenant}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpB2CTenant" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_azure_manage_b2cTenant}"/>
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="isB2CTenant" value="#{applicationObject.attributes['isB2CTenant']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_manage_accessPackage}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpaccessPackage" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_manage_accessPackage}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="enableAccessPackageManagement" onclick="enableAccessPackage()"
+                                                     value="#{applicationObject.attributes['enableAccessPackageManagement']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                    <tr id="hiddenaccesspackage" class="hidden">
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_manage_hidden_access_package}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpHiddenAccessPackage" styleClass="helpIcon"
+                                            url="/images/icons/dashboard_help_16.png"
+                                            alt="#{help.help_con_form_manage_hidden_access_package}"/>
+
+                        </td>
+                        <td>
+                            <h:selectBooleanCheckbox id="aggregateHiddenAccessPackages" value="#{applicationObject.attributes['aggregateHiddenAccessPackages']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                  <tr id="hiddenadminunits" class="hidden">
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_form_manage_administrativeUnits}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpadminUnits" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                      alt="#{help.help_con_form_manage_administrativeUnit}"/>
+
+                    </td>
+                    <td>
+                      <h:selectBooleanCheckbox id="enableAdministrativeUnits" onclick="enableAdministrativeUnits()"
+                                               value="#{applicationObject.attributes['enableAdministrativeUnits']}">
+
+                      </h:selectBooleanCheckbox>
+                    </td>
+                  </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_page_size}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_azure_page_size}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "pageSize"
+                             value="#{applicationObject.attributes['pageSize']}"
+                             size="20"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                             <f:validateLongRange minimum="1" maximum="999"/>
+                            </h:inputText>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px' value="#{msgs.con_filter_user_filters}" />
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpUserFilters" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_azure_user_filters}" />
+                        </td>
+                        <td><h:inputText value="#{applicationObject.attributes['userFilters']}"
+                                size="40" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </td>
+                    </tr>
+
+                    <tr id="advancedUserFilters">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                              style='padding:5px' value="#{msgs.user_advanced_filters}" />
+                        </td>
+                        <td class="certScheduleHelpCol"><h:graphicImage id="imgHlpAzureUsrsAdvancedFilter" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_azure_user_advanced_filters}" />
+                        </td>
+                        <td><h:selectBooleanCheckbox id="userAdvancedFilters"
+                               value="#{applicationObject.attributes['supportsAdvancedAccountFilter']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px' value="#{msgs.con_filter_group_filters}" />
+                        </td>
+                        <td class="certScheduleHelpCol"><h:graphicImage id="imgHlpGroupFilters" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_azure_group_filters}" />
+                        </td>
+                        <td><h:inputText value="#{applicationObject.attributes['groupFilters']}"
+                                size="40" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </td>
+                    </tr>
+
+                    <tr id="advancedGroupFilters">
+                        <td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px' value="#{msgs.group_advanced_filters}" />
+                         </td>
+                        <td class="certScheduleHelpCol"><h:graphicImage id="imgHlpAzureGrpAdvancedFilters" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_azure_group_advanced_filters}" />
+                        </td>
+                        <td><h:selectBooleanCheckbox id="groupsAdvancedFilter"
+                                value="#{applicationObject.attributes['supportsAdvancedGroupFilter']}"></h:selectBooleanCheckbox>
+                        </td>
+                    </tr>
+
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText
+                          style='padding:5px' value="#{msgs.con_group_membership_filters}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpGroupMembershipFilters" styleClass="helpIcon"
+                                      url="/images/icons/dashboard_help_16.png"
+                                      alt="#{help.help_con_azure_group_membership_filters}"/>
+                    </td>
+                    <td>
+                      <h:inputText value="#{applicationObject.attributes['groupMembershipFilters']}"
+                                   size="40" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                  </tr>
+					
+					<tr>
+					
+					<td class='titleColumn certScheduleTitleCol'><h:outputText
+                                style='padding:5px' value="#{msgs.con_filter_Directory_roles_filter}" />
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpDirectoryRolesFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_azure_Directory_Roles_Filter}" />
+                        </td>
+                        <td><h:inputText value="#{applicationObject.attributes['directoryRolesFilter']}"
+                                size="40" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </td>
+                    </tr>
+
+                    </table>
+                </div>
+            </div>
+            
+    </div>
+
+      
+    </f:view>
+    <style>
+    .hidden {
+        display:none;
+    }
+    .top0{
+        margin-top: 0px !important;
+    }
+</style>
+</ui:composition>
+
+</body>
+</html>

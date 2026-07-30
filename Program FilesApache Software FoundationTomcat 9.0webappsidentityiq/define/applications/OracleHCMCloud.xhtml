@@ -1,0 +1,559 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui" xmlns:sp="http://sailpoint.com/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<body>
+	<ui:composition>
+		<script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(fieldName) {
+            var val = null;
+            var field = Ext.getDom(fieldName);
+            if ( field ) {
+                val = field.value;
+            }
+            return val;
+        }
+
+        function showRestConfig() {
+            if(document.getElementById("editForm:isRestConfigEnabled").checked == true){
+                 document.getElementById('restSettings').style.display = '';
+            }
+            else{
+                 document.getElementById('restSettings').style.display = 'none';
+            }
+        }
+        
+        function toggleTransport(transportType) {
+            if (transportType == "") {
+                transportType = "local";
+            }
+            
+            if (transportType == "local") {
+            	
+            	document.getElementById('sftpHostRow').style.display = 'none';
+                document.getElementById('sftpPortRow').style.display = 'none';
+                document.getElementById('sftpUsernameRow').style.display = 'none';
+                document.getElementById('sftpPasswordRow').style.display = 'none';
+            } else {
+            	document.getElementById('sftpHostRow').style.display = '';
+                document.getElementById('sftpPortRow').style.display = '';
+                document.getElementById('sftpUsernameRow').style.display = '';
+                document.getElementById('sftpPasswordRow').style.display = '';
+            }
+        }
+
+function showpgpPublicKeyRow() {
+            if(document.getElementById("editForm:nonSigned").checked == true){
+                 document.getElementById('pgpPublicKeyRow').style.display = 'none';
+            }
+            else{
+                 document.getElementById('pgpPublicKeyRow').style.display = '';
+            }
+        }
+        
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            showRestConfig();
+			showpgpPublicKeyRow();
+            toggleTransport('#{applicationObject.attributes["fileTransport"]}');
+
+            Page.on('beforeSave', function() {
+            	
+            	if (!hasCredentialConfiguration()) {   
+            		var fileTransport = getFieldValue('editForm:fileTransport');
+            		if(fileTransport && fileTransport == "sftp") {
+            			var sftpHost = getFieldValue('editForm:sftpHost');
+            			Validator.validateNonBlankString(sftpHost, "#{msgs.err_oracle_hcm_cloud_missing_sftp_host}");
+            			var sftpPort = getFieldValue('editForm:sftpPort');
+            			Validator.validateNonBlankString(sftpPort, "#{msgs.err_oracle_hcm_cloud_missing_sftp_port}");
+            			var sftpUsername = getFieldValue('editForm:sftpUsername');
+            			Validator.validateNonBlankString(sftpUsername, "#{msgs.err_oracle_hcm_cloud_missing_sftp_username}");
+            			var sftpPassword = getFieldValue('editForm:sftpPassword');
+            			Validator.validateNonBlankString(sftpPassword, "#{msgs.err_oracle_hcm_cloud_missing_sftp_password}");
+            		}
+            		
+            		var activeWorkerFilePath = getFieldValue('editForm:activeWorkerFilePath');
+        			Validator.validateNonBlankString(activeWorkerFilePath, "#{msgs.err_oracle_hcm_cloud_missing_active_worker_filePath}");
+        			
+        			
+        			var pgpPrivateKeyPassword = getFieldValue('editForm:pgpPrivateKeyPassword');
+        			Validator.validateNonBlankString(pgpPrivateKeyPassword, "#{msgs.err_oracle_hcm_cloud_missing_pgpPrivateKeyPassword}");
+        			
+        			var privateKeyExists = getFieldValue('editForm:privateKeyExists');
+                    if (!privateKeyExists) {
+                        var privateKey = getFieldValue('editForm:pgpPrivateKey');
+                        Validator.validateNonBlankString(privateKey, "#{msgs.err_oracle_hcm_cloud_missing_sftp_pgpPrivateKey}");
+                    }
+            		
+                    var restEndpoint = getFieldValue('editForm:restEndpoint');
+                    Validator.validateNonBlankString(restEndpoint, "#{msgs.err_oracle_hcm_cloud_missing_rest_endpoint}");
+                    var tokenEp = getFieldValue('editForm:apiUsername');
+                    Validator.validateNonBlankString(tokenEp, "#{msgs.err_oracle_hcm_cloud_missing_rest_username}");
+                    var clientId = getFieldValue('editForm:apiPassword');
+                    Validator.validateNonBlankString(clientId, "#{msgs.err_oracle_hcm_cloud_missing_rest_password}");
+            		
+                    var errors = Validator.getErrors();
+                    if (errors && errors.length > 0) {
+                        Validator.displayErrors('appErrorsTop');
+                        return false;
+                    }
+                }
+                //return false will kill cancel the save
+                return true;
+            });
+        });
+
+        //--><!]]>
+    </script>
+
+		<f:view>
+			<div id="ohcmCloudConnectivitySettings" class='spContent'>
+				<h:outputText styleClass="sectionHeader"
+					value="#{applicationObject.type} Connection Settings" />
+				<table class="spTable" style="border: 0px" cellspacing="0">
+
+					<tr id="fileTransportRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_fileTransport}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFileTransport" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_filetransport}" /></td>
+						<td><h:selectOneMenu id="fileTransport"
+								onchange="toggleTransport(this.value)"
+								value="#{applicationObject.attributes['fileTransport']}">
+								<f:selectItem
+									itemLabel="#{msgs.con_form_delimited_fileTransportLocal}"
+									itemValue="local" />
+								<f:selectItem
+									itemLabel="#{msgs.con_form_delimited_fileTransportSFTP}"
+									itemValue="sftp" />
+							</h:selectOneMenu></td>
+					</tr>
+
+					<tr id="sftpHostRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_sftpHost}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpSftpHost" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_transportHost}" /></td>
+						<td><h:inputText id="sftpHost"
+								value="#{applicationObject.attributes['sftpHost']}" size="40"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="sftpPortRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_sftpPort}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpSftpPort" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_transportPort}" /></td>
+						<td><h:inputText id="sftpPort"
+								value="#{applicationObject.attributes['sftpPort']}" size="40"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="sftpUsernameRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_sftpUser}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpSftpUsername" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_transportUser}" /></td>
+						<td><h:inputText id="sftpUsername"
+								value="#{applicationObject.attributes['sftpUsername']}"
+								size="40"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="sftpPasswordRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_sftpPassword}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpSftpPassword" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_transportPw}" /></td>
+						<td><sp:inputSecret id="sftpPassword"
+								value="#{applicationObject.attributes['sftpPassword']}"
+								size="50" redisplay="true" autocomplete="off"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="activeWorkerFilePathRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_activeWorkerFilePath}" />
+							<h:outputText styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpActiveWorkerFilePath" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_activeWorkersFile}" /></td>
+						<td><h:inputText id="activeWorkerFilePath"
+								value="#{applicationObject.attributes['activeWorkerFilePath']}"
+								size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="futureWorkerFilePathRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_futureWorkerFilePath}" />
+						</td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFutureWorkerFilePath" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_futureWorkersFile}" /></td>
+						<td><h:inputText id="futureWorkerFilePath"
+								value="#{applicationObject.attributes['futureWorkerFilePath']}"
+								size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="terminatedWorkerFilePathRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_terminatedWorkerFilePath}" />
+						</td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpTerminatedWorkerFilePath" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_terminatedWorkersFile}" /></td>
+						<td><h:inputText id="terminatedWorkerFilePath"
+								value="#{applicationObject.attributes['terminatedWorkerFilePath']}"
+								size="80"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_nonSigned}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpenablenonSigned" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_nonSigned}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="nonSigned"
+								onclick="showpgpPublicKeyRow()"
+								value="#{applicationObject.attributes['nonSigned']}" />
+						</td>
+					</tr>
+
+
+					<tr id="pgpPublicKeyRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_pgpPublicKey}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpPublikKey" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_publicKey}" /></td>
+						<td><h:inputTextarea id="pgpPublicKey"
+								value="#{applicationObject.attributes['pgpPublicKey']}" rows="5"
+								cols="80" style="width: 35%;"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+						
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_pgpPrivateKey}" /> <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpPrivateKey" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_privateKey}" /></td>
+						<td><c:if
+								test="${applicationObject.attributes['pgpPrivateKey'] ne null}">
+								<h:inputHidden id="privateKeyExists" value="true" />
+								<div>
+									<b> <h:outputFormat
+											value="#{msgs.con_form_jwt_privatekeypresent}">
+											<f:param
+												value="#{applicationObject.attributes['privateKeyUploadedOn']}" />
+										</h:outputFormat>
+									</b> <br />
+									<h:outputFormat
+										value="#{msgs.con_form_jwt_privatekeyfileselectnew}" />
+								</div>
+							</c:if> <h:inputTextarea id="pgpPrivateKey"
+								value="#{applicationObject.attributes['pgp_private_key_to_update']}"
+								rows="5" cols="80" style="width: 35%;"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr id="pgpPrivateKeyPasswordRow">
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_pgpPrivateKeyPassword}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpPrivateKeyPassword" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_privateKeyPassword}" /></td>
+						<td><sp:inputSecret id="pgpPrivateKeyPassword"
+								value="#{applicationObject.attributes['pgpPrivateKeyPassword']}"
+								redisplay="true" size="50" autocomplete="off"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_pageSize}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpPageSize" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_pageSize}" /></td>
+						<td><h:inputText id="pageSize"
+								value="#{applicationObject.attributes['pageSize']}" size="3"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="999" />
+							</h:inputText></td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol' valign="center">
+							<h:outputText style='padding:5px'
+								value="#{msgs.con_form_oracle_hcm_cloud_rest_endpoint}" /> <h:outputText
+								styleClass="requiredText" value="*" />
+						</td>
+						<td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+								id="imgHlpRestEp" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_rest_endpoint}" /></td>
+						<td valign="center"><h:inputText id="restEndpoint"
+								value="#{applicationObject.attributes['restEndpoint']}"
+								size="120"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+						</td>
+					</tr>
+
+
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_rest_username}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpClientId" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_rest_username}" /></td>
+
+						<td><h:inputText
+								value="#{applicationObject.attributes['apiUsername']}"
+								id="apiUsername" size="120"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_rest_password}" /> <h:outputText
+								styleClass="requiredText" value="*" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpClientSecret" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_rest_password}" /></td>
+						<td><sp:inputSecret id="apiPassword"
+								value="#{applicationObject.attributes['apiPassword']}"
+								size="120" redisplay="true" autocomplete="off"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" /></td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="filterSettings" class='spContent'>
+				<br />
+				<h:outputText styleClass="sectionHeader"
+					value="Common Filter Configuration" />
+				<br />
+				<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_aggregateEmployee}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFetchEmployee" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_aggregateEmployee}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="fetchEmployee"
+								value="#{applicationObject.attributes['fetchEmployee']}" /></td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_aggregateContractor}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFetchContractor" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_aggregateContractor}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="fetchContractor"
+								value="#{applicationObject.attributes['fetchContractor']}" /></td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_aggregatePendingWorker}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFetchPendingWorker" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_aggregatePendingWorker}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="fetchPendingWorker"
+								value="#{applicationObject.attributes['fetchPendingWorker']}" />
+						</td>
+					</tr>
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_aggregateNonWorker}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFetchNonWorker" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_aggregateNonWorker}" />
+						</td>
+						<td><h:selectBooleanCheckbox id="fetchNonWorker"
+								value="#{applicationObject.attributes['fetchNonWorker']}" /></td>
+					</tr>
+				</table>
+			</div>
+
+
+
+			<div id="enableRest" class='spContent'>
+				<br />
+				<h:outputText styleClass="sectionHeader"
+					value="Delta Aggregation Configuration" />
+				<br />
+				<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								value="#{msgs.con_form_oracle_hcm_cloud_enableRest}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpEnableRest" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_enableRest}" /></td>
+						<td><h:selectBooleanCheckbox id="isRestConfigEnabled"
+								onclick="showRestConfig()"
+								value="#{applicationObject.attributes['isRestConfigEnabled']}" />
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="restSettings" class='spContent'>
+				<table class="spTable" style="border: 0px" cellspacing="0">
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_rest_pageSize}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpAPIPageSize" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_rest_pageSize}" /></td>
+						<td><h:inputText id="apiPageSize"
+								value="#{applicationObject.attributes['apiPageSize']}" size="3"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="999" />
+							</h:inputText></td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_futureOffset}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpFutureOffset" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_futureOffset}" /></td>
+						<td><h:inputText
+								value="#{applicationObject.attributes['futureOffset']}"
+								id="futureOffset" size="8"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="99999" />
+							</h:inputText></td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_pastTerminationOffset}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpPastTerminationOffset" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_pastTerminationOffset}" /></td>
+						<td><h:inputText
+								value="#{applicationObject.attributes['pastTerminationOffset']}"
+								id="pastTerminationOffset" size="8"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+								<f:validateLongRange minimum="1" maximum="99999" />
+							</h:inputText></td>
+					</tr>
+
+					<tr>
+						<td class='titleColumn certScheduleTitleCol'><h:outputText
+								style='padding:5px' value="#{msgs.con_form_oracle_hcm_cloud_connectionTimeout}" /></td>
+						<td class="certScheduleHelpCol"><h:graphicImage
+								id="imgHlpConnectionTimeOut" styleClass="helpIcon"
+								url="/images/icons/dashboard_help_16.png"
+								alt="#{help.help_con_form_oracle_hcm_cloud_connectionTimeout}" /></td>
+						<td><h:inputText id="connectionTimeout"
+								value="#{applicationObject.attributes['connectionTimeout']}"
+								size="3"
+								disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+								readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+							</h:inputText></td>
+					</tr>
+				</table>
+			</div>
+
+
+		</f:view>
+	</ui:composition>
+</body>
+</html>

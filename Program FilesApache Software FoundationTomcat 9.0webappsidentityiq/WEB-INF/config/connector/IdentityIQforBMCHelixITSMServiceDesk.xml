@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="DIRECT_PERMISSIONS, NO_AGGREGATION, PROVISIONING, UNLOCK, ENABLE, PASSWORD" name="IdentityIQ for BMC Helix ITSM Service Desk" type="BMC Helix ITSM SDIM">
+  <Attributes>
+    <Map>
+      <entry key="connectorClass" value="openconnector.connector.servicedesk.ServiceDeskConnector" />
+      <!-- Authentication  can be "AR-JWT" and OAuth2. -->
+      <!-- For AR-JWT configure url,username,password and token_url -->
+      <!-- For OAuth2 the token_url, grant_type, client_id, client_secret
+           and refresh_token requires to generate an access token. -->
+      <entry key="authenticationType" value="" />
+      <!-- url of BMC Helix ITSM portal -->
+      <entry key="url" value="" />
+      <entry key="username" value="" />
+      <entry key="password" value="" />
+      <!-- The 'token_url' differs based on 'authenticationType'
+           For 'AR-JWT', 'token_url' is http://Servername:port/api/jwt/login
+           For 'OAuth2', 'token_url' is http://Servername:port/rsso/oauth2/token-->
+      <entry key="token_url" value="" />
+      <!-- OAuth 2.0 request parameters -->
+      <!-- 'grant_type' can be REFRESH_TOKEN -->
+      <entry key="grant_type" value="" />
+      <entry key="client_id" value=""/>
+      <entry key="client_secret" value=""/>
+      <entry key="refresh_token" value=""/>
+      <!-- Configure following variable values to provide maximum number of retries 
+           and retry after threshold value allowed for both provisioning and check status operations -->
+      <entry key="provisioningRateLimitRetryCount" value="5" />
+      <entry key="provisioningRateLimitRetryAfterSeconds" value="30" />
+      <entry key="checkStatusRateLimitRetryCount" value="5" />
+      <entry key="checkStatusRateLimitRetryAfterSeconds" value="30" />
+      <!--  Name of the BMC ITSM - Direct Application in IdentityIQ.
+               It is used to determine First Name and Last Name in a plan initializer script.
+               Empty value meaning plan initializer to determine a Link object based on type of the BMC ITSM - Direct which is 'BMC ITSM - Direct ', whereas nonempty value promotes plan initializer to 
+               determine a Link object based on name of BMC ITSM - Direct Application.
+         -->
+      <entry key="requesterSource" value="" />
+      <!-- When 'multipleTicket' is 'true', a separate ticket will be created for each line item from the IdentityIQ access request. 
+              When false single ticket will be created against all line items from the IdentityIQ access request.
+         -->
+      <entry key="multipleTicket" value="false" />
+
+      <!-- Duration for provisioningRequestExpiration -->
+      <entry key="provisioningRequestExpiration" value="30" />
+
+      <!-- When 'groupTicketBy' is 'Application' and 'multipleTicket' is true, then
+              IdenityIQ access request line items from the same application will be moved to a single ticket.
+         -->
+      <entry key="groupTicketBy" value="Application" />
+      <entry key="templateApplication" value="BMC Helix ITSM SDIM" />
+      <!-- 'ticketType' can be incident, serviceRequest, changeRequest or DWP_Service_Request -->
+      <entry key="ticketType" value="incident" />
+      <entry key="encrypted" value="client_secret,refresh_token,oauth_token_info" />
+      <!-- INCIDENT TICKET -->
+      <entry key="incident">
+        <value>
+          <Map>
+            <entry key="provision">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/arsys/v1/entry/HPD:IncidentInterface_Create?fields=values(Incident+Number)" />
+                  <entry key="responseElement" value="$.values.['Incident Number']" />
+                  <entry key="requestRootElement" value="values" />
+                  <entry key="requestRootElementType" value="JSONObject" />
+                  <!--Header "X-Requested-By" required when authenticationType and POST/PUT method call is OAuth2 it can be "me" or "XMLHttpRequest" -->
+                  <entry key="headers" >
+                    <value>
+                      <Map>
+                        <entry key="X-Requested-By" value="me" />
+                      </Map>
+                    </value>
+                  </entry>
+                  <entry key="request">
+                    <value>
+                      <Map>
+                        <entry key="First_Name" value="$!plan.arguments.firstname" />
+                        <entry key="Last_Name" value="$!plan.arguments.lastname" />
+                        <!-- Spelling mistake of the attribute is to support BMC API -->
+                        <entry key="Detailed_Decription" value="#foreach($req in $plan.requests) #if($req.operation == 'Create') Create Account on application $req.resource #else For $req.id in application $req.resource #end #if($req.items) $newline  #foreach($item in $req.items) #if ($item.name == '*disabled*' &amp;&amp; $item.value == 'true') Disable Account. $newline #elseif ($item.name == '*disabled*' &amp;&amp; $item.value == 'false') Enable Account. $newline #elseif ($item.name == '*locked*' &amp;&amp; $item.value == 'false') Unlock Account. $newline #else $!item.Operation $item.name: $item.value $newline #end #end #else $newline $!req.Operation Account #end #end" />
+                        <entry key="Description" value="SailPoint Access Request $!plan.arguments.identityRequestId #if($plan.arguments.identityName) for the user $plan.arguments.identityName #end" />
+                        <entry key="Impact" value="3-Moderate/Limited" />
+                        <entry key="Urgency" value="3-Medium" />
+                        <entry key="Status" value="New" />
+                        <entry key="Reported Source" value="Direct Input" />
+                        <entry key="Service_Type" value="User Service Request" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+            <entry key="checkStatus">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/arsys/v1/entry/HPD:IncidentInterface?q='Incident+Number'=%22$ticketId%22" />
+                  <entry key="responseElement" value="$.entries[0].values.Status" />
+                  <entry key="statusMap">
+                    <value>
+                      <Map>
+                        <entry key="New" value="Queued" />
+                        <entry key="Assigned" value="Queued" />
+                        <entry key="In-progress" value="Queued" />
+                        <entry key="Pending" value="Queued" />
+                        <entry key="Resolved" value="Committed" />
+                        <entry key="Closed" value="Committed" />
+                        <entry key="Cancelled" value="Committed" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+          </Map>
+        </value>
+      </entry>
+      <!-- Change Request -->
+      <entry key="changeRequest">
+        <value>
+          <Map>
+            <entry key="provision">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/arsys/v1/entry/CHG:ChangeInterface_Create?fields=values(Infrastructure+Change+Id)" />
+                  <entry key="responseElement" value="$.values.['Infrastructure Change Id']" />
+                  <entry key="requestRootElement" value="values" />
+                  <entry key="requestRootElementType" value="JSONObject" />
+                  <!--Header "X-Requested-By" required when authenticationType and POST/PUT method call is OAuth2 it can be "me" or "XMLHttpRequest" -->
+                  <entry key="headers" >
+                    <value>
+                      <Map>
+                        <entry key="X-Requested-By" value="me" />
+                      </Map>
+                    </value>
+                  </entry>
+                  <entry key="request">
+                    <value>
+                      <Map>
+                        <entry key="First Name" value="$!plan.arguments.firstname" />
+                        <entry key="Last Name" value="$!plan.arguments.lastname" />
+                        <entry key="Detailed Description" value="#foreach($req in $plan.requests) #if($req.operation == 'Create') Create Account on application $req.resource #else For $req.id in application $req.resource #end #if($req.items) $newline  #foreach($item in $req.items) #if ($item.name == '*disabled*' &amp;&amp; $item.value == 'true') Disable Account. $newline #elseif ($item.name == '*disabled*' &amp;&amp; $item.value == 'false') Enable Account. $newline #elseif ($item.name == '*locked*' &amp;&amp; $item.value == 'false') Unlock Account. $newline #else $!item.Operation $item.name: $item.value $newline #end #end #else $newline $!req.Operation Account #end #end" />
+                        <entry key="Description" value="SailPoint Access Request $!plan.arguments.identityRequestId #if($plan.arguments.identityName) for the user $plan.arguments.identityName #end" />
+                        <entry key="Location Company" value="$!plan.arguments.location" />
+                        <entry key="Impact" value="3-Moderate/Limited" />
+                        <entry key="Urgency" value="3-Medium" />
+                        <entry key="Risk Level" value="Risk Level 1" />
+                        <entry key="Status" value="Draft" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+            <entry key="checkStatus">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure+Change+ID'=%22$ticketId%22" />
+                  <entry key="responseElement" value="$.entries[0].values.['Change Request Status']" />
+                  <entry key="statusMap">
+                    <value>
+                      <Map>
+                        <entry key="Draft" value="Queued" />
+                        <entry key="Pending" value="Queued" />
+                        <entry key="Cancelled" value="Failed" />
+                        <entry key="Request for Authorization" value="Queued" />
+                        <entry key="Approved" value="Queued" />
+                        <entry key="Rejected" value="Queued" />
+                        <entry key="Hold" value="Queued" />
+                        <entry key="Closed" value="Committed" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+          </Map>
+        </value>
+      </entry>
+      <!-- Service Request -->
+      <entry key="serviceRequest">
+        <value>
+          <Map>
+            <entry key="checkStatus">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/arsys/v1/entry/SRM:RequestInterface?q='Request+Number'=%22$ticketId%22" />
+                  <entry key="responseElement" value="$.entries[0].values.Status" />
+                  <entry key="statusMap">
+                    <value>
+                      <Map>
+                        <entry key="Cancelled" value="Failed" />
+                        <entry key="Closed" value="Committed" />
+                        <entry key="Committed" value="Committed" />
+                        <entry key="Completed" value="Committed" />
+                        <entry key="In Progress" value="Queued" />
+                        <entry key="In Review" value="Queued" />
+                        <entry key="Initiated" value="Queued" />
+                        <entry key="Pending" value="Queued" />
+                        <entry key="Planning" value="Queued" />
+                        <entry key="Rejected" value="Failed" />
+                        <entry key="Waiting Approval" value="Queued" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+            <entry key="provision">
+              <value>
+                <Map>
+                  <!--Header "X-Requested-By" required when authenticationType and POST/PUT method call is OAuth2 it can be "me" or "XMLHttpRequest" -->
+                  <entry key="headers" >
+                    <value>
+                      <Map>
+                        <entry key="X-Requested-By" value="me" />
+                      </Map>
+                    </value>
+                  </entry>
+                  <entry key="request">
+                    <value>
+                      <Map>
+                        <entry key="First Name" value="$!plan.arguments.firstname" />
+                        <entry key="Last Name" value="$!plan.arguments.lastname" />
+                        <!-- Update SR Type Fields in entry key as per the mapping fields in Service Request Definition.
+                             In this example SR Type Field 1 is mapped to Title and Summary.
+                             SR Type Field 14(245 Chars) is mapped to Notes in Service Request Definition -->
+                        <entry key="SR Type Field 1" value="SailPoint Access Request $!plan.arguments.identityRequestId #if($plan.arguments.identityName) for the user $plan.arguments.identityName #end" />
+                        <entry key="SR Type Field 14" value="#foreach($req in $plan.requests) #if($req.operation == 'Create') Create Account on application $req.resource #else For $req.id in application $req.resource #end #if($req.items) $newline  #foreach($item in $req.items) #if ($item.name == '*disabled*' &amp;&amp; $item.value == 'true') Disable Account. $newline #elseif ($item.name == '*disabled*' &amp;&amp; $item.value == 'false') Enable Account. $newline #elseif ($item.name == '*locked*' &amp;&amp; $item.value == 'false') Unlock Account. $newline #else $!item.Operation $item.name: $item.value $newline #end #end #else $newline $!req.Operation Account #end #end" />
+                        <entry key="Source Keyword" value="Service Request" />
+                        <entry key="Status" value="Planning" />
+                        <!-- Provide the Title Instance ID for Service Request Request Definition -->
+                        <entry key="TitleInstanceID" value="PROVIDE THE VALUE FROM YOUR SYSTEM" />
+                        <entry key="z1D Action" value="CREATE" />
+                        <entry key="Customer Login" value="$!plan.arguments.loginID" />
+                      </Map>
+                    </value>
+                  </entry>
+                  <entry key="requestRootElement" value="values" />
+                  <entry key="requestRootElementType" value="JSONObject" />
+                  <entry key="resource" value="/api/arsys/v1/entry/SRM:RequestInterface_Create?fields=values(Request+Number)" />
+                  <entry key="responseElement" value="$.values.['Request Number']" />
+                </Map>
+              </value>
+            </entry>
+          </Map>
+        </value>
+      </entry>
+      <!-- DWP Service Request -->
+      <entry key="DWP_Service_Request">
+        <value>
+          <Map>
+            <entry key="checkStatus">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/myit-sb/services/requests/$ticketId" />
+                  <entry key="responseElement" value="$.status.status" />
+                  <entry key="statusMap">
+                    <value>
+                      <Map>
+                        <entry key="CANCELLED" value="Failed" />
+                        <entry key="CLOSED" value="Committed" />
+                        <entry key="COMPLETED" value="Committed" />
+                        <entry key="FAILED" value="Failed" />
+                        <entry key="IN PROGRESS" value="Queued" />
+                        <entry key="SUBMITTED" value="Queued" />
+                        <entry key="APPROVED" value="Queued" />
+                        <entry key="REJECTED" value="Failed" />
+                        <entry key="APPROVAL" value="Queued" />
+                        <entry key="ACTIVE" value="Queued" />
+                        <entry key="PENDING" value="Queued" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+            <entry key="provision">
+              <value>
+                <Map>
+                  <entry key="request">
+                    <value>
+                      <Map>
+                        <entry key="questions">
+                          <value>
+                            <List>
+                              <Map>
+                                <entry key="answers">
+                                  <value>
+                                    <List>
+                                      <String>#foreach($req in $plan.requests) #if($req.operation == 'Create') Create Account on application $req.resource #else For $req.id in application $req.resource #end #if($req.items) $newline  #foreach($item in $req.items) #if ($item.name == '*disabled*' &amp;&amp; $item.value == 'true') Disable Account. $newline #elseif ($item.name == '*disabled*' &amp;&amp; $item.value == 'false') Enable Account. $newline #elseif ($item.name == '*locked*' &amp;&amp; $item.value == 'false') Unlock Account. $newline #else $!item.Operation $item.name: $item.value $newline #end #end #else $newline $!req.Operation Account #end #end</String>
+                                    </List>
+                                  </value>
+                                </entry>
+                                <!-- Question ID for Description input field -->
+                                <entry key="questionId" value="QUESTIONAIRE INPUT ID" />
+                              </Map>
+                              <Map>
+                                <entry key="answers">
+                                  <value>
+                                    <List>
+                                      <String>SailPoint Access Request $!plan.arguments.identityRequestId #if($plan.arguments.identityName) for the user $plan.arguments.identityName #end</String>
+                                    </List>
+                                  </value>
+                                </entry>
+                                <!-- Question ID for Title of the ticket input field -->
+                                <entry key="questionId" value="QUESTIONAIRE INPUT ID" />
+                              </Map>
+                            </List>
+                          </value>
+                        </entry>
+                        <entry key="requestForUserIds">
+                          <value>
+                            <List>
+                              <String>$!plan.arguments.loginID</String>
+                            </List>
+                          </value>
+                        </entry>
+                        <entry key="serviceId" value="SERVICE ID FROM BMC HELIX ITSM SYSTEM" />
+                      </Map>
+                    </value>
+                  </entry>
+                  <entry key="requestRootElementType" value="JSONObject" />
+                  <entry key="resource" value="/api/myit-sb/requests" />
+                  <entry key="submitOrderResource" value="/api/myit-sb/orders"/>
+                  <entry key="responseElement" value="$.requests[0].['requestId']" />
+                </Map>
+              </value>
+            </entry>
+          </Map>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+  <ProvisioningConfig>
+    <ManagedResource>
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="Procurement_System" />
+      </ApplicationRef>
+    </ManagedResource>
+    <PlanInitializerScript>
+      <Source>
+        <![CDATA[
+        import sailpoint.object.Identity;
+        import sailpoint.object.Link;
+        import sailpoint.object.IntegrationConfig;
+        import sailpoint.object.Application;
+        import sailpoint.api.IdentityService;
+        import org.apache.commons.logging.Log;
+        import org.apache.commons.logging.LogFactory;
+        import sailpoint.tools.GeneralException;
+        /**
+         * Fields
+         */
+        String applicationType = "BMC ITSM - Direct";
+        // Identity attribute on SailPoint/ UserID on BMC Helix
+        String userId = "PersonID";
+        String firstNameValue = null;
+        String lastNameValue = null;
+        String locationValue = null;
+        String loginId = null;
+        String requestedFor = null;
+        String openedBy = null;
+        
+        /**
+         * Get BMC Helix personID for identity using application type 
+         */
+        private void getLinkByAppType(Identity identity) {
+            if (identity == null) {
+                return null;
+            }
+            List links = identity.getLinks();
+            String first_name = "FirstName";
+            String last_name = "LastName";
+            String location_name = "Company";
+            String login_id = "RemedyLoginID";
+            if (links != null ) {
+                for (Link link : links) {
+                    String appType = link.getApplication().getType();
+                    if (appType != null && appType.equals(applicationType)) {
+                        if(link.getAttribute(userId) != null) {
+                            String userName = link.getAttribute(userId);
+                            firstNameValue = link.getAttribute(first_name);
+                            lastNameValue = link.getAttribute(last_name);
+                            locationValue = link.getAttribute(location_name);
+                            loginId = link.getAttribute(login_id);
+                            if(userName != null) {
+                                openedBy = userName;
+                                requestedFor = userName;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        /**
+         * Get BMC Helix personID for Identity using application name
+         */
+        private void getLinkByAppName(Identity identity, String requesterSource) {
+            if (identity == null) {
+                return null;
+            }
+            String first_name = "FirstName";
+            String last_name = "LastName";
+            String location_name = "Company";
+            String login_id = "RemedyLoginID";
+            if (requesterSource != null) {
+                Application app = context.getObjectByName(Application.class, requesterSource);
+                IdentityService identService = new IdentityService(context);
+                List links = identService.getLinks(identity, app);
+                Link link = null;
+                if (links != null && links.size() > 0) {
+                    link = links.get(0);
+                }
+                if (link != null) {
+                    String userName = (String) link.getAttribute(userId);
+                    firstNameValue = link.getAttribute(first_name);
+                    lastNameValue = link.getAttribute(last_name);
+                    locationValue = link.getAttribute(location_name);
+                    loginId = link.getAttribute(login_id);
+                    if (userName != null) {
+                        openedBy = userName;
+                        requestedFor = userName;
+                    }
+                }
+            }
+        }
+        ////////////////////////////////////////////////////////////////
+        // Main
+        ////////////////////////////////////////////////////////////////
+        Log log = LogFactory.getLog("openconnector.connector.servicedesk.ServiceDeskConnector");
+        if (plan == void || plan == null) {
+            log.error("BMC Helix ITSM SDIM - Plan initializer script - Plan is null.");
+            throw new GeneralException("BMC Helix ITSM SDIM  - Plan initializer script - Plan is null.");
+        }
+        Map arguments = (Map)plan.getArguments();
+        List requesterList = plan.getRequesters();
+        Identity requester = null;
+        if (requesterList != null) {
+            requester = requesterList.get(0);
+            if (requester != null && requester.getName() != null) {
+                requester = context.getObjectByName(Identity.class, requester.getName());
+            }
+        }
+        String appName = integration.getName();
+        if (appName != null) {
+            Application appObject = context.getObjectByName(Application.class, appName);
+            requesterSource = appObject.getAttributeValue("requesterSource");
+        }
+        if (requesterSource != null) {
+            getLinkByAppName(identity, requesterSource);
+            
+        } else {
+            getLinkByAppType(identity);
+        }
+
+        if (requestedFor != null) {
+            arguments.put("requested_for", requestedFor);
+        }
+        if (openedBy != null) {
+            arguments.put("opened_by", openedBy);
+        }
+        if (identity.getName() != null) {
+            arguments.put("identityName", identity.getName());
+        }
+        if (firstNameValue != null) {
+            arguments.put("firstname", firstNameValue);
+        }
+        if (lastNameValue != null) {
+            arguments.put("lastname", lastNameValue);
+        }
+        if (locationValue != null) {
+            arguments.put("location", locationValue);
+        }
+        if (loginId != null) {
+            arguments.put("loginID", loginId);
+        }
+        ]]>
+      </Source>
+    </PlanInitializerScript>
+  </ProvisioningConfig>
+</Application>

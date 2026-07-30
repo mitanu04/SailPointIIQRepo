@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition created="1785394261942" id="c0a801899fb11942819fb1ca6fb602e7" name="Dispatch Access History" subType="task_item_type_system" type="System">
+  <Attributes>
+    <Map>
+      <entry key="configuration" value="AccessHistoryExtractConfig"/>
+      <entry key="enableNamedTimestamp" value="true"/>
+      <entry key="lossLimit" value="2500"/>
+      <entry key="partitions" value="5"/>
+    </Map>
+  </Attributes>
+  <Description>
+      Transforms IdentityIQ objects to create a JSON message, and dispatches it to the access history service.
+    </Description>
+  <Parent>
+    <Reference class="sailpoint.object.TaskDefinition" id="c0a801899fb11942819fb1ca6fad02e6" name="Access History"/>
+  </Parent>
+</TaskDefinition>

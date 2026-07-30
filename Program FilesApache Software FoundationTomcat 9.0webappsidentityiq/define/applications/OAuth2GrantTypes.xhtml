@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC
+"-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+	  
+<body>
+        <ui:composition>
+		
+		<div class="col-sm-12" id="authServerDiv">
+		        <h:inputHidden id="SAMLKeyExists" value="true" />
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_SAML_authURL}"/>   
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpEndPoint" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_oauth_SAML_authURL}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id="authURL"
+                            value="#{applicationObject.attributes['authURL']}"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_SAML_username}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>                     
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthUser" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_oauth_SAML_username}"/>
+                        </td>
+                        <td>
+                            <sp:inputText id="username"
+                            value="#{applicationObject.attributes['username']}"
+                            redisplay="true"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_SAML_password}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthPwd" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_oauth_SAML_password}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="password"
+                            value="#{applicationObject.attributes['password']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_SAML_samlRequestBody}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpAuthReq" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_oauth_SAML_samlRequestBody}"/>
+
+                        </td>
+                        <td>
+                            <h:inputTextarea id = "samlRequestBody"
+                             value="#{applicationObject.attributes['samlRequestBody']}"
+                            size="120"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+                    
+                <!-- Auth Code(Refresh Token) grant type-->
+                <div class="col-sm-12" id="refreshTokenDiv">
+				   <h:inputHidden id="refreshTokenKeyExists" value="true" />
+                      <table class="spTable" style="border:0px" cellspacing="0">
+                          <tr>
+                              <td class='titleColumn certScheduleTitleCol'>
+                                  <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_refreshToken}"/>   
+                                  <h:outputText styleClass="requiredText" value="*"/>
+                              </td>
+
+                              <td class="certScheduleHelpCol">
+                                  <h:graphicImage id="imgHlpToken" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                                       alt="#{help.help_con_form_oauth_refreshToken}"/>
+                              </td>
+                              <td>
+                                  <sp:inputSecret id="refresh_token"
+                                   value="#{applicationObject.attributes['refresh_token']}"
+                                   redisplay="true"
+                                   size="80"
+                                   autocomplete="off"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                             </td>
+                         </tr>
+                      </table>
+                </div>
+                 <!-- Certificate Credentials grant type flow -->
+                <div class="col-sm-12" id="certificateCredentialsDiv">
+                   <c:set target="${applicationObject.attributes}" property="clientCertAuthEnabled" value="true" />
+                     <table class="spTable" style="border:0px" cellspacing="0">
+                       <tr>
+                         <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_form_oauth_JWT_certificate}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>
+                         </td>
+                         <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpCert" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_oauth_JWT_certificate}"/>
+                        </td>
+                        <td>
+                          <div>
+                             <c:if test="${applicationObject.attributes['clientCertificate'] ne null}">
+                                <h:inputHidden id="clientCertExists" value="true" />
+                                  <div>
+                                    <b>
+                                      <h:outputFormat value="#{msgs.con_form_client_cert_present}">
+                                        <f:param value="#{applicationObject.attributes['clientCertUploadedOn']}" />
+                                      </h:outputFormat>
+                                    </b>
+                                  <br />
+                                     <h:outputFormat value="#{msgs.con_form_client_cert_certselectnew}" />
+                                 </div>
+                            </c:if>
+                          
+                           <h:inputTextarea id="clientCertificate"
+                               value="#{applicationObject.attributes['client_cert_to_update']}"
+                               rows="5" cols="100" style="width: 35%;"
+                               disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                               readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                        </div>
+                      </td>
+                   </tr>
+                   <tr>
+                      <td class='titleColumn certScheduleTitleCol'>
+                         <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key}" />
+                         <h:outputText styleClass="requiredText" value="*" />
+                      </td>
+                      <td class="certScheduleHelpCol">
+                         <h:graphicImage id="imgHlpprivateKey" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_jwt_private_key}" />
+                      </td>
+                      <td>
+                         <ui:include src="privateKey.xhtml" />
+                      </td>
+                  </tr>
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText style='padding:5px' value="#{msgs.con_form_jwt_private_key_password}" />
+                       <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                       <h:graphicImage id="imgHlpprivatekeypassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                         alt="#{help.help_con_form_jwt_private_key_password}" />
+                    </td>
+                    <td>
+                       <sp:inputSecret id="privateKeyPassword" value="#{applicationObject.attributes['privateKeyPassword']}"
+                        size="20" redisplay="true" autocomplete="off"
+                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                 </tr>
+               </table>
+             </div>	
+		 </ui:composition>
+      </body>
+   </html>

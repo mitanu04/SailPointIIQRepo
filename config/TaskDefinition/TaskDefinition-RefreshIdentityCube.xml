@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition created="1785394253167" id="c0a801899fb11942819fb1ca4d6f01ed" name="Refresh Identity Cube" subType="task_item_type_identity" type="Identity">
+  <Attributes>
+    <Map>
+      <entry key="checkPolicies" value="true"/>
+      <entry key="correlateEntitlements" value="true"/>
+      <entry key="promoteAttributes" value="true"/>
+      <entry key="refreshManagerStatus" value="true"/>
+      <entry key="refreshScorecard" value="true"/>
+    </Map>
+  </Attributes>
+  <Description>
+            Perform a full refresh of all the identities.
+        </Description>
+  <Parent>
+    <Reference class="sailpoint.object.TaskDefinition" id="c0a801899fb11942819fb1ca4c0a01c2" name="Identity Refresh"/>
+  </Parent>
+</TaskDefinition>

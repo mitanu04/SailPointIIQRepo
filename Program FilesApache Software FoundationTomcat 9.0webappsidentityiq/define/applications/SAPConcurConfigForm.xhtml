@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2023 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html   xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:t="http://myfaces.apache.org/tomahawk"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+    <f:view>
+        <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_concur_config_title}"/><br/>
+
+        <div id="accountSettings" class='spContent'>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_sap_concur_base_url}" /> <h:outputText
+                            styleClass="requiredText" value="*" />
+                    </td>
+
+                    <td class="certScheduleHelpCol" valign="middle"><h:graphicImage
+                            id="imgHlpHostName" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.con_help_sap_concur_base_url}" /></td>
+                    <td><h:inputText id="host"
+                                     value="#{applicationObject.attributes['host']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="grantTypeTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_concur_grant_type}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpGrantType"
+                                        styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_sap_concur_grant_type}"/>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="grant_type"
+                                         value="#{applicationObject.attributes['grant_type']}"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            <f:selectItem itemValue="REFRESH_TOKEN" itemLabel="#{msgs.con_form_sap_concur_grant_type_refresh_token}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr id="companyId">
+                    <td class='titleColumn certScheduleTitleCol'><h:outputText
+                            style='padding:5px'
+                            value="#{msgs.con_form_sap_concur_company_id}" /> <h:outputText
+                            styleClass="requiredText" value="*" /></td>
+                    <td class="certScheduleHelpCol"><h:graphicImage
+                            id="imgHlpCompanyId" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_sap_concur_company_id}" /></td>
+                    <td><sp:inputText id="company_id"
+                                      value="#{applicationObject.attributes['companyId']}"
+                                      size="20"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="clientIdTr">
+                    <td class='titleColumn certScheduleTitleCol'><h:outputText
+                            style='padding:5px'
+                            value="#{msgs.con_form_sap_concur_client_id}" /> <h:outputText
+                            styleClass="requiredText" value="*" /></td>
+                    <td class="certScheduleHelpCol"><h:graphicImage
+                            id="imgHlpClientId" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_sap_concur_client_id}" /></td>
+                    <td><sp:inputText id="client_id"
+                                      value="#{applicationObject.attributes['client_id']}"
+                                      size="20"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="clientSecretTr">
+                    <td class='titleColumn certScheduleTitleCol'><h:outputText
+                            style='padding:5px'
+                            value="#{msgs.con_form_sap_concur_client_secret}" /> <h:outputText
+                            styleClass="requiredText" value="*" /></td>
+                    <td class="certScheduleHelpCol"><h:graphicImage
+                            id="imgHlpClientSecret" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_sap_concur_client_secret}" /></td>
+                    <td><sp:inputSecret id="client_secret"
+                                        value="#{applicationObject.attributes['client_secret']}"
+                                        size="20"
+                                        redisplay="true" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="refreshTokenTr">
+                    <td class='titleColumn certScheduleTitleCol'><h:outputText
+                            style='padding:5px'
+                            value="#{msgs.con_form_sap_concur_grant_type_refresh_token}" /> <h:outputText
+                            styleClass="requiredText" value="*" /></td>
+                    <td class="certScheduleHelpCol"><h:graphicImage
+                            id="imgHlpRefreshToken" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_sap_concur_refresh_token}" /></td>
+                    <td><sp:inputSecret id="refresh_token"
+                                        value="#{applicationObject.attributes['refresh_token']}"
+                                        size="20"
+                                        redisplay="true" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="pageSizeTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_concur_page_size}" /> <h:outputText/>
+                    </td>
+                    <td class="certScheduleHelpCol"><h:graphicImage
+                            id="imgHlpPageSize" styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_sap_concur_page_size}" /></td>
+                    <td><sp:inputText id="pageSize"
+                                      value="#{applicationObject.attributes['pageSize']}"
+                                      size="20"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="includeInactiveUsersTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText  style='...' value="#{msgs.con_form_sap_concur_include_inactive_users}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpIncludeInactiveUsers" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_sap_concur_include_inactive_users}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="includeInactiveUsers"
+                                                 value="#{applicationObject.attributes['aggregateInactiveUsers']}" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </f:view>
+
+</ui:composition>
+
+</body>
+</html>

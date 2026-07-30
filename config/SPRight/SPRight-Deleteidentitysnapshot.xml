@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246186" displayName="right_delete_identity_snapshot" id="c0a801899fb11942819fb1ca3229000a" name="DeleteIdentitySnapshot">
+  <Description>right_desc_delete_identity_snapshot</Description>
+</SPRight>

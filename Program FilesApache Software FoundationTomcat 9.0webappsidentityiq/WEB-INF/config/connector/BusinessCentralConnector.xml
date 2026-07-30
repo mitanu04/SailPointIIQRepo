@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.BusinessCentralConnector" featuresString="PROVISIONING, ENABLE, SEARCH" icon="internetIcon" name="Dynamics 365 Business Central Online" type="Dynamics 365 Business Central Online">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="BusinessCentralConnector.xhtml"/>
+        <entry key="encrypted" value="clientSecret,clientCertificate,private_key,privateKeyPassword,refresh_token,accessToken"/>
+        <entry key="pageSize" value="500"/>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="userName" identityAttribute="userSecurityId" nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="displayName" type="string">
+          <Description>Azure AD account's FirstName and LastName</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="userName" type="string">
+          <Description>The Business Central user name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="state" type="string">
+          <Description>The login state of the user i.e. Enabled or Disabled.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="userGroups" internalName="userGroupMembers" entitlement="true" managed="true" multi="true" schemaObjectType="group" type="string">
+          <Description>UserGroup memberships of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="userPermissions" entitlement="true" managed="true" multi="true" schemaObjectType="permissionSet" type="string">
+          <Description>Permission Sets that are assigned to the user</Description>
+        </AttributeDefinition>     
+        <AttributeDefinition name="userSecurityId" type="string">
+          <Description>The unique identifier for the user</Description>
+        </AttributeDefinition>
+
+      </Schema>
+      <Schema displayAttribute="displayName" featuresString="" identityAttribute="objectId"
+              nativeObjectType="userGroup" objectType="group" >
+	<AttributeDefinition name="objectId" type="string">
+          <Description>Customized unique identifier for the group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="code" type="string">
+          <Description>Unique identifier for the group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="assignToAllNewUsers" type="boolean">
+          <Description>A flag to indicate assignement of all new users to the user group</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="defaultProfileID" type="string">
+          <Description>Default Profile ID</Description>
+        </AttributeDefinition>
+       <AttributeDefinition name="displayName" type="string">
+          <Description>The display name for the group</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="displayName" featuresString="" identityAttribute="objectId"
+              nativeObjectType="permissionSet" objectType="permissionSet" >
+        <AttributeDefinition name="objectId" type="string">
+          <Description>Customized unique identifier for the permissionSet</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="appId" type="string">
+          <Description>ID of the associated extension application</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="displayName" type="string">
+          <Description>The display name for the permissionSet</Description>
+        </AttributeDefinition>
+		<AttributeDefinition name="extensionName" type="string">
+          <Description>The Extension name of the permissionSet</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="permissionId" internalName="id" type="string">
+          <Description>The Unique identifier for the permissionSet</Description>
+        </AttributeDefinition>
+		<AttributeDefinition name="scope" type="string">
+          <Description>The scope of the permissionSet Object</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+	  name='Dynamics 365 Business Central Online' connectorName="Dynamics 365 Business Central Online"
+	  type="SourceConfig" directConnect="true" status="released" fileUpload="false" shortDesc="ShortDesc">
+
+	<Menu name="ConnectionSettings" label="con_form_dynamics_lbl_connection_settings">
+		<Section name="AuthenticationSettings" label="con_form_dynamics_lbl_connection_settings" sectionInfo="SECTION_INFO_CONNECTIONCREDENTIALS" docLinkLabel="docLinkLabel_AuthenticationtionSettings" docLink="https://documentation.sailpoint.com/connectors/microsoft/dynamics_365/help/">
+			<Field name="envUrl" type="text" displayName="con_form_bcentral_env_url" required="true" helpKey="help_con_form_bcentral_env_url"/>
+      <Field type="textLabel" displayName="label_auth_method" helpKey="help_con_form_rws_authentication_method" readOnly="true" labelValue="oauth_2" />
+			<Field name="grantType" type="select" defaultValue="CLIENT_CREDENTIALS" displayName="label_grant_type" helpKey="help_con_form_oauth2_grant_type" >
+				<AllowedValues>
+					<Option value="CLIENT_CREDENTIALS" label="con_form_dynamics_grant_type_opt_client_credentials"/>
+					<Option value="CERTIFICATE_CREDENTIALS" label="con_form_dynamics_grant_type_opt_jwt_certificate_credentials"/>
+					<Option value="REFRESH_TOKEN" label="con_form_dynamics_grant_type_opt_refresh_token"/>
+				</AllowedValues>
+			</Field>
+			<Field name="clientID" type="text" required="true" displayName="con_form_bcentral_client_ID" helpKey="help_con_form_bcentral_client_ID" parentKey="grantType" parentValue="CLIENT_CREDENTIALS"/>
+			<Field name="clientSecret" type="secret" required="true" displayName="con_form_bcentral_client_secret" helpKey="help_con_form_bcentral_client_secret" parentKey="grantType" parentValue="CLIENT_CREDENTIALS"/>
+      <Field name="clientID" type="text" required="true" helpKey="HELPKEY_CLIENT_ID" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS"/>
+      <Field name="clientCertificate" type="textarea" required="true" displayName="con_form_bcentral_certificate" helpKey="help_con_form_bcentral_certificate" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS"/>
+      <Field name="private_key" valueHidden="true" type="textarea" required="true" displayName="con_form_jwt_private_key" helpKey="help_con_form_bcentral_jwt_private_key" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS"/>
+      <Field name="privateKeyPassword" type="secret" required="true" displayName="con_form_jwt_private_key_password" helpKey="help_con_form_bcentral_jwt_private_key_password" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS"/>
+			<Field name="clientID" type="text" required="true" displayName="con_form_bcentral_client_ID" helpKey="help_con_form_bcentral_client_ID" parentKey="grantType" parentValue="REFRESH_TOKEN"/>
+			<Field name="clientSecret" type="secret" required="true" displayName="con_form_bcentral_client_secret" helpKey="help_con_form_bcentral_client_secret" parentKey="grantType" parentValue="REFRESH_TOKEN"/>
+			<Field name="refresh_token" type="secret" required="true" displayName="con_form_bcentral_refreshToken" helpKey="help_con_form_bcentral_refreshToken" parentKey="grantType" parentValue="REFRESH_TOKEN"/>
+			<Field name="pageSize" type="number" displayName="con_form_page_size" helpKey="help_con_form_bcentral_page_size" defaultValue="500" min="1" max="999" saveAsString="true"/>
+		</Section>
+	</Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

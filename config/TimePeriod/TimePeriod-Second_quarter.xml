@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TimePeriod PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TimePeriod classifier="DateRange" created="1785394250378" id="c0a801899fb11942819fb1ca428a010a" name="second_quarter">
+  <Attributes>
+    <Map>
+      <entry key="endDate">
+        <value>
+          <Date>1175288400000</Date>
+        </value>
+      </entry>
+      <entry key="startDate">
+        <value>
+          <Date>1167602400000</Date>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</TimePeriod>

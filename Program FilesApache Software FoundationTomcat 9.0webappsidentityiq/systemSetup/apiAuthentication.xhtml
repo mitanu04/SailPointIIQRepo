@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<!-- (c) Copyright 2016 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html lang="en"
+    xmlns:sp="http://sailpoint.com/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html">
+<body>
+
+<ui:composition template="/ngAppPage.xhtml">
+<ui:define name="title">#{msgs.menu_label_oauth_config}</ui:define>
+<ui:define name="headerItems">
+
+  <ui:include src="../ui/scriptData.xhtml" />
+
+  <script type="text/javascript">
+    SailPoint.OAUTH_CLIENT_FULL_ACCESS = #{sp:hasRight(facesContext, "FullAccessOAuthClientConfiguration")};
+  </script>
+  <ui:include src="../ui/jspmInclude.xhtml" />
+
+  <script type="text/javascript">
+  System.import('#{base.requestContextPath}/ui/js/systemSetup/apiAuthentication/main.js');
+  </script>
+</ui:define>
+
+<ui:define name="body">
+  <div class="sp-ui-app focusable-container">
+    <sp-api-authentication></sp-api-authentication>
+  </div>
+</ui:define>
+</ui:composition>
+
+</body>
+</html>

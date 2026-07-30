@@ -1,0 +1,14 @@
+-- You can define here all the statements that should be excluded by the schema checker,
+-- these statements are not going to be included in the upgrade file.
+
+-- we are recreating the table so these don't need to be included
+alter table identityiq.spt_post_commit_notification_object modify id varchar2(32 char) not null;
+alter table identityiq.spt_post_commit_notification_object add consumer varchar2(256 char);
+alter table identityiq.spt_post_commit_notification_object add created number(19,0);
+alter table identityiq.spt_post_commit_notification_object add committed_object_string clob;
+
+-- Oracle database doesn't allow adding a NOT NULL column if the table is not empty, it returns error:
+-- ORA-01758: table must be empty to add mandatory (NOT NULL) column. As when the upgrade is done the table
+-- may already have data, the upgrade statement will not include the NOT NULL clause while the creation script will.
+alter table identityiq.spt_bundle add iiq_elevated_access number(1,0) not null;
+alter table identityiq.spt_managed_attribute add iiq_elevated_access number(1,0) not null;

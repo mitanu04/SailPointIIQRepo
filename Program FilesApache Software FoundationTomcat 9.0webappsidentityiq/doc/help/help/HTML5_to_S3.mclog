@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MadCapLog Protocol="2" Description="MadCap Flare 2025 Generated HTML5_to_S3.fltar" Date="2025-07-07T13:17:11.1570773-05:00" Branch="master" Commit="2b19632c0441282cbd19ce4a790842c6847517bd">
+    <Messages>Publishing target HTML5_to_S3...
+Connecting...
+Downloading log...
+Uploading changed files...
+Uploading teams/createchatappproxyinazure.htm... succeeded.
+Uploading teams/chatproxy_image1.png... succeeded.
+Uploading teams/approvaltask.htm... succeeded.
+Uploading ai/review_genai_descriptions.htm... succeeded.
+Uploading ai/generate_genai_descriptions.htm... succeeded.
+Uploading ai/configure_genai_entitlement.htm... succeeded.
+Uploading Data/SearchPhrase_Chunk140.js... succeeded.
+Uploading teams/overview.htm... succeeded.
+Uploading resources/Scripts/require.config.js... succeeded.
+Uploading Data/SearchTopic_Chunk6.js... succeeded.
+Uploading Data/SearchStem_Chunk9.js... succeeded.
+Uploading Data/SearchStem_Chunk7.js... succeeded.
+Uploading Data/SearchStem_Chunk2.js... succeeded.
+Uploading Data/SearchPhrase_Chunk99.js... succeeded.
+Uploading Data/SearchPhrase_Chunk98.js... succeeded.
+Uploading Data/SearchPhrase_Chunk96.js... succeeded.
+Uploading Data/SearchPhrase_Chunk89.js... succeeded.
+Uploading Data/SearchPhrase_Chunk87.js... succeeded.
+Uploading Data/SearchPhrase_Chunk86.js... succeeded.
+Uploading Data/SearchPhrase_Chunk84.js... succeeded.
+Uploading Data/SearchPhrase_Chunk83.js... succeeded.
+Uploading Data/SearchPhrase_Chunk8.js... succeeded.
+Uploading Data/SearchPhrase_Chunk79.js... succeeded.
+Uploading Data/SearchPhrase_Chunk77.js... succeeded.
+Uploading Data/SearchPhrase_Chunk76.js... succeeded.
+Uploading Data/SearchPhrase_Chunk75.js... succeeded.
+Uploading Data/SearchPhrase_Chunk74.js... succeeded.
+Uploading Data/SearchPhrase_Chunk71.js... succeeded.
+Uploading Data/SearchPhrase_Chunk69.js... succeeded.
+Uploading Data/SearchPhrase_Chunk67.js... succeeded.
+Uploading Data/SearchPhrase_Chunk63.js... succeeded.
+Uploading Data/SearchPhrase_Chunk62.js... succeeded.
+Uploading Data/SearchPhrase_Chunk61.js... succeeded.
+Uploading Data/SearchPhrase_Chunk58.js... succeeded.
+Uploading Data/SearchPhrase_Chunk56.js... succeeded.
+Uploading Data/SearchPhrase_Chunk55.js... succeeded.
+Uploading Data/SearchPhrase_Chunk54.js... succeeded.
+Uploading Data/SearchPhrase_Chunk53.js... succeeded.
+Uploading Data/SearchPhrase_Chunk52.js... succeeded.
+Uploading Data/SearchPhrase_Chunk50.js... succeeded.
+Uploading Data/SearchPhrase_Chunk5.js... succeeded.
+Uploading Data/SearchPhrase_Chunk43.js... succeeded.
+Uploading Data/SearchPhrase_Chunk42.js... succeeded.
+Uploading Data/SearchPhrase_Chunk38.js... succeeded.
+Uploading Data/SearchPhrase_Chunk31.js... succeeded.
+Uploading Data/SearchPhrase_Chunk3.js... succeeded.
+Uploading Data/SearchPhrase_Chunk25.js... succeeded.
+Uploading Data/SearchPhrase_Chunk24.js... succeeded.
+Uploading Data/SearchPhrase_Chunk22.js... succeeded.
+Uploading Data/SearchPhrase_Chunk20.js... succeeded.
+Uploading Data/SearchPhrase_Chunk19.js... succeeded.
+Uploading Data/SearchPhrase_Chunk18.js... succeeded.
+Uploading Data/SearchPhrase_Chunk16.js... succeeded.
+Uploading Data/SearchPhrase_Chunk15.js... succeeded.
+Uploading Data/SearchPhrase_Chunk14.js... succeeded.
+Uploading Data/SearchPhrase_Chunk139.js... succeeded.
+Uploading Data/SearchPhrase_Chunk138.js... succeeded.
+Uploading Data/SearchPhrase_Chunk134.js... succeeded.
+Uploading Data/SearchPhrase_Chunk13.js... succeeded.
+Uploading Data/SearchPhrase_Chunk128.js... succeeded.
+Uploading Data/SearchPhrase_Chunk124.js... succeeded.
+Uploading Data/SearchPhrase_Chunk120.js... succeeded.
+Uploading Data/SearchPhrase_Chunk116.js... succeeded.
+Uploading Data/SearchPhrase_Chunk115.js... succeeded.
+Uploading Data/SearchPhrase_Chunk114.js... succeeded.
+Uploading Data/SearchPhrase_Chunk112.js... succeeded.
+Uploading Data/SearchPhrase_Chunk110.js... succeeded.
+Uploading Data/SearchPhrase_Chunk11.js... succeeded.
+Uploading Data/SearchPhrase_Chunk109.js... succeeded.
+Uploading Data/SearchPhrase_Chunk108.js... succeeded.
+Uploading Data/SearchPhrase_Chunk107.js... succeeded.
+Uploading Data/SearchPhrase_Chunk106.js... succeeded.
+Uploading Data/SearchPhrase_Chunk104.js... succeeded.
+Uploading Data/SearchPhrase_Chunk100.js... succeeded.
+Uploading Data/SearchPhrase_Chunk10.js... succeeded.
+Uploading Data/SearchPhrase_Chunk1.js... succeeded.
+Uploading Data/Search.js... succeeded.
+Uploading Data/HelpSystem.xml... succeeded.
+Uploading Data/HelpSystem.js... succeeded.
+Uploading index.mcwebhelp... succeeded.
+Uploading teams/approvaltasks_image2_674x348.png... succeeded.
+Uploading teams/chatproxy_image1_679x265.png... succeeded.
+Removing old files...
+Removing teams/chatproxy_image1_600x321.png
+Removing teams/approvaltasks_image2_679x199.png
+Uploading log...
+Publish completed successfully.
+Publish complete.
+Saving log to "C:\DocumentationSource\iiq-docs\Output\HTML5_to_S3\HTML5_to_S3.mclog"
+</Messages>
+    <Warnings />
+    <Errors />
+</MadCapLog>

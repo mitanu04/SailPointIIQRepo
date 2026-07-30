@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.MSAzureSQLDatabaseConnector" featuresString="DIRECT_PERMISSIONS, PROVISIONING, SYNC_PROVISIONING, SEARCH, ENABLE, PASSWORD" icon="databaseIcon" name="Microsoft Azure SQL Database" type="Microsoft Azure SQL Database">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="MSAzureSQLDatabaseAttributesForm.xhtml"/>
+        <entry key="aggregateFixedDbRolesFromMaster">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="name" identityAttribute="name" includePermissions="false" nativeObjectType="account" objectType="account">
+        <AttributeDefinition displayName="name" name="name" type="string"><Description>Login account name</Description></AttributeDefinition>
+        <AttributeDefinition displayName="principal_id" name="principal_id" type="string"><Description>ID of server principal</Description></AttributeDefinition>
+        <AttributeDefinition displayName="type_desc" name="type_desc" type="string"><Description>Description type of the login</Description></AttributeDefinition>
+        <AttributeDefinition displayName="create_date" name="create_date" type="string"><Description>Creation date of the login</Description></AttributeDefinition>
+        <AttributeDefinition displayName="modify_date" name="modify_date" type="string"><Description>Last modification date of the login</Description></AttributeDefinition>
+        <AttributeDefinition displayName="server_name" name="server_name" type="string"><Description>Server name</Description></AttributeDefinition>
+        <AttributeDefinition displayName="DBUsers" multi="true" name="DBUsers" type="string"><Description>Database users which are associated to the login</Description></AttributeDefinition>
+        <AttributeDefinition displayName="roles" entitlement="true" managed="true" multi="true" name="roles" schemaObjectType="group" type="string"><Description>Server and database roles assigned to the login and its mapped database users</Description></AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="native_identity" identityAttribute="native_identity" includePermissions="false"
+              nativeObjectType="group" objectType="group" descriptionAttribute="type_desc" featuresString="PROVISIONING">
+          <AttributeDefinition displayName="native_identity" name="native_identity" type="string"><Description>Native identity represented by default as groupName or groupName@databaseName</Description></AttributeDefinition>
+          <AttributeDefinition displayName="name" name="name" type="string"><Description>Group name</Description></AttributeDefinition>
+          <AttributeDefinition displayName="database_name" name="database_name" type="string"><Description>Database name in which group exists</Description></AttributeDefinition>
+          <AttributeDefinition displayName="database_id" name="database_id" type="string"><Description>Database ID in which group exists</Description></AttributeDefinition>
+          <AttributeDefinition displayName="principal_id" name="principal_id" type="string"><Description>Id of server or database principal</Description></AttributeDefinition>
+          <AttributeDefinition displayName="type_desc" name="type_desc" type="string"><Description>Description type of the group</Description></AttributeDefinition>
+          <AttributeDefinition displayName="is_fixed_role" name="is_fixed_role" type="string"><Description>If the value is 1, then this row represents an entry for one of the fixed server or database roles</Description></AttributeDefinition>
+          <AttributeDefinition displayName="server_name" name="server_name" type="string"><Description>Server name</Description></AttributeDefinition>
+          <AttributeDefinition displayName="roles" multi="true" name="roles" type="string"><Description>Roles that are member to the group</Description></AttributeDefinition>
+        </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_Login_name" helpKey="help_con_form_MSAzureSQLDatabase_Login_name" name="name" required="true" section="" type="string"/>
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_Password" helpKey="help_con_form_MSAzureSQLDatabase_Login_password" name="password" required="true" section="" type="secret"/>
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_Account_Type" name="type_desc" required="true" type="string" reviewRequired="true" value="SQL_Login">
+          <AllowedValues>
+            <String>SQL_Login</String>
+          </AllowedValues>
+        </Field>
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_User_Mapping" helpKey="help_con_form_MSAzureSQLDatabase_User_Mapping" multi="true" name="DBUsers" reviewRequired="true" section="" type="string"/>
+      </Template>
+      <Template name="create group" schemaObjectType="group" usage="Create">
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_Native_Identity" helpKey="help_con_form_MSAzureSQLDatabase_Native_Identity" name="native_identity" required="true" type="string"/>
+        <Field displayName="con_prov_policy_MSAzureSQLDatabase_Group_Type" helpKey="help_con_form_MSAzureSQLDatabase_Group_Type" name="type_desc" required="true" type="string" value="DATABASE_ROLE">
+          <Attributes>
+            <Map>
+              <entry key="readOnly" value="true"/>
+            </Map>
+          </Attributes>
+        </Field>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc. All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+	  name='Microsoft Azure SQL Database Configuration' connectorName="Microsoft Azure SQL Database"
+	  type="SourceConfig" directConnect="true" status="released" fileUpload="true" shortDesc="con_form_MSAzureSQLDatabase_settings">
+
+    <Menu name="Account Settings" label="con_form_MSAzureSQLDatabase_account_settings">
+        <Section name="Account Settings" label="con_form_MSAzureSQLDatabase_account_settings"
+             sectionInfo="sectionInfo_DatabaseConnectionSettings"
+             docLinkLabel="docLinkLabel_ConnectionSettings"
+             docLink="https://documentation.sailpoint.com/connectors/microsoft/sql_server/help/integrating_ms_sql_server/connection_settings.html">
+
+            <Field name="url" type="url" required="true" displayName="con_form_MSAzureSQLDatabase_url" defaultValue="jdbc:sqlserver://&lt;server-name&gt;:&lt;port&gt;" helpKey="help_con_form_MSAzureSQLDatabase_url"/>
+            <Field name="user" type="text" required="true" displayName="con_form_MSAzureSQLDatabase_user" helpKey="help_con_form_MSAzureSQLDatabase_user" />
+            <Field name="password" type="secret" required="true" displayName="con_form_MSAzureSQLDatabase_password" helpKey="help_con_form_MSAzureSQLDatabase_password" />
+            <Field name="driverClass" type="text" required="true" displayName="con_form_MSAzureSQLDatabase_driver" defaultValue="com.microsoft.sqlserver.jdbc.SQLServerDriver" helpKey="help_con_form_MSAzureSQLDatabase_driver"/>
+        </Section>
+
+        <Section name="ConnectionSettings"
+             label="sectionLabel_additionalSetting"
+             sectionInfo="sectionInfo_additionalSetting"
+             docLinkLabel="docLinkLabel_ConnectionSettings"
+             docLink="https://documentation.sailpoint.com/connectors/microsoft/sql_server/help/integrating_ms_sql_server/connection_settings.html">
+            <Field name="additionalConnProperties" type="list" displayName="additionalConnProperties" placeHolder="placeHolder_additionalConnProperties"/>
+        </Section>
+    </Menu>
+    <Menu name="Aggregation Settings" label="con_form_MSAzureSQLDatabase_aggregation_settings">
+        <Section name="Aggregation Settings" label="con_form_MSAzureSQLDatabase_aggregation_settings"
+             sectionInfo="sectionInfo_aggregationSetting"
+             docLinkLabel="docLinkLabel_AggregationSettings"
+             docLink="https://documentation.sailpoint.com/connectors/microsoft/sql_server/help/integrating_ms_sql_server/aggregation_settings.html">
+
+            <Field name="includeDatabases" type="text" displayName="con_form_MSAzureSQLDatabase_include_databases" helpKey="help_con_form_MSAzureSQLDatabase_include_databases"/>
+            <Field name="excludeDatabases" type="text" displayName="con_form_MSAzureSQLDatabase_exclude_databases" placeHolder="help_con_form_MSAzureSQLDatabase_exclude_databases"/>
+            <Field name="aggregateDbUsersWithoutRoles" displayName="con_form_MSAzureSQLDatabase_aggregate_dbusers_without_roles" type="checkbox" helpKey="help_con_form_MSAzureSQLDatabase_aggregate_dbusers_without_roles" />
+            <Field name="aggregateFixedDbRolesFromMaster" displayName="con_form_MSAzureSQLDatabase_aggregate_fixed_dbroles_from_master" type="checkbox" defaultValue="true" helpKey="help_con_form_MSAzureSQLDatabase_aggregate_fixed_dbroles_from_master" />
+        </Section>
+    </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250577" executor="sailpoint.request.IdentityRefreshRequestExecutor" id="c0a801899fb11942819fb1ca43510128" name="Identity Refresh Partition" retryMax="20">
+  <Attributes>
+    <Map>
+      <entry key="maxThreads" value="1"/>
+    </Map>
+  </Attributes>
+</RequestDefinition>

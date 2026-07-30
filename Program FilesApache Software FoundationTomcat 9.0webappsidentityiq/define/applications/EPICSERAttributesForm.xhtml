@@ -1,0 +1,770 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+
+<body>
+<ui:composition>
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(fieldName) {
+            var val = null;
+            var field = Ext.getDom(fieldName);
+            if ( field ) {
+                val = field.value;
+            }
+            return val;
+        }
+
+        function toggleFTPSAuthFields(ftpsAuthType) {
+
+            var certFilePathRow = Ext.get("certFilePathRow");
+            var passphraseRow = Ext.get("passphraseRow");
+
+            if (ftpsAuthType == "") {
+                ftpsAuthType = "password";
+            }
+
+            if (ftpsAuthType == "ftpsClientCertificate") {
+                certFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                certFilePathRow.show();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.show();
+            } else {
+                certFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                certFilePathRow.hide();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.hide();
+            }
+        }
+
+        function toggleSFTPAuthFields(sftpAuthType) {
+
+            var passwordRow = Ext.get("passwordRow");
+            var pvtKeyFilePathRow = Ext.get("pvtKeyFilePathRow");
+            var passphraseRow = Ext.get("passphraseRow");
+
+            if (sftpAuthType == "") {
+                sftpAuthType = "password";
+            }
+
+            if (sftpAuthType == "publickey") {
+                pvtKeyFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyFilePathRow.show();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.show();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.hide();
+            } else {
+                pvtKeyFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyFilePathRow.hide();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.hide();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.show();
+            }
+
+        }
+
+        function toggleTransport(transportType){
+            var hostRow = Ext.get("hostRow");
+            var portRow = Ext.get("portRow");
+            var authTypeFTPSRow = Ext.get("authTypeFTPSRow");
+            var authTypeSFTPRow = Ext.get("authTypeSFTPRow");
+            var usernameRow = Ext.get("usernameRow");
+            var passwordRow = Ext.get("passwordRow");
+            var certFilePathRow = Ext.get("certFilePathRow");
+            var pvtKeyFilePathRow = Ext.get("pvtKeyFilePathRow");
+            var passphraseRow = Ext.get("passphraseRow");
+
+            if (transportType == "") {
+                transportType = "local";
+            }
+
+            if (transportType == "local") {
+                hostRow.setVisibilityMode(Ext.Element.DISPLAY);
+                hostRow.hide();
+                portRow.setVisibilityMode(Ext.Element.DISPLAY);
+                portRow.hide();
+                authTypeFTPSRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeFTPSRow.hide();
+                authTypeSFTPRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeSFTPRow.hide();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.hide();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.hide();
+                certFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                certFilePathRow.hide();
+                pvtKeyFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyFilePathRow.hide();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.hide();
+            } else if (transportType == "ftp" || transportType == "scp") {
+                hostRow.setVisibilityMode(Ext.Element.DISPLAY);
+                hostRow.show();
+                portRow.setVisibilityMode(Ext.Element.DISPLAY);
+                portRow.show();
+                authTypeFTPSRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeFTPSRow.hide();
+                authTypeSFTPRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeSFTPRow.hide();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.show();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.show();
+                certFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                certFilePathRow.hide();
+                pvtKeyFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyFilePathRow.hide();
+                passphraseRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passphraseRow.hide();
+            } else if (transportType == "ftps") {
+                hostRow.setVisibilityMode(Ext.Element.DISPLAY);
+                hostRow.show();
+                portRow.setVisibilityMode(Ext.Element.DISPLAY);
+                portRow.show();
+                authTypeFTPSRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeFTPSRow.show();
+                authTypeSFTPRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeSFTPRow.hide();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.show();
+                passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+                passwordRow.show();
+                pvtKeyFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                pvtKeyFilePathRow.hide();
+                toggleFTPSAuthFields(getFieldValue('editForm:authTypeFTPS'));
+
+            } else if (transportType == "sftp") {
+                hostRow.setVisibilityMode(Ext.Element.DISPLAY);
+                hostRow.show();
+                portRow.setVisibilityMode(Ext.Element.DISPLAY);
+                portRow.show();
+                authTypeFTPSRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeFTPSRow.hide();
+                authTypeSFTPRow.setVisibilityMode(Ext.Element.DISPLAY);
+                authTypeSFTPRow.show();
+                usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+                usernameRow.show();
+                certFilePathRow.setVisibilityMode(Ext.Element.DISPLAY);
+                certFilePathRow.hide();
+                toggleSFTPAuthFields(getFieldValue('editForm:authTypeSFTP'));
+            }
+        }
+
+        function validateConfiguration () {
+
+            var filePath = getFieldValue('editForm:filePath');
+            var fileTransport = getFieldValue('editForm:fileTransport');
+            var url = getFieldValue('editForm:url');
+            var importDataAPI = getFieldValue('editForm:importDataAPI');
+            var importDataLogAPI = getFieldValue('editForm:importDataLogAPI');
+            var importSpecificationID = getFieldValue('editForm:importSpecificationID');
+            var importSpecificationIDType = getFieldValue('editForm:importSpecificationIDType');
+            var apiUsername = getFieldValue('editForm:apiUsername');
+            var apiPassword = getFieldValue('editForm:apiPassword');
+            var serClientId = getFieldValue('editForm:serClientId');
+            var serUsername = getFieldValue('editForm:username');
+            var serPassword = getFieldValue('editForm:password');
+            var serHost = getFieldValue('editForm:host');
+            var serPort = getFieldValue('editForm:port');
+            var ftpsAuthMethod = getFieldValue('editForm:authTypeFTPS');
+            var sftpAuthMethod = getFieldValue('editForm:authTypeSFTP');
+            var certFilePath = getFieldValue('editForm:ftpsClientCertificateFilePath');
+            var pvtKeyFilePath = getFieldValue('editForm:pvtKeyFilePath');
+            var passphrase = getFieldValue('editForm:passphrase');
+            var providerIDType = getFieldValue('editForm:providerTypeId');
+            var providerTypeName = getFieldValue('editForm:providerTypeName');
+            var practitionerSearchAPI = getFieldValue('editForm:practitionerAPI');
+            var delimiter = getFieldValue('editForm:delimiter');
+            var delimiterInner = getFieldValue('editForm:delimiterInner');
+
+            Validator.validateNonBlankString(filePath,"#{msgs.con_form_ser_file_path_null}");
+            Validator.validateNonBlankString(fileTransport,"#{msgs.con_form_ser_file_transport_null}");
+            Validator.validateNonBlankString(url,"#{msgs.con_form_ser_api_host_name_null}");
+            Validator.validateNonBlankString(importDataAPI,"#{msgs.con_form_ser_api_import_data_null}");
+            Validator.validateNonBlankString(importDataLogAPI,"#{msgs.con_form_ser_api_import_data_log_null}");
+            Validator.validateNonBlankString(importSpecificationID,"#{msgs.con_form_ser_api_import_id_null}");
+            Validator.validateNonBlankString(importSpecificationIDType,"#{msgs.con_form_ser_api_import_id_type_null}");
+            Validator.validateNonBlankString(apiUsername,"#{msgs.con_form_ser_api_username_null}");
+            Validator.validateNonBlankString(apiPassword,"#{msgs.con_form_ser_api_password_null}");
+            Validator.validateNonBlankString(serClientId,"#{msgs.con_form_ser_api_clientId_null}");
+            Validator.validateNonBlankString(providerIDType,"#{msgs.con_form_ser_api_providerIdType_null}");
+            Validator.validateNonBlankString(providerTypeName,"#{msgs.con_form_ser_api_providerTypeName_null}");
+            Validator.validateNonBlankString(practitionerSearchAPI,"#{msgs.con_form_ser_api_practitioner_null}");
+            Validator.validateNonBlankString(delimiter,"#{msgs.con_form_ser_api_delimiter_null}");
+
+            if (delimiter === delimiterInner) {
+                Validator.addError("The delimiters cannot be the same.");
+            }
+
+            if (fileTransport && fileTransport != "local") {
+                Validator.validateNonBlankString(serHost,"#{msgs.con_form_ser_host_null}");
+                Validator.validateNonBlankString(serPort,"#{msgs.con_form_ser_port_null}");
+                Validator.validateNonBlankString(serUsername,"#{msgs.con_form_ser_username_null}");
+            }
+
+            if (fileTransport && (fileTransport == "scp" || fileTransport == "ftp")) {
+                Validator.validateNonBlankString(serPassword,"#{msgs.con_form_ser_password_null}");
+            } else if(fileTransport && fileTransport == "ftps") {
+                Validator.validateNonBlankString(serPassword,"#{msgs.con_form_ser_password_null}");
+                if(ftpsAuthMethod && ftpsAuthMethod == "ftpsClientCertificate") {
+                    Validator.validateNonBlankString(certFilePath,"#{msgs.con_form_ser_certFilePath_null}");
+                    Validator.validateNonBlankString(passphrase,"#{msgs.con_form_ser_passphrase_null}");
+                }
+            } else if(fileTransport && fileTransport == "sftp") {
+                if(sftpAuthMethod && sftpAuthMethod == "publickey") {
+                    Validator.validateNonBlankString(pvtKeyFilePath,"#{msgs.con_form_ser_pvtKeyFilePath_null}");
+                    Validator.validateNonBlankString(passphrase,"#{msgs.con_form_ser_passphrase_null}");
+                } else {
+                    Validator.validateNonBlankString(serPassword,"#{msgs.con_form_ser_password_null}");
+                }
+            }
+        }
+
+        function setDefaultIfEmpty(fieldName, val) {
+            const field = Ext.getDom(fieldName);
+            if (field.value === "") {
+                field.value = val;
+            }
+        }
+
+        Ext.onReady(function () {
+            Ext.QuickTips.init();
+            toggleTransport('#{applicationObject.attributes["fileTransport"]}');
+            setDefaultIfEmpty('editForm:delimiter', '|');
+
+            Page.on('beforeSave', function() {
+                validateConfiguration ();
+
+                var errors = Validator.getErrors();
+                if (errors && errors.length > 0) {
+                    Validator.displayErrors('appErrorsTop');
+                    return false;
+                }
+                return true;
+            });
+        });
+
+        //--><!]]>
+    </script>
+
+    <f:view>
+        <div id="serConnectivitySettings" class='spContent'>
+            <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} Connection Settings" />
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="fileRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_provider_file}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpFilePath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_ser_provider_file}" />
+                    </td>
+                    <td>
+                        <h:inputText id="filePath"
+                                     value="#{applicationObject.attributes['filePath']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="bpfileRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_blueprint_file}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpBpFilePath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_ser_blueprint_file}" />
+                    </td>
+                    <td>
+                        <h:inputText id="bpFilePath"
+                                     value="#{applicationObject.attributes['bpFilePath']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="fileDelimiterRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_file_delimiter}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpFileDelimiter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_file_ser_delimiter}" />
+                    </td>
+                    <td>
+                        <h:inputText id="delimiter"
+                                     value="#{applicationObject.attributes['delimiter']}"
+                                     size="1"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="fileDelimiterInnerRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_file_delimiter_inner}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpFileDelimiterInner" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_ser_file_delimiter_inner}" />
+                    </td>
+                    <td>
+                        <h:inputText id="delimiterInner"
+                                     value="#{applicationObject.attributes['delimiterInner']}"
+                                     size="1"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="fileEncodingRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_encoding}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpFileEncoding" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_delimited_encoding}" />
+                    </td>
+                    <td>
+                        <h:inputText id="fileEncoding"
+                                     value="#{applicationObject.attributes['fileEncoding']}"
+                                     size="20"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="fileTransportRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransport}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpFileTransport" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_delimited_filetransport}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu
+                                id="fileTransport"
+                                onchange="toggleTransport(this.value)"
+                                value="#{applicationObject.attributes['fileTransport']}">
+                            <f:selectItem
+                                    itemLabel="#{msgs.con_form_delimited_fileTransportLocal}"
+                                    itemValue="local" />
+                            <f:selectItem
+                                    itemLabel="#{msgs.con_form_delimited_fileTransportFTP}"
+                                    itemValue="ftp" />
+                            <f:selectItem
+                                    itemLabel="#{msgs.con_form_delimited_fileTransportFTPS}"
+                                    itemValue="ftps" />
+                            <f:selectItem
+                                    itemLabel="#{msgs.con_form_delimited_fileTransportSCP}"
+                                    itemValue="scp" />
+                            <f:selectItem
+                                    itemLabel="#{msgs.con_form_delimited_fileTransportSFTP}"
+                                    itemValue="sftp" />
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr id="hostRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_transportHost}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpHost" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_transportHost}" />
+                    </td>
+                    <td>
+                        <h:inputText id="host"
+                                     value="#{applicationObject.attributes['host']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="portRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_transportPort}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPort" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_transportPort}" />
+                    </td>
+                    <td>
+                        <h:inputText id="port"
+                                     value="#{applicationObject.attributes['port']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="authTypeFTPSRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransport_FTPS_authentication}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAuthtypeFTPS" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_fileTransport_FTPS_authentication}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="authTypeFTPS"
+                                         value="#{applicationObject.attributes['ftpsAuthMethod']}"
+                                         redisplay="true"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleFTPSAuthFields(this.value)">
+                            <f:selectItem itemValue="password" itemLabel="#{msgs.con_form_delimited_fileTransport_FTPS_authentication_basic}" />
+                            <f:selectItem itemValue="ftpsClientCertificate" itemLabel="#{msgs.con_form_delimited_fileTransport_FTPS_authentication_client_certificate}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr id="authTypeSFTPRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransport_FTPS_authentication}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAuthtypeSFTP" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_fileTransport_FTPS_authentication}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="authTypeSFTP"
+                                         value="#{applicationObject.attributes['sftpAuthMethod']}"
+                                         redisplay="true"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                         onchange="toggleSFTPAuthFields(this.value)">
+                            <f:selectItem itemValue="password" itemLabel="#{msgs.con_form_delimited_fileTransport_FTPS_authentication_basic}" />
+                            <f:selectItem itemValue="publickey" itemLabel="#{msgs.con_form_delimited_fileTransportSFTP_authentication_publicKey}"/>
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr id="usernameRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_transportUser}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpUsername" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_delimited_transportUser}" />
+                    </td>
+                    <td>
+                        <h:inputText id="username"
+                                     value="#{applicationObject.attributes['username']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="passwordRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_transportPw}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_help_delimited_transportPw}" /></td>
+                    <td>
+                        <sp:inputSecret id="password" value="#{applicationObject.attributes['password']}" size="50"
+                                       redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="certFilePathRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransport_FTPS_client_certificate_file_path}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpCertFilePath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_fileTransport_FTPS_client_certificate_file_path}" />
+                    </td>
+                    <td>
+                        <h:inputText id="ftpsClientCertificateFilePath"
+                                     value="#{applicationObject.attributes['ftpsClientCertificateFilePath']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="pvtKeyFilePathRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransportSFTP_authentication_privateKeyFilePath}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpvtKeyFilePath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_fileTransportSFTP_authentication_privateKeyFilePath}" />
+                    </td>
+                    <td>
+                        <h:inputText id="pvtKeyFilePath"
+                                     value="#{applicationObject.attributes['pvtKeyFilePath']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="passphraseRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_delimited_fileTransportSFTP_authentication_passphrase}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPassphrase" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.con_form_delimited_fileTransportSFTP_authentication_passphrase}" /></td>
+                    <td>
+                        <sp:inputSecret id="passphrase" value="#{applicationObject.attributes['passphrase']}" size="50"
+                                       redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="urlRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_host_name}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpURLPath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_host}" />
+                    </td>
+                    <td>
+                        <h:inputText id="url"
+                                     value="#{applicationObject.attributes['url']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="importDataAPIRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_import_data}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpImportDataAPIPath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_import_data_api}" />
+                    </td>
+                    <td>
+                        <h:inputText id="importDataAPI"
+                                     value="#{applicationObject.attributes['importDataAPI']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="importDataLogAPIRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_import_data_log}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpImportDataLogAPIPath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_import_data_log_api}" />
+                    </td>
+                    <td>
+                        <h:inputText id="importDataLogAPI"
+                                     value="#{applicationObject.attributes['importDataLogAPI']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="importIDRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_import_id}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpimportIDPath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_import_id}" />
+                    </td>
+                    <td>
+                        <h:inputText id="importSpecificationID"
+                                     value="#{applicationObject.attributes['importSpecificationID']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="importIDTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_import_id_type}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpimportIDTypePath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_import_id_type}" />
+                    </td>
+                    <td>
+                        <h:inputText id="importSpecificationIDType"
+                                     value="#{applicationObject.attributes['importSpecificationIDType']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="practitionerSearchAPIRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_practitioner_search}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpPractitionerSearchAPIPath" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_practitioner_search_api}" />
+                    </td>
+                    <td>
+                        <h:inputText id="practitionerAPI"
+                                     value="#{applicationObject.attributes['practitionerAPI']}"
+                                     size="80"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="apiUsernameRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_username}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAPIUsername" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_username}" />
+                    </td>
+                    <td>
+                        <h:inputText id="apiUsername"
+                                     value="#{applicationObject.attributes['apiUsername']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="apiPasswordRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_password}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAPIPassword" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_ser_password}" /></td>
+                    <td>
+                        <sp:inputSecret id="apiPassword" value="#{applicationObject.attributes['apiPassword']}" size="50"
+                                       redisplay="true" autocomplete="off" disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_clientId}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpCLientId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ser_api_clientId}" />
+                    </td>
+                    <td>
+                        <sp:inputSecret  value="#{applicationObject.attributes['serClientId']}" size="50"
+                                        id="serClientId" redisplay="true" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="providerIdTypeRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_providerIdType}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpproviderIdType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ser_api_providerIdType}" />
+                    </td>
+                    <td>
+                        <h:inputText id="providerTypeId"
+                                     value="#{applicationObject.attributes['providerTypeId']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="providerTypeNameRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_api_providerTypeName}" />
+                        <h:outputText styleClass="requiredText" value="*" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpproviderTypeName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ser_api_providerTypeName}" />
+                    </td>
+                    <td>
+                        <h:inputText id="providerTypeName"
+                                     value="#{applicationObject.attributes['providerTypeName']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+                    </td>
+                </tr>
+
+                <tr id="blueprintForceRow">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_ser_blueprint_force}" />
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpBpForce" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_form_ser_blueprint_force}" />
+                    </td>
+                    <td>
+                        <h:selectOneMenu
+                            id="blueprintForce"
+                            value="#{applicationObject.attributes['blueprintUpdateMode']}">
+                            <f:selectItem
+                                itemLabel="#{msgs.con_form_ser_blueprint_force_enabled}"
+                                itemValue="force" />
+                            <f:selectItem
+                                itemLabel="#{msgs.con_form_ser_blueprint_force_disabled}"
+                                itemValue="none" />
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </f:view>
+</ui:composition>
+</body>
+</html>

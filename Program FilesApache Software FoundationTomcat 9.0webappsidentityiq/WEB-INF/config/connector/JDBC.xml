@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="JDBC Template" type="JDBC">
+    <Attributes>
+      <Map>
+        <entry key="formPath" value="JDBCAttributesForm.xhtml"/>
+        <entry key="formPathRules" value="JDBCRulesForm.xhtml"/>
+        <entry key="jdbcExceptionBucketing">
+          <value>
+            <Boolean>true</Boolean>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2022 SailPoint Technologies, Inc.  All rights reserved. -->
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd' name="JDBC" connectorName="JDBC" type="SourceConfig" directConnect="true" status="released" shortDesc="ShortDesc">
+<BaseConfig>
+        <Field name="fileUpload" maxFiles="15" supportedExtensions="jar"
+            type="fileupload" maxSize="75" validateJSON="false" />
+  </BaseConfig>
+  <Menu name="querySettings" label="menuLabel_querySettings">
+    <Section name="querySettings" label="sectionLabel_querySettings" sectionInfo="sectionInfo_querySettings" docLinkLabel="docLinkLabel_querySettings" docLink="https://documentation.sailpoint.com/connectors/jdbc/help/">
+      <Field name="querySettings" editButton="true" displayName="" type="schemaCardList">
+        <Menu name="connectionSettings" label="sectionLabel_connectionSettings">
+          <Field name="user" displayName="user" type="text" required="true"  parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="password" displayName="password" type="secret" required="true"  parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="url" displayName="url" type="text" required="true" parentKey="sp__schemaType"  parentValue="account" defaultValue="jdbc:mysql://&lt;hostname&gt;/&lt;dbname&gt;" helpKey="helpKey_tlsConnection" maxlength="99999"/>
+          <Field name="driverClass" displayName="driverClass" type="text" required="true"  parentKey="sp__schemaType"  parentValue="account" defaultValue="com.mysql.cj.jdbc.Driver"/>
+           <Field name="additionalConnProperties" type="list" required="false" displayName="additionalConnProperties" placeHolder="placeHolder_additionalConnProperties" parentKey="sp__schemaType"  parentValue="account" helpKey="helpKey_additionalConnProperties"/>
+          <Field name="user" displayName="user" type="text" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+          <Field name="password" displayName="password" type="secret" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+          <Field name="url" displayName="url" type="text" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account" helpKey="helpKey_tlsConnection" maxlength="99999"/>
+          <Field name="driverClass" displayName="driverClass" type="text" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+        </Menu>
+
+        <Menu name="querySettings" label="menuLabel_querySettings">
+          <Field name="testConnSQL" displayName="testConnSQL" type="textarea" parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="useStoredProcedureTestConn" displayName="useStoredProcedureTestConn" type="checkbox" parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="SQL" displayName="SQL" type="textarea"  required="true" parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="SQL" displayName="groupSQL" type="textarea" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account" />
+          <Field name="useStoredProcedureSqlStmt" displayName="useStoredProcedureSqlStmt" type="checkbox" parentKey="sp__schemaType"  parentValue="account"/>
+           <Field name="useStoredProcedureSqlStmt" displayName="useStoredProcedureSqlStmtForGroup" type="checkbox" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+          <Field name="getObjectSQL" displayName="getObjectSQL" type="textarea" parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="getObjectSQL" displayName="getObjectGroupSQL" type="textarea" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+          <Field name="useStoredProcedureGetObject" displayName="useStoredProcedureGetObject" type="checkbox" parentKey="sp__schemaType"  parentValue="account" />
+          <Field name="useStoredProcedureGetObject" displayName="useStoredProcedureGetObjectGroup" type="checkbox" parentKey="sp__schemaType"  parentKeyValueOperation='not' parentValue="account"/>
+         </Menu>
+
+        <Menu name="addQuerySettings" label="menuLabel_addQuerySettings">
+           <Field name="useExecuteQuery" displayName="useExecuteQuery" type="checkbox" defaultValue="false" helpKey="helpKey_useExecuteQuery"/>
+           <Field name="isPermissionEnabled" defaultValue="false" type="toggle" displayName="isPermissionEnabled"/>
+          <Field name="getDirectPermObjectSQL" type="textarea" displayName="getDirectPermObjectSQL" parentKey="isPermissionEnabled" parentValue="true"/>
+           <Field name="useStoredProcedureDirectPermission" type="checkbox" defaultValue="false" displayName="useStoredProcedureDirectPermission" parentKey="isPermissionEnabled" parentValue="true"/>
+         </Menu>
+
+        <Menu name="deltaAggregation" label="menuLabel_deltaAggregation" parentKey="sp__schemaType"  parentValue="account">
+          <Field name="deltaAggregationEnabled" displayName="deltaAggregation" type="toggle" defaultValue="false" parentKey="sp__schemaType"  parentValue="account"/>
+          <Field name="deltaTable" defaultValue="USER_DELTA" displayName="deltaTable" type="text" parentKey="deltaAggregationEnabled" parentValue="true"/>
+          <Field name="getDeltaSQL" type="textarea" displayName="getDeltaSQL" parentKey="deltaAggregationEnabled" parentValue="true"/>
+          <Field name="useStoredProcedureDelta" type="checkbox" defaultValue="false" displayName="useStoredProcedureDelta" parentKey="deltaAggregationEnabled" parentValue="true"/>
+        </Menu>
+      </Field>
+    </Section>
+  </Menu>
+</Form> ]]>
+    </Settings>
+  </Application>
+</ImportAction>

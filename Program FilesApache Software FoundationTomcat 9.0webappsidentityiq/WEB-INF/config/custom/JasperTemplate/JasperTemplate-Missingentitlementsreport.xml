@@ -1,0 +1,415 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE JasperTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<JasperTemplate name="MissingEntitlementsReport">
+  <DesignXml>&lt;?xml version="1.0" encoding="UTF-8"  ?>
+&lt;!-- Created with iReport - A designer for JasperReports -->
+&lt;!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+&lt;!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+&lt;jasperReport
+		 name="MissingEntitlementsReport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	&lt;property name="ireport.scriptlethandling" value="0" />
+	&lt;property name="ireport.encoding" value="UTF-8" />
+	&lt;import value="java.util.*" />
+	&lt;import value="net.sf.jasperreports.engine.*" />
+	&lt;import value="net.sf.jasperreports.engine.data.*" />
+	&lt;import value="sailpoint.reporting.datasource.*" />
+
+	&lt;style 
+		name="title"
+		isDefault="false"
+		fontName="Arial"
+		fontSize="20"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="bandedText"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		topBorder="None"
+		topBorderColor="#FFFFFF"
+		bottomBorder="1Point"
+		bottomBorderColor="#DDDDDD"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+					&lt;box>					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+					&lt;bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#DDDDDD"/>
+&lt;/box>
+
+		&lt;conditionalStyle>
+			&lt;conditionExpression>&lt;![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 == 0)&#x5D;]>&lt;/conditionExpression>
+			&lt;style 
+				isDefault="false"
+				backcolor="#EEEEEE"
+			>
+			&lt;/style>
+		&lt;/conditionalStyle>
+	&lt;/style>
+	&lt;style 
+		name="spBlue"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#1A7182"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spLightBlue"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#c2dce0"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spGreen"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#5A8429"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spLightGreen"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#cfdcbf"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spOrange"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#F45D14"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spLightOrange"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#f4c3ab"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spYellow"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#F3B833"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spLightYellow"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#333333"
+		backcolor="#f3ddaa"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="spRed"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#FFFFFF"
+		backcolor="#b40b0e"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBold="true"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="body"
+		isDefault="false"
+		mode="Transparent"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="bodySmall"
+		isDefault="false"
+		mode="Transparent"
+		forecolor="#000000"
+		backcolor="#FFFFFF"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="10"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="bodyGray"
+		isDefault="false"
+		mode="Opaque"
+		forecolor="#000000"
+		backcolor="#DDDDDD"
+		isStyledText="false"
+		fontName="Arial"
+		fontSize="12"
+		isBlankWhenNull="true"
+	>
+	&lt;/style>
+	&lt;style 
+		name="footer"
+		isDefault="false"
+		forecolor="#000000"
+		fontName="Arial"
+		fontSize="10"
+	>
+	&lt;/style>
+
+	&lt;parameter name="reportDefName" isForPrompting="false" class="java.lang.String"/>
+	&lt;parameter name="renderType" isForPrompting="false" class="java.lang.String">
+		&lt;defaultValueExpression >&lt;![CDATA[""&#x5D;]>&lt;/defaultValueExpression>
+	&lt;/parameter>
+	&lt;parameter name="taskResult" isForPrompting="false" class="sailpoint.object.TaskResult">
+		&lt;parameterDescription>&lt;![CDATA[The taskResult&#x5D;]>&lt;/parameterDescription>
+	&lt;/parameter>
+	&lt;parameter name="TaskResultReport" isForPrompting="false" class="net.sf.jasperreports.engine.JasperReport">
+		&lt;parameterDescription>&lt;![CDATA[TaskResultReport&#x5D;]>&lt;/parameterDescription>
+	&lt;/parameter>
+	&lt;parameter name="taskResultDataSource" isForPrompting="false" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+	&lt;field name="application" class="java.lang.String"/>
+	&lt;field name="attributeName" class="java.lang.String"/>
+	&lt;field name="attributeValue" class="java.lang.String"/>
+
+		&lt;background>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/background>
+		&lt;title>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/title>
+		&lt;pageHeader>
+			&lt;band height="20"  isSplitAllowed="true" >
+				&lt;subreport  isUsingCache="true">
+					&lt;reportElement
+						x="0"
+						y="0"
+						width="782"
+						height="20"
+						key="TaskResultReport"
+						isRemoveLineWhenBlank="true"
+						isPrintInFirstWholeBand="true"/>
+					&lt;dataSourceExpression>&lt;![CDATA[$P{taskResultDataSource}&#x5D;]>&lt;/dataSourceExpression>
+					&lt;subreportExpression  class="net.sf.jasperreports.engine.JasperReport">&lt;![CDATA[$P{TaskResultReport}&#x5D;]>&lt;/subreportExpression>
+				&lt;/subreport>
+			&lt;/band>
+		&lt;/pageHeader>
+		&lt;columnHeader>
+			&lt;band height="25"  isSplitAllowed="true" >
+				&lt;staticText>
+					&lt;reportElement
+						style="spBlue"
+						x="240"
+						y="0"
+						width="200"
+						height="25"
+						key="accounIdtHeader"/>
+					&lt;box leftPadding="5" topPadding="3">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement>
+						&lt;font/>
+					&lt;/textElement>
+				&lt;text>&lt;![CDATA[Attribute&#x5D;]>&lt;/text>
+				&lt;/staticText>
+				&lt;staticText>
+					&lt;reportElement
+						style="spBlue"
+						x="0"
+						y="0"
+						width="240"
+						height="25"
+						key="applicationHeader"/>
+					&lt;box leftPadding="5" topPadding="3">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement>
+						&lt;font/>
+					&lt;/textElement>
+				&lt;text>&lt;![CDATA[Application&#x5D;]>&lt;/text>
+				&lt;/staticText>
+				&lt;staticText>
+					&lt;reportElement
+						style="spBlue"
+						x="440"
+						y="0"
+						width="212"
+						height="25"
+						key="attributeHeader"/>
+					&lt;box leftPadding="5" topPadding="3">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement>
+						&lt;font/>
+					&lt;/textElement>
+				&lt;text>&lt;![CDATA[AttributeValue&#x5D;]>&lt;/text>
+				&lt;/staticText>
+			&lt;/band>
+		&lt;/columnHeader>
+		&lt;detail>
+			&lt;band height="21"  isSplitAllowed="true" >
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="bodySmall"
+						x="0"
+						y="0"
+						width="240"
+						height="21"
+						key="application"
+						isPrintWhenDetailOverflows="true"/>
+					&lt;box leftPadding="5">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{application}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="bodySmall"
+						x="240"
+						y="0"
+						width="200"
+						height="21"
+						key="accountId"
+						isPrintWhenDetailOverflows="true"/>
+					&lt;box leftPadding="5">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{attributeName}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+				&lt;line direction="TopDown">
+					&lt;reportElement
+						x="0"
+						y="0"
+						width="780"
+						height="0"
+						forecolor="#CCCCCC"
+						key="separator"
+						isPrintRepeatedValues="false"/>
+					&lt;graphicElement stretchType="NoStretch"/>
+				&lt;/line>
+				&lt;textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					&lt;reportElement
+						style="bodySmall"
+						x="440"
+						y="0"
+						width="211"
+						height="21"
+						key="attribute"
+						isPrintWhenDetailOverflows="true"/>
+					&lt;box leftPadding="5">					&lt;topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					&lt;bottomPen lineWidth="0.0" lineColor="#000000"/>
+					&lt;rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+&lt;/box>
+					&lt;textElement verticalAlignment="Top">
+						&lt;font/>
+					&lt;/textElement>
+				&lt;textFieldExpression   class="java.lang.String">&lt;![CDATA[$F{attributeValue}&#x5D;]>&lt;/textFieldExpression>
+				&lt;/textField>
+			&lt;/band>
+		&lt;/detail>
+		&lt;columnFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/columnFooter>
+		&lt;pageFooter>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/pageFooter>
+		&lt;summary>
+			&lt;band height="0"  isSplitAllowed="true" >
+			&lt;/band>
+		&lt;/summary>
+&lt;/jasperReport>
+</DesignXml>
+</JasperTemplate>

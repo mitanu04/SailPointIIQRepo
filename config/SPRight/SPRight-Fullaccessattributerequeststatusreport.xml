@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246692" displayName="right_attribute_request_status_report" id="c0a801899fb11942819fb1ca34240056" name="FullAccessAttributeRequestStatusReport">
+  <Description>right_desc_attribute_request_status_report</Description>
+</SPRight>

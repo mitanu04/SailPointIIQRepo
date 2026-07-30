@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE SPRight PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<SPRight created="1785394246275" displayName="right_view_risk_score_chart" id="c0a801899fb11942819fb1ca32830013" name="ViewRiskScoreChart">
+  <Description>right_desc_view_risk_score_chart</Description>
+</SPRight>

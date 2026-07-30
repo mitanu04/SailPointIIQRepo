@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Policy PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Policy certificationActions="Remediated,Mitigated,Delegated" configPage="entitlementPolicy.xhtml" created="1785394250459" executor="sailpoint.policy.EffectiveEntitlementSODPolicyExecutor" id="c0a801899fb11942819fb1ca42db0116" name="Effective Entitlement SOD Template" state="Inactive" template="true" type="EffectiveEntitlementSOD" typeKey="policy_type_effective_entitlement_sod" violationOwnerType="Manager"/>

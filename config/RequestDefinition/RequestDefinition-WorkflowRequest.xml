@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250533" executor="sailpoint.request.WorkflowRequestExecutor" id="c0a801899fb11942819fb1ca43250120" name="Workflow Request" type="Event"/>

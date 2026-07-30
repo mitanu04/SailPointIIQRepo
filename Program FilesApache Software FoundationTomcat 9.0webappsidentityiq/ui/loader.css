@@ -1,0 +1,78 @@
+#loadingOverlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: rgba(255, 255, 255, 1.0);
+  font-size: 16px;
+}
+
+
+#ui-message {
+  font-size: 1.5em;
+  font-weight: 500;
+  color: #10A2CE;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+div.pulse-wrapper {
+  margin-bottom: 2em;
+  color: #10A2CE;
+  -webkit-animation: pulse-wrapper 2s linear infinite;
+  -moz-animation: pulse-wrapper 2s linear infinite;
+  -o-animation: pulse-wrapper 2s linear infinite;
+  animation: pulse-wrapper 2s linear infinite;
+}
+
+@-webkit-keyframes pulse-wrapper {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes pulse-wrapper {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes pulse-wrapper {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-wrapper {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMsg{
+  color:red;
+}
+
+@media screen and (max-width: 767px) {
+  #ui-message {
+    font-size: 1.125em;
+  }
+}

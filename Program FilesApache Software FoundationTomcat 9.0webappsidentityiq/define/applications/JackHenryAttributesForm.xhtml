@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var url = getFieldValue('editForm:host');
+                   Validator.validateNonBlankString(url, '#{msgs.err_jack_henry_account_missing_url}');
+
+                   var password = getFieldValue('editForm:password');
+                   Validator.validateNonBlankString(password, '#{msgs.err_jack_henry_account_missing_password}');
+
+                   var deviceType = getFieldValue('editForm:deviceType');
+                   Validator.validateNonBlankString(deviceType, '#{msgs.err_jack_henry_account_missing_device_type}');
+
+                   var deviceNumber = getFieldValue('editForm:deviceNumber');
+                   Validator.validateNonBlankString(deviceNumber, '#{msgs.err_jack_henry_account_missing_device_number}');
+
+                   var fileName = getFieldValue('editForm:fileName');
+                   Validator.validateNonBlankString(fileName, '#{msgs.err_jack_henry_account_missing_file_name}');
+
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+
+               //return false will kill cancel the save
+               return true;
+           });
+
+        });
+
+      
+       //--><!]]>
+    </script>
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_jack_henry_account_config}" /><br/><br/>
+
+
+      <div id="accountSettings" class='spContent'>
+        <table class="spTable" style="border:0px" cellspacing="0">
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_account_url}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_url}"/>
+
+            </td>
+	        <td valign="center">
+              <h:inputText id="host"
+                           value="#{applicationObject.attributes['host']}"
+                           size="150"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+	  
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_account_password}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpPassword" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_password}"/>
+            </td>
+            <td>
+             <sp:inputSecret id="password"
+                           size="150"
+                           autocomplete="off"
+                           value="#{applicationObject.attributes['password']}" redisplay="true"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/> 
+            </td>
+          </tr>
+		  
+		  <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_account_device_type}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpDeviceType" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_device_type}"/>
+
+            </td>
+	        <td valign="center">
+              <h:inputText id="deviceType"
+                           value="#{applicationObject.attributes['deviceType']}"
+                           size="150"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_account_device_number}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpDeviceNumber" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_device_number}"/>
+
+            </td>
+	        <td valign="center">
+              <h:inputText id="deviceNumber"
+                           value="#{applicationObject.attributes['deviceNumber']}"
+                           size="150"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol' valign="center">
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_account_file_name}"/>
+              <h:outputText styleClass="requiredText" value="*"/>
+            </td>
+
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpMsgId" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_file_name}"/>
+
+            </td>
+	        <td valign="center">
+              <h:inputText id="fileName"
+                           value="#{applicationObject.attributes['fileName']}"
+                           size="150"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_connection_timeout}"/>
+            </td>
+            <td class="certScheduleHelpCol">
+              <h:graphicImage id="imgHlpConnectionTimeout" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_connection_timeout}"/>
+            </td>
+            <td valign="center">
+              <sp:inputText id="connectionTimeout"
+                           value="#{applicationObject.attributes['connectionTimeout']}"
+                           size="120"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                <f:validateLongRange minimum="1" />
+              </sp:inputText>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <br />
+            <h:outputText styleClass="sectionHeader"
+                value="#{msgs.con_form_jack_henry_filters}" />
+      <br />
+      <div id="filter" class='spContent'>
+         <table class="spTable" style="border: 0px" cellspacing="0">
+           <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_include_inactive_users}"/>
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpIsActive" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_inclued_inactive}"/>
+            </td>
+            <td>
+              <h:selectBooleanCheckbox id="aggregateInactiveUsers"
+                                       value="#{applicationObject.attributes['aggregateInactiveUsers']}" redisplay="true"
+                                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+          
+          <tr>
+            <td class='titleColumn certScheduleTitleCol'>
+              <h:outputText style='padding:5px' value="#{msgs.con_form_jack_henry_include_frozen_users}"/>
+            </td>
+            <td class="certScheduleHelpCol" valign="middle">
+              <h:graphicImage id="imgHlpIsPending" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_form_jack_henry_account_inclued_frozen}"/>
+            </td>
+            <td>
+              <h:selectBooleanCheckbox id="aggregateFrozenUsers"
+                                       value="#{applicationObject.attributes['aggregateFrozenUsers']}" redisplay="true"
+                                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
+    </f:view>
+</ui:composition>
+
+</body>
+</html>

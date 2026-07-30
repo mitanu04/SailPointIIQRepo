@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247715" displayName="capability_task_results_viewer" id="c0a801899fb11942819fb1ca382300da" name="TaskResultsViewer">
+  <Description>capability_desc_task_results_viewer</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca331f0028" name="ReadTaskResults"/>
+  </RightRefs>
+</Capability>

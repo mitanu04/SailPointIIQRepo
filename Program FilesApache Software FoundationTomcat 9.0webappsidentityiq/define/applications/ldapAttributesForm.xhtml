@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2008 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+  <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      helpKey = 'APPLICATION';
+
+      function getFieldValue(fieldname) {
+          var val = null;
+          var field = Ext.getDom(fieldname);
+          if ( field ) {
+              val = field.value;
+          }
+          return val;
+      }
+
+      function toggleCredentials(authType) {
+          if (authType == "none") {
+              Ext.getDom('editForm:username').disabled = true;
+              Ext.getDom('editForm:password').disabled = true;
+          } else {
+              Ext.getDom('editForm:username').disabled = false;
+              Ext.getDom('editForm:password').disabled = false;
+          }
+      }
+
+      function toggleDeltaAggregationMode(deltaAggregationMode){
+
+          if(!deltaAggregationMode){
+              deltaAggregationMode = Ext.getDom('editForm:deltaIterationMode').value
+          }
+
+          if(deltaAggregationMode == 'USN_CHANGE')
+          {
+              Ext.fly("deleted-objects-container").removeCls("hidden");
+          }else
+          {
+              Ext.fly("deleted-objects-container").addCls("hidden");
+          }
+
+
+      }
+
+
+      Ext.onReady(function () {
+          Ext.QuickTips.init();
+
+          toggleCredentials('#{applicationObject.attributes['authorizationType']}');
+
+
+          var appType = '#{applicationObject.type}'
+
+          if(appType == 'LDAP') {
+
+              toggleDeltaAggregationMode('#{applicationObject.attributes['deltaIterationMode']}');
+
+              var passwordResetPanel = new Ext.Panel({
+                  title : '#{sp:escapeJavascript(msgs.label_generic_ldap_password_reset_configuration)}',
+                  contentEl: 'passwordResetSettings'
+              });
+
+              var lockUnlockPanel = new Ext.Panel({
+                  title : '#{sp:escapeJavascript(msgs.label_generic_ldap_lock_unlock_configuration)}',
+                  contentEl: 'lockUnlockSettings'
+              });
+
+              var enableDisableConfiguration = new Ext.Panel({
+                  title : '#{sp:escapeJavascript(msgs.label_generic_ldap_enable_disable_configuration)}',
+                  contentEl: 'enableDisableSettings'
+              });
+
+              var additionalSettingsPanel = new Ext.TabPanel({
+                  activeTab: 0,
+                  deferredRender:false,
+                  layoutOnTabChange:true,
+                  defaults:{autoScroll: true},
+                  width: 1200,
+                  plain: true,
+                  renderTo: 'tabbedAdditionalConfigPanelDiv',
+                  items : [ passwordResetPanel, lockUnlockPanel, enableDisableConfiguration ]
+              });
+              additionalSettingsPanel.show();
+          }
+
+          var accountPanel = new Ext.Panel({
+              title : '#{sp:escapeJavascript(msgs.label_account)}',
+              contentEl: 'accountSettings'
+          });
+
+          var groupPanel = new Ext.Panel({
+              title : '#{sp:escapeJavascript(msgs.label_group)}',
+              contentEl: 'groupSettings'
+          });
+
+          var mainPanel = new Ext.TabPanel({
+              activeTab: 0,
+              deferredRender:false,
+              layoutOnTabChange:true,
+              defaults:{autoScroll: true},
+              width: 1200,
+              plain: true,
+              renderTo: 'tabbedConfigPanelDiv',
+              items : [ accountPanel, groupPanel ]
+          });
+          mainPanel.show();
+
+
+          // This is our validation hook
+          Page.on('beforeSave', function() {
+              if (!hasCredentialConfiguration()) {
+                  if (#{!applicationObject.ldapRacfType}) {
+                      var authType = Ext.getDom('editForm:authType').value
+                      if (authType != 'none') {
+
+                          var username = getFieldValue('editForm:username');
+                          Validator.validateNonBlankString(username,
+                              "The application attribute 'User' must have a value.");
+                          var password = getFieldValue('editForm:password');
+                          Validator.validateNonBlankString(password,
+                              "The application attribute 'Password' must have a value.");
+                      }
+                  }
+                  if (#{applicationObject.ldapRacfType}) {
+                      var username = getFieldValue('editForm:username');
+                      Validator.validateNonBlankString(username,
+                          "The application attribute 'User' must have a value.");
+                      var password = getFieldValue('editForm:password');
+                      Validator.validateNonBlankString(password,
+                          "The application attribute 'Password' must have a value.");
+                      var host = getFieldValue('editForm:host');
+                      Validator.validateNonBlankString(host,
+                          "The application attribute 'Host' must have a value.");
+                      var port = getFieldValue('editForm:port');
+                      Validator.validateNonBlankString(port,
+                          "The application attribute 'Port' must have a value.");
+                      var racfConnectProfileDN = Ext.getDom('editForm:racfConnectProfileDN').value
+                      Validator.validateNonBlankString(racfConnectProfileDN,
+                          "The Connect Profile DN  must have a value.");
+                  }
+
+                  var errors = Validator.getErrors();
+                  if (errors && errors.length > 0) {
+                      Validator.displayErrors('appErrorsTop');
+                      return false;
+                  }
+              }
+
+              return true;
+          });
+
+      });
+
+      //--><!]]>
+  </script>
+  <f:view>
+
+    <c:if test="#{applicationObject.type eq 'LDAP'}">
+      <ui:include src="genericLDAPAttributesForm.xhtml" />
+    </c:if>
+    <c:if test="#{!(applicationObject.type eq 'LDAP')}">
+      <ui:include src="namedLDAPAttributesForm.xhtml" />
+    </c:if>
+
+  </f:view>
+</ui:composition>
+
+</body>
+</html>

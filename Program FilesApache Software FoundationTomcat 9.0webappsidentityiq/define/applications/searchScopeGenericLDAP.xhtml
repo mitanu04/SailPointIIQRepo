@@ -1,0 +1,185 @@
+<!--
+  - (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition>
+  <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      helpKey = 'APPLICATION';
+      Ext.onReady(function () {
+          Ext.QuickTips.init();
+      });
+      //--><!]]>
+  </script>
+  <f:view>
+    <c:if test="#{schemaType == 'account'}">
+      <p:outputPanel id="accountScopeTable">
+        <table class="width90" cellpadding="0" cellspacing="0">
+
+          <tr>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_ldap_account_search_scope}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+            <h:graphicImage
+                id="searchAccImgTemp" styleClass="helpIcon"
+                url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_form_ldap_search_account}"
+                style="display: none;" />
+            <h:graphicImage id="imgHlpsearchAcc"
+                            styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_ldap_search_account}"/>
+          </tr>
+
+          <tr>
+            <td>
+
+              <div class="spTabledContent">
+                <table class="spTable" cellspacing="0">
+                  <thead>
+                  <tr>
+                    <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                      <th style="text-align:center; width: 5px;"><h:selectBooleanCheckbox id="selectAllToggleAccounts" value="false" onclick="CheckboxSelector.toggleAll(this.id, this.checked, 'toggleable');"/></th>
+                    </ui:fragment>
+                    <th style="width: 450px;text-align:left"><h:outputText  value="#{msgs.con_form_AD_search_dn}"/><h:graphicImage id="imgHlpldapGroupSearchDN1" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_ldap_group_search_dn_updated}"/></th>
+                    <th style="width: 450px;text-align:left"><h:outputText value="#{msgs.con_form_ldap_iterate_search_filter}"/><h:graphicImage id="imgHlpIterateSearchFilter1" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_AD_iterate_search_filter_updated}"/></th>
+                    <th style="width: 450px;text-align:left"><h:outputText value="#{msgs.con_form_ldap_grp_mbr_srch_dn}"/><h:graphicImage id="imgHlpGroupSearchDn" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_AD_group_membership_search_dn_updated}"/></th>
+                  </tr>
+                  </thead>
+                  <tfoot>
+                  <tr>
+                    <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                      <th/>
+                      <td>
+                        <h:inputText id="searchDN" value="#{accountSearchScope.accountScope.object.searchDN}" style="width: 450px; margin-left:0px; margin-right:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText id="iterateSearchFilter" value="#{accountSearchScope.accountScope.object.iterateSearchFilter}" style="width: 450px; margin-left:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText id="groupMemberSearchDN" value="#{accountSearchScope.accountScope.object.groupMembershipSearchDN}" style="width: 450px; margin-left:0px;"/>
+                      </td>
+                    </ui:fragment>
+                  </tr>
+                  </tfoot>
+                  <tbody>
+                  <p:repeat value="#{accountSearchScope.LDAPScopes}" var="scopeObj">
+                    <tr>
+                      <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                        <td class="centeredColumn">
+                          <h:selectBooleanCheckbox styleClass="toggleable" id="checkbox" value="#{accountSearchScope.selectedScopes[scopeObj.id]}"/>
+                        </td>
+                      </ui:fragment>
+                      <td>
+                        <h:inputText  value="#{scopeObj.object.searchDN}" style="width: 450px; margin-left:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText value="#{scopeObj.object.iterateSearchFilter}" style="width: 450px; margin-left:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText value="#{scopeObj.object.groupMembershipSearchDN}" style="width: 450px; margin-left:0px;"/>
+                      </td>
+                    </tr>
+                  </p:repeat>
+                  </tbody>
+                </table>
+
+                <div class="buttonRow">
+                  <p:commandButton id='removeAccountScope' value="#{msgs.button_delete}" styleClass="secondaryBtn" action="#{accountSearchScope.removeAccountScope}" update="@([id$=accountScopeTable])"/>
+                  <p:commandButton id='addAccountScope' value="#{msgs.button_add}" styleClass="primaryBtn" action="#{accountSearchScope.addAccountScope}" update="@([id$=accountScopeTable])"/>
+
+                </div>
+
+              </div>
+            </td>
+          </tr>
+        </table>
+      </p:outputPanel>
+    </c:if>
+
+    <c:if test="#{schemaType == 'group'}">
+      <p:outputPanel id="groupScopeTable">
+        <table class="width100" cellpadding="0" cellspacing="0">
+          <tr>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_AD_group_search_scope}"/>
+            <h:graphicImage
+                id="searchGrpImgTemp" styleClass="helpIcon"
+                url="/images/icons/dashboard_help_16.png"
+                alt="#{help.help_con_form_AD_search_group}"
+                style="display: none;" />
+            <h:graphicImage id="imgHlpSearchGrp"
+                            styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_AD_search_group}"/>
+          </tr>
+          <tr>
+            <td>
+              <div class="spTabledContent">
+                <table class="spTable" cellspacing="0" style="width: 345px;">
+                  <thead>
+                  <tr>
+                    <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                      <th style="text-align:center"><h:selectBooleanCheckbox id="selectAllToggleGroups" value="false" onclick="CheckboxSelector.toggleAll(this.id, this.checked, 'toggleable');"/></th>
+                    </ui:fragment>
+                    <th><h:outputText value="#{msgs.con_form_ldap_search_dn}"/><h:graphicImage id="imgHlpldapGroupSearchDN" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_ldap_group_search_dn}"/></th>
+                    <th style="text-align:left"><h:outputText value="#{msgs.con_form_AD_iterate_search_filter}"/><h:graphicImage id="imgHlpIterateSearchFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" alt="#{help.help_con_form_AD_iterate_search_filter}"/></th>
+                  </tr>
+                  </thead>
+                  <tfoot>
+                  <tr>
+                    <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                      <th/>
+                      <td>
+                        <h:inputText value="#{groupSearchScope.groupScope.object.searchDN}" style="width: 557px; margin-left:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText value="#{groupSearchScope.groupScope.object.iterateSearchFilter}" style="width: 555px; margin-left:0px;"/>
+                      </td>
+                    </ui:fragment>
+                  </tr>
+                  </tfoot>
+                  <tbody>
+                  <ui:repeat value="#{groupSearchScope.scopes}" var="groupScopeObj">
+                    <tr>
+                      <ui:fragment rendered="#{sp:hasRight(facesContext, 'ManageApplication')}">
+                        <td class="centeredColumn">
+                          <h:selectBooleanCheckbox styleClass="toggleable" id="checkbox" value="#{groupSearchScope.selectedScopes[groupScopeObj.id]}"/>
+                        </td>
+                      </ui:fragment>
+                      <td>
+                        <h:inputText value="#{groupScopeObj.object.searchDN}" style="width: 557px; margin-left:0px;"/>
+                      </td>
+                      <td>
+                        <h:inputText value="#{groupScopeObj.object.iterateSearchFilter}" style="width: 555px; margin-left:0px;"/>
+                      </td>
+                    </tr>
+                  </ui:repeat>
+                  </tbody>
+                </table>
+
+                <div class="buttonRow">
+                  <p:commandButton id='removeGroupScope' value="#{msgs.button_delete}" styleClass="secondaryBtn" action="#{groupSearchScope.removeGroupScope}" update="@([id$=groupScopeTable])"/>
+                  <p:commandButton id='addGroupScope' value="#{msgs.button_add}" styleClass="primaryBtn" action="#{groupSearchScope.addGroupScope}" update="@([id$=groupScopeTable])"/>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </p:outputPanel>
+    </c:if>
+
+  </f:view>
+</ui:composition>
+</body>
+</html>

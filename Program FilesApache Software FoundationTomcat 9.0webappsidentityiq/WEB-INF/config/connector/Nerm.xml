@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+	<Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, ENABLE, PASSWORD" icon="internetIcon" name="Non-Employee Risk Management" type="Non-Employee Risk Management">
+		<Attributes>
+			<Map>
+				<entry key="connectorClass" value="openconnector.connector.nerm.NermConnector"/>
+				<entry key="formPath" value="NermForm.xhtml"/>
+				<entry key="encrypted" value="apiKey"/>
+				<entry key="use_schema" value="false"/>
+				<entry key="override_sync_toggle" value="true"/>
+				<entry key="aggregationThreadSize" value ="4"/>
+				<entry key="jsonPathMapping">
+					<value>
+						<Map>
+							<entry key="archived" value="archived"/>
+							<entry key="id" value="id"/>
+							<entry key="name" value="name"/>
+							<entry key="profile_type_id" value="profile_type_id"/>
+							<entry key="status" value="status"/>
+							<entry key="uid" value="uid"/>
+						</Map>
+					</value>
+				</entry>
+			</Map>
+		</Attributes>
+		<Schemas>
+			<Schema displayAttribute="id" identityAttribute="id" nativeObjectType="account" objectType="account">
+				<AttributeDefinition name="id" type="string">
+					<Description>A unique identifier for the profile</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="uid" type="string">
+					<Description>The profile's UID</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="name" type="string">
+					<Description>The profile's name</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="status" type="string">
+					<Description>The active status of the profile</Description>
+				</AttributeDefinition>
+				<AttributeDefinition name="profile_type_id"  type="string">
+					<Description>Indicates whether the profile is a non-employee or an assignment.</Description>
+				</AttributeDefinition>
+			</Schema>
+		</Schemas>
+	</Application>
+</ImportAction>

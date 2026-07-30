@@ -1,0 +1,298 @@
+<!--
+  - (c) Copyright 2022 SailPoint Technologies, Inc., All Rights Reserved.
+  -->
+
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+<ui:composition>
+
+  <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      helpKey = 'APPLICATION';
+
+      // Handle the Grant Type change in dropdown - show hide respective views
+
+      function getFieldValue(field) {
+          var val = null;
+          var fileName = Ext.getDom(field);
+          if ( fileName ) {
+              val = fileName.value;
+          }
+          return val;
+      }
+      Ext.onReady(function () {
+          Ext.QuickTips.init();
+
+
+          // This is our validation hook
+          Page.on('beforeSave', function() {
+              if (!hasCredentialConfiguration()) {
+                  var clientID = getFieldValue('editForm:client_id');
+                  Validator.validateNonBlankString(clientID, "Client ID cannot be null!");
+
+
+                  var clientSecret = getFieldValue('editForm:client_secret');
+                  Validator.validateNonBlankString(clientSecret, "Client Secret cannot be null!");
+
+                  var baseURL = getFieldValue('editForm:baseURL');
+                  Validator.validateNonBlankString(baseURL, "Base URL cannot be null!");
+
+                  var tokenURL = getFieldValue('editForm:tokenURL');
+                  Validator.validateNonBlankString(tokenURL, "Token URL cannot be null!");
+
+                  var scope = getFieldValue('editForm:scope');
+                  Validator.validateNonBlankString(scope, "Scopes cannot be null!");
+
+
+                  var errors = Validator.getErrors();
+                  if (errors && errors.length > 0) {
+                      Validator.displayErrors('appErrorsTop');
+                      return false;
+                  }
+              }
+
+              //return false will kill cancel the save
+              return true;
+          });
+
+      });
+
+      //--><!]]>
+  </script>
+  <f:view>
+
+    <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} #{msgs.label_configuration}"/><br/><br/>
+    <div class="" id="credentialsContainer">
+      <div class="row">
+        <div class="col-sm-12">
+          <h:outputText styleClass="sectionHeader" value="Connector Credentials"/>
+        </div>
+      </div>
+      <!-- Grant type selection -->
+      <div class ="row spContent">
+        <div class="col-sm-12">
+          <table class="spTable" style="border:0px" cellspacing="0">
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_label_auth_method}" />
+              </td>
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpIndexGDetails_authMethod" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_label_auth_method}" />
+              </td>
+              <td>
+                <h:outputText style='font-weight:bold' value="OAuth 2.0" />
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div> <!-- Grant type selection End-->
+      <!-- Credentials -->
+      <div class ="row spContent" id="credentials">
+        <div class="col-sm-12" id="clientCredentialsDiv">
+          <table class="spTable" style="border:0px" cellspacing="0">
+
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_base_url}"/>
+                <h:outputText styleClass="requiredText" value="*"/>
+              </td>
+
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpBaseUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_base_url}"/>
+
+              </td>
+              <td>
+                <h:inputText id="baseURL"
+                             value="#{applicationObject.attributes['baseURL']}"
+                             size="80"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             />
+              </td>
+            </tr>
+
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText value="#{msgs.con_form_coupa_grant_type}" />
+              </td>
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpGrantType"
+                                styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_coupa_grant_type}" />
+              </td>
+              <td>
+                <h:outputText value="#{msgs.readonly_grant_type}" />
+              </td>
+            </tr>
+
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_token_url}"/>
+                <h:outputText styleClass="requiredText" value="*"/>
+              </td>
+
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpTokenUrl" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                title="#{help.help_con_form_coupa_token_url}"/>
+
+              </td>
+              <td>
+                <h:inputText id="tokenURL"
+                             value="#{applicationObject.attributes['tokenURL']}"
+                             size="80"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             />
+              </td>
+            </tr>
+
+            <tr>
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_client_ID}"/>
+                <h:outputText styleClass="requiredText" value="*"/>
+              </td>
+
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpClientID" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_coupa_client_ID}"/>
+
+              </td>
+              <td>
+                <h:inputText id="client_id"
+                             value="#{applicationObject.attributes['client_id']}"
+                             size="80"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             />
+              </td>
+            </tr>
+
+            <tr id="clientSecretRow">
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_client_secret}"/>
+                <h:outputText styleClass="requiredText" value="*"/>
+              </td>
+
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_form_coupa_client_secret}"/>
+              </td>
+              <td>
+                <sp:inputSecret id="client_secret"
+                                value="#{applicationObject.attributes['client_secret']}"
+                                redisplay="true"
+                                size="80"
+                                autocomplete="off"
+                                disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                />
+              </td>
+            </tr>
+
+            <tr id="coupascopes">
+              <td class='titleColumn certScheduleTitleCol'>
+                <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_scopes}"/>
+                <h:outputText styleClass="requiredText" value="*"/>
+              </td>
+              <td class="certScheduleHelpCol">
+                <h:graphicImage id="imgHlpScopes" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                title="#{help.help_con_form_coupa_scopes}"/>
+
+              </td>
+              <td>
+                <h:inputTextarea id = "scope"
+                             value="#{applicationObject.attributes['scope']}"
+                             rows="5" cols="80" style="width: 300px;"
+                             disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                             >
+                </h:inputTextarea>
+              </td>
+            </tr>
+
+          </table>
+        </div>
+      </div><!-- credentials Ends-->
+    </div> <!-- Connector Credentials Container End-->
+
+    <!-- Aggregation Configuration Container-->
+    <div class="" id="aggregationFieldContainer">
+      <div class="row">
+      <div class="col-sm-12">
+        <h:outputText styleClass="sectionHeader" value="Aggregation Configuration"/>
+      </div>
+    </div>
+      <div class ="row spContent" id="aggregationConfigCoupa">
+        <div class="col-sm-12" id="aggregationConfigDiv">
+          <table class="spTable" style="border:0px" cellspacing="0">
+             <tr>
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_account_filters}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpAccountFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            title="#{help.help_con_form_coupa_account_filters}"/>
+
+          </td>
+          <td>
+            <h:inputText id = "accountFilter"
+                         value="#{applicationObject.attributes['accountFilter']}"
+                         size="20"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+            </h:inputText>
+          </td>
+        </tr>
+
+             <tr>
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_coupa_page_size}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_coupa_page_size}"/>
+
+          </td>
+          <td>
+            <h:inputText id = "pageSize"
+                         value="#{applicationObject.attributes['pageSize']}"
+                         size="20"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+              <f:validateLongRange minimum="1" maximum="50"/>
+            </h:inputText>
+          </td>
+        </tr>
+          </table>
+        </div>
+       </div>
+    </div>
+
+
+  </f:view>
+  <style>
+    .hidden {
+      display:none;
+    }
+    .top0{
+      margin-top: 0px !important;
+    }
+  </style>
+</ui:composition>
+
+</body>
+</html>

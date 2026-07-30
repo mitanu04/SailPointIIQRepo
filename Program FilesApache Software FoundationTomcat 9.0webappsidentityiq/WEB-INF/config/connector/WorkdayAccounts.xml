@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, ENABLE, PASSWORD" icon="internetIcon" name="Workday Accounts" type="Workday Accounts">
+    <Attributes>
+      <Map>
+        <entry key="connectorClass" value="openconnector.connector.workdayaccounts.WorkdayAccountsConnector"/>
+        <entry key="formPath" value="WorkdayAccountsForm.xhtml"/>
+        <entry key="encrypted" value="refresh_token,client_secret,oauth_token_info"/>
+        <entry key="version" value="v39.1" />
+      <entry key="XpathAttributesMap">
+        <value>
+          <Map>
+            <entry key="USERID"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:User_Name" />
+            <entry key="ACCOUNT_DISABLED"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Account_Disabled" />
+            <entry key="REQUIRE_NEW_PASSWORD_AT_NEXT_SIGN_IN"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Require_New_Password_at_Next_Sign_In" />
+            <entry key="SESSION_TIMEOUT_MINUTES"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Session_Timeout_Minutes" />
+            <entry key="MULTI_FACTOR_AUTHENTICATION_EXEMPT"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Multi-factor_Authentication_Exempt" />
+            <entry key="MULTI_FACTOR_AUTHENTICATION_GRACE_PERIOD_ENABLED"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Multi-factor_Authentication_Grace_Period_Disabled" />
+            <entry
+              key="GRACE_PERIOD_LOGINS_REMAINING"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Grace_Period_Logins_Remaining" />
+            <entry key="ACCOUNT_EXPIRATION_DATE"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Account_Expiration_Date" />
+            <entry key="OPENID_IDENTIFIER"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:OpenID_Identifier" />
+            <entry key="OPENID_INTERNAL_IDENTIFIER"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:OpenID_Internal_Identifier" />
+            <entry key="OPENID_CONNECT_INTERNAL_IDENTIFIER"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:OpenID_Connect_Internal_Identifier" />
+            <entry key="ENABLE_WORKBOX"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Enable_Workbox" />
+            <entry key="EXEMPT_FROM_DELEGATED_AUTHENTICATION"
+              value="ns1:Workday_Account_for_Worker_Data/ns1:Exempt_from_Delegated_Authentication" />
+            <entry key="FILENUMBER"
+              value="ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Employee_ID'] | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Contingent_Worker_ID'] | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Service_Center_Representative_ID'] | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Extended_Enterprise_Learner_ID']" />
+            <entry key="WORKER_TYPE"
+              value="ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Employee_ID']/@ns1:type | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Contingent_Worker_ID']/@ns1:type | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Service_Center_Representative_ID']/@ns1:type | ns1:Workday_Account_Reference/ns1:ID[@ns1:type='Extended_Enterprise_Learner_ID']/@ns1:type" />
+          </Map>
+        </value>
+      </entry>
+      </Map>
+    </Attributes>
+     <Schemas>
+      <Schema displayAttribute="USERID" identityAttribute="FILENUMBER"
+        nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="USERID"
+          remediationModificationType="None" required="true" type="string">
+          <Description>Workday account user name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="FILENUMBER"
+          remediationModificationType="None" required="true" type="string">
+          <Description>Unique identifier for Employee, Contractor, Service Center Representative, Extended Enterprise Learner, Implementer, Integration and Students System accounts</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ACCOUNT_DISABLED"
+          remediationModificationType="None" required="true" type="boolean">
+          <Description>Identifies whether Workday Account is disabled</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="REQUIRE_NEW_PASSWORD_AT_NEXT_SIGN_IN"
+          remediationModificationType="None" type="boolean">
+          <Description>Indicates whether Workday account will require new password while next sign in</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SESSION_TIMEOUT_MINUTES"
+          remediationModificationType="None" type="string">
+          <Description>The number of minutes the user may be idle</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MULTI_FACTOR_AUTHENTICATION_EXEMPT"
+          remediationModificationType="None" type="boolean">
+          <Description>Exempt user from multi-factor authentication</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MULTI_FACTOR_AUTHENTICATION_GRACE_PERIOD_ENABLED"
+          remediationModificationType="None" type="boolean">
+          <Description>Disable user's multi-factor authentication grace period</Description>
+        </AttributeDefinition>
+        <AttributeDefinition
+          name="GRACE_PERIOD_LOGINS_REMAINING"
+          remediationModificationType="None" type="string">
+          <Description>The remaining number of times the user can login without providing multi-factor authentication passcode</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ACCOUNT_EXPIRATION_DATE"
+          remediationModificationType="None" type="string">
+          <Description>Prevents user from signing on to the system after this date</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="OPENID_IDENTIFIER"
+          remediationModificationType="None" type="string">
+          <Description>Email address associated with the OpenID account</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="OPENID_INTERNAL_IDENTIFIER"
+          remediationModificationType="None" type="string">
+          <Description>OpenID GUID</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="OPENID_CONNECT_INTERNAL_IDENTIFIER"
+          remediationModificationType="None" type="string">
+          <Description>OpenID Connect subject</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="EXEMPT_FROM_DELEGATED_AUTHENTICATION"
+          remediationModificationType="None" type="boolean">
+          <Description>Exempt from Delegated</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="WORKER_TYPE"
+          remediationModificationType="None" required="true" type="string">
+          <Description>Workers type (Employee|Contingent_Worker|Service Center Representative|Extended Enterprise Learner|Implementer Account|Integration System User|Applicant Student|Prospect Student|Pre-Matriculant Student|Matriculant Student)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="USER_BASED_SECURITY_GROUPS" entitlement="true" managed="true" multi="true" remediationModificationType="None" required="true" type="string" schemaObjectType="group">
+          <Description>User based Security of account</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="IS_FUTURE_WORKER"
+          remediationModificationType="None" type="boolean">
+          <Description>Indicates whether Workday account is Future Hire</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="ID" descriptionAttribute="COMMENT" identityAttribute="ID" nativeObjectType="SecurityGroup" objectType="group" aggregationType="group">
+	      <AttributeDefinition name="ID" type="string">
+	        <Description>The internal id for this group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="COMMENT" type="string">
+	        <Description>The Description/Comment of the Group.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="DESCRIPTOR" type="string">
+	        <Description>The Name of the Group.</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="account" schemaObjectType="account" usage="Create">
+          <Field displayName="con_form_workday_accounts_username" helpKey="help_con_form_workday_accounts_Username" name="USERID" required="true" reviewRequired="true" type="string">
+            <Script>
+              <Source>
+                return identity.getDisplayName();
+              </Source>
+            </Script>
+          </Field>
+          <Field displayName="con_form_workday_accounts_filenumber" helpKey="help_con_form_workday_accounts_Filenumber" name="FILENUMBER" required="true" reviewRequired="true" type="string"/>
+	  <Field displayName="con_form_workday_accounts_workertype" helpKey="help_con_form_workday_accounts_Workertype" name="WORKER_TYPE" required="true" reviewRequired="true" type="string">
+            <AllowedValuesDefinition>
+              <Value>
+                <List>
+                  <String>Employee</String>
+                  <String>Service_Center_Representative</String>
+                  <String>Contingent_Worker</String>
+                  <String>Prospect Student</String>
+                  <String>Applicant Student</String>
+                  <String>Matriculant Student</String>
+                  <String>Pre-Matriculant Student</String>
+                </List>
+              </Value>
+            </AllowedValuesDefinition>
+          </Field>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+      name='Workday Accounts' connectorName="Workday Accounts"
+      shortDesc="ShortDesc" type="SourceConfig" directConnect="true" status="released" fileUpload="false">
+
+  <Menu name="WorkdayAccountsConfiguration" label="con_form_workday_accounts_config">
+  <Section name="WorkdayAccountsConfiguration" label="con_form_workday_accounts_config" sectionInfo="con_form_workday_accounts_config"
+           docLinkLabel="docLinkLabel_ConnectionSettings"
+           docLink="https://documentation.sailpoint.com/connectors/workday_accounts/help/integrating_workday_accounts/connection_settings.html">
+      <Field name="auth_type" displayName="con_form_workday_accounts_auth_type" type="radio" defaultValue="Basic"
+      helpKey="help_con_form_workday_accounts_auth_type">
+        <AllowedValues>
+          <Option label="con_form_workday_accounts_auth_type_basic" value="Basic"/>
+          <Option label="con_form_workday_accounts_auth_type_oauth2" value="OAuth2"/>
+        </AllowedValues>
+      </Field>
+
+	<Field name="url" displayName="con_form_workday_accounts_url" type="url" placeHolder="placeHolder_url" required="true"
+      helpKey="help_con_form_workday_accounts_url" />
+      
+		<!-- Fields for 'Basic' authentication -->
+      <Field name="user" displayName="con_form_workday_accounts_username" type="text" required="true"
+       helpKey="help_con_form_workday_accounts_username" parentKey="auth_type" parentValue="Basic"/>
+      <Field name="password" displayName="con_form_workday_accounts_password" type="secret" required="true" parentKey="auth_type" parentValue="Basic"
+      helpKey="help_con_form_workday_accounts_password" />
+
+		<!-- Fields for 'OAuth 2.0' authentication -->
+	  <Field name="grant_type" displayName="con_form_workday_accounts_grant_type" type="select" defaultValue="REFRESH_TOKEN"
+           parentKey="auth_type" parentValue="OAuth2"
+           help="help.help_con_form_workday_accounts_grant_type">
+        <AllowedValues>
+          <Option label="con_form_workday_grant_type_refresh_token" value="REFRESH_TOKEN"/>
+        </AllowedValues>
+          </Field>
+	  <Field name="token_url" displayName="con_form_workday_accounts_token_endpoint" type="url" required="true" placeHolder="placeHolder_token_url" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_tokenEndpoint" />
+	  <Field name="client_id" displayName="con_form_workday_accounts_clientId" type="text" required="true" parentKey="auth_type"  parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_clientId" />
+	  <Field name="client_secret" displayName="con_form_workday_accounts_clientSecret" type="secret" required="true" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_clientSecret" />
+	  <Field name="refresh_token" displayName="con_form_workday_accounts_refreshToken" type="secret" required="true" parentKey="auth_type" parentValue="OAuth2"
+	  helpKey="help_con_form_workday_accounts_refreshToken" />
+	  
+	  <Field name="customTimeOut" displayName="con_form_workday_accounts_custom_timeout"  type="number" min="0" max="999" defaultValue="1" required="false"
+	  helpKey="help_con_form_workday_accounts_custom_timeout"/>
+	   <Field name="pageSize" displayName="con_form_workday_accounts_page_size" type="number" defaultValue="500" min="1" max="999" required="false"
+	   helpKey="help_con_form_workday_accounts_page_size" saveAsString="true"/>
+    </Section>
+  </Menu>
+
+  <Menu name="FilterSettings" label="con_form_workday_filter_criteria">
+	<Section name="FilterSettings" label="con_form_workday_filter_criteria" sectionInfo="con_form_workday_filter_criteria"
+             docLinkLabel="docLinkLabel_FilterSettings"
+             docLink="https://documentation.sailpoint.com/connectors/workday_accounts/help/integrating_workday_accounts/additional_settings.html">
+						 
+						 <Field name="aggregateTerminatedWorkersAccount" displayName="con_form_workday_accounts_aggregate_terminated_account"
+						  type="toggle" defaultValue="false" required="false"
+						  helpKey="help_con_form_workday_accounts_aggregate_terminated_account"/>
+						  
+						 <Field name="pastTerminationOffset" displayName="con_form_workday_accounts_termination_offset" type="number" required="false" parentKey="aggregateTerminatedWorkersAccount" parentValue="true"
+						 helpKey="help_con_form_workday_accounts_termination_offset"  saveAsString="true"/>
+						 
+						 <Field name="aggregateFutureWorkersAccount" displayName="con_form_workday_accounts_future_offset" type="toggle" defaultValue="false" required="false"
+						 helpKey="help_con_form_workday_accounts_fetch_future_offset"/>
+						 
+						 <Field name="futureHiringOffset" displayName="con_form_workday_accounts_future_offset_Input"
+						  type="number" required="false" parentKey="aggregateFutureWorkersAccount" parentValue="true"
+						  helpKey="help_con_form_workday_accounts_future_offset"  saveAsString="true"/>
+						 
+						 <Field name="aggregateServiceCenterRepresentativeAccount" displayName="con_form_workday_accounts_aggregate_service_center_representative_account"
+						  type="checkbox" defaultValue="false" required="false"
+						  helpKey="help_con_form_workday_accounts_aggregate_service_center_representative_account"/>
+                         <Field name="aggregateExtendedEnterpriseLearnerUsersAccount" displayName="con_form_workday_accounts_aggregate_external_learning_users_account" type="checkbox" defaultValue="false" required="false"
+                         helpKey="help_con_form_workday_accounts_aggregate_external_learning_users_account"/>
+                         
+						 <Field name="aggregateImplementerUsersAccount" displayName="con_form_workday_accounts_aggregate_implementer_users_account"
+						  type="checkbox" defaultValue="false" required="false"
+						  helpKey="help_con_form_workday_accounts_aggregate_implementer_users_account"/>
+						  
+                         <Field name="aggregateIntegrationUsersAccount" displayName="con_form_workday_accounts_aggregate_integration_users_account"
+                          type="checkbox" defaultValue="false" required="false"
+                          helpKey="help_con_form_workday_accounts_aggregate_integration_users_account"/>
+                         
+                         <Field name="aggregateProspectAccounts" displayName="con_form_workday_accounts_aggregate_prospect_accounts"
+                          type="checkbox" defaultValue="false" required="false"
+                          helpKey="help_con_form_workday_accounts_aggregate_prospect_accounts"/>
+                          
+							<Field name="aggregateApplicantAccounts" displayName="con_form_workday_accounts_aggregate_applicant_accounts"
+                          type="checkbox" defaultValue="false" required="false"
+                          helpKey="help_con_form_workday_accounts_aggregate_applicant_accounts"/>
+                          
+                          <Field name="aggregatePreMatriculantAccounts" displayName="con_form_workday_accounts_aggregate_preMatriculant_accounts"
+                          type="checkbox" defaultValue="false" required="false"
+                          helpKey="help_con_form_workday_accounts_aggregate_preMatriculant_Accounts"/>
+                          
+                          <Field name="aggregateMatriculantAccounts" displayName="con_form_workday_accounts_aggregate_matriculant_accounts"
+                          type="checkbox" defaultValue="false" required="false"
+                          helpKey="help_con_form_workday_accounts_aggregate_matriculant_accounts"/>
+                          
+                         <Field name="FetchAccountsByOrganization" displayName="con_form_workday_accounts_fetch_accounts_by_organization" type="toggle" defaultValue="false" required="false"
+                         helpKey="help_con_form_workday_accounts_fetch_accounts_by_organization"/>
+                         
+                         <Field name="orgFilterType" displayName="con_form_workday_accounts_organization_filter_type" 
+                         	type="radio" defaultValue="Organization_Type_ID"
+                          	parentKey="FetchAccountsByOrganization" parentValue="true"
+                          	helpKey="help_con_form_workday_accounts_organization_filter_type">
+                             <AllowedValues>
+                                 <Option value="Organization_Type_ID" label="con_form_workday_accounts_organization_type"/>
+                                 <Option value="Organization_Reference_ID" label="con_form_workday_accounts_organization_reference"/>
+                             </AllowedValues>
+                         </Field>
+                         
+                         <Field name="organizationTypeIDList" type="textarea-list" displayName="con_form_workday_accounts_organization_type"
+                          parentKey="orgFilterType" parentValue="Organization_Type_ID" placeHolder="placeHolder_organizationType"
+                          helpKey="help_con_form_workday_accounts_organization_type"/>
+                          
+                         <Field name="organizationReferenceIDList" type="list" displayName="con_form_workday_accounts_organization_reference"
+                          parentKey="orgFilterType" parentValue="Organization_Reference_ID" placeHolder="placeHolder_organizationReferenceID"
+                          helpKey="help_con_form_workday_accounts_organization_reference"/>
+    </Section>
+  </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

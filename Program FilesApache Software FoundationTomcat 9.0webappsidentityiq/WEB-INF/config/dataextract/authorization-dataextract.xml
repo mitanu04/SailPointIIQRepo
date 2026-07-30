@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<!-- (c) Copyright 2019 SailPoint Technologies, Inc., All Rights Reserved. -->
+<sailpoint>
+
+  <SPRight name="FullAccessDataExtractConfiguration" displayName="right_full_access_dataextract_configuration">
+    <Description>right_desc_full_access_dataextract_configuration</Description>
+  </SPRight>
+
+  <Capability name="DataExtractAdministrator" displayName="capability_dataextract_administrator">
+    <Description>capability_desc_dataextract_administrator</Description>
+    <RightRefs>
+      <!-- Edit Data Extract Configuration -->
+      <Reference class="sailpoint.object.SPRight" name="FullAccessDataExtractConfiguration" />
+    </RightRefs>
+  </Capability>
+
+</sailpoint>

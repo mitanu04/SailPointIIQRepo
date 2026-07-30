@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247799" displayName="capability_scim_executor" id="c0a801899fb11942819fb1ca387700de" modified="1785394247892" name="SCIMExecutor">
+  <Description>capability_desc_scim_executor</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35ac00a5" name="ReadSCIMResourceType"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35b500a6" name="ReadSCIMSchema"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35c500a8" name="CreateSCIMUser"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35c000a7" name="ReadSCIMUser"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35ca00a9" name="UpdateSCIMUser"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35cf00aa" name="DeleteSCIMUser"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35d300ab" name="ReadSCIMApplication"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35d800ac" name="ReadSCIMEntitlement"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35dc00ad" name="ReadSCIMRole"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35e200ae" name="ReadSCIMAccount"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35e700af" name="CreateSCIMAccount"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35eb00b0" name="UpdateSCIMAccount"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35f200b1" name="DeleteSCIMAccount"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35f600b2" name="CreateSCIMAlert"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35fa00b3" name="ReadSCIMAlert"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca35fe00b4" name="ReadSCIMWorkflow"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca360500b5" name="ReadSCIMTaskResult"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca360b00b6" name="ReadSCIMObjectConfig"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca361800b8" name="CreateSCIMLaunchedWorkflow"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca361300b7" name="ReadSCIMLaunchedWorkflow"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca362100b9" name="ReadSCIMPolicyViolation"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca362700ba" name="ReadSCIMCheckedPolicyViolation"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca362c00bb" name="CreateSCIMCheckedPolicyViolation"/>
+  </RightRefs>
+</Capability>

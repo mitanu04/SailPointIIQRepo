@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2014 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns:p="http://primefaces.org/ui">
+<body>
+<ui:composition>
+  <f:view>
+    <table class="width100" cellspacing="0" cellpadding="0">
+      <tr>
+        <td valign="top">
+          <h:outputText styleClass="sectionHeader" value="#{msgs.standard_attrs}"/>
+          <table class="width100 nowrap">
+            <tr valign="top">
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.application'].description)}"/>
+              </td>
+              <td>
+                <ui:include src="../suggestAttribute.xhtml">
+                  <ui:param name="key" value="link.application"/>
+                  <ui:param name="field" value="linkApplication"/>
+                </ui:include>
+              </td>
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.displayname'].description)}"/>
+              </td>
+              <td>
+                <h:inputText id="linkDisplayName" styleClass="searchInputText inputWidth"
+                             value="#{searchBean.inputs['link.displayname'].value}" forceId="true"/>
+              </td>
+            </tr>
+            <tr valign="top">
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.owner'].description)}"/>
+              </td>
+              <td>
+                <ui:include src="../suggestAttribute.xhtml">
+                  <ui:param name="key" value="link.owner"/>
+                  <ui:param name="field" value="linkOwner"/>
+                </ui:include>
+              </td>
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.nativeIdentity'].description)}"/>
+              </td>
+              <td>
+                <ui:include src="../suggestAttribute.xhtml">
+                  <ui:param name="key" value="link.nativeIdentity"/>
+                  <ui:param name="field" value="linkNativeIdentity"/>
+                </ui:include>
+              </td>
+            </tr>
+            <tr valign="top">
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.instance'].description)}"/>
+              </td>
+              <td>
+                <ui:include src="../suggestAttribute.xhtml">
+                  <ui:param name="key" value="link.instance"/>
+                  <ui:param name="field" value="linkInstance"/>
+                </ui:include>
+              </td>
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.identity'].description)}"/>
+              </td>
+              <td>
+                <ui:include src="../suggestAttribute.xhtml">
+                  <ui:param name="key" value="link.identity"/>
+                  <ui:param name="field" value="linkIdentity"/>
+                </ui:include>
+              </td>
+            </tr>
+            <tr valign="top">
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.iiqLocked'].description)}"/>
+              </td>
+              <td>
+                <h:selectOneMenu id="iiqLocked" value="#{searchBean.inputs['link.iiqLocked'].value}">
+                  <f:selectItem itemLabel="" itemValue=""/>
+                  <f:selectItem itemLabel="#{msgs.txt_true}" itemValue="true"/>
+                  <f:selectItem itemLabel="#{msgs.txt_false}" itemValue="false"/>
+                </h:selectOneMenu>
+              </td>
+              <td>
+                <h:outputText styleClass="font10" style="font-weight:bold"
+                              value="#{sp:localizeKey(searchBean.inputs['link.iiqDisabled'].description)}"/>
+              </td>
+              <td>
+                <h:selectOneMenu id="iiqDisabled"
+                                 value="#{searchBean.inputs['link.iiqDisabled'].value}">
+                  <f:selectItem itemLabel="" itemValue=""/>
+                  <f:selectItem itemLabel="#{msgs.txt_true}" itemValue="true"/>
+                  <f:selectItem itemLabel="#{msgs.txt_false}" itemValue="false"/>
+                </h:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <ui:fragment rendered="#{null != searchBean.extendedAttributeKeys}">
+        <tr>
+          <td>&nbsp;<br/></td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <h:outputText styleClass="sectionHeader" value="#{msgs.searchable_attrs}"/>
+            <table id="extendedAttributesTbl" cellpadding="5" cellspacing="0">
+              <t:dataList id="extendedLinkAttributes" value="#{searchBean.extendedAttributeKeys}" var="key">
+                <tr>
+                  <td valign="top">
+                    <h:outputText styleClass="textBold"
+                                  value="#{sp:localizeKey(searchBean.inputs[key].description)}"/>
+                  </td>
+
+                  <!--  Boolean -->
+                  <ui:fragment rendered="#{searchBean.extendedAttributes[key].type eq 'boolean'}">
+                    <td>
+                      <h:selectOneMenu
+                          id="link#{sp:buildValidComponentIdIgnoringNulls(key, true)}Boolean"
+                          value="#{searchBean.inputs[key].value}">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItem itemLabel="#{msgs.txt_true}" itemValue="true"/>
+                        <f:selectItem itemLabel="#{msgs.txt_false}" itemValue="false"/>
+                      </h:selectOneMenu>
+                    </td>
+                  </ui:fragment>
+
+                  <!-- String -->
+                  <ui:fragment rendered="#{(searchBean.inputs[key].propertyType eq 'String')}">
+                    <td>
+                      <h:inputText styleClass="searchInputText inputWidth" value="#{searchBean.inputs[key].value}"/>
+                    </td>
+                  </ui:fragment>
+
+                  <!-- identity -->
+                  <ui:fragment rendered="#{(searchBean.inputs[key].propertyType eq 'Identity')}">
+                    <td class="searchIdentitySuggestCell">
+                      <div id="SearchIdentity#{key}Suggest"></div>
+                      <t:inputHidden name="SearchIdentity#{key}" id="SearchIdentity#{key}SuggestInput" value="#{searchBean.inputs[key].value}"  forceId="true">
+                      </t:inputHidden>
+                    </td>
+                  </ui:fragment>
+
+                  <!-- Integer -->
+                  <ui:fragment rendered="#{(searchBean.inputs[key].propertyType eq 'Integer')}">
+                    <td>
+                      <table class="searchInputPairTable">
+                        <tr>
+                          <td>
+                            <h:selectOneMenu styleClass="searchInputSelect"
+                                             value="#{searchBean.inputs[key].inputTypeValue}">
+                              <f:selectItems value="#{searchBean.amountInputTypeChoices}"/>
+                            </h:selectOneMenu>
+                          </td>
+                          <td>
+                            <h:inputText styleClass="searchInputText inputNumberWidth"
+                                         value="#{searchBean.inputs[key].value}">
+                              <f:validateLongRange minimum="0" maximum="1000000" />
+                            </h:inputText>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </ui:fragment>
+
+                </tr>
+              </t:dataList>
+            </table>
+          </td>
+        </tr>
+      </ui:fragment>
+    </table>
+
+  </f:view>
+  <script type="text/javascript" defer="defer">
+      SailPoint.Utils.styleSelects();
+  </script>
+</ui:composition>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Identity PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Identity created="1785394271951" id="c0a801899fb11942819fb1ca96ce02f5" name="SelfRegistrationWorkGroup" protected="true" workgroup="true">
+  <Attributes>
+    <Map>
+      <entry key="displayName" value="SelfRegistrationWorkGroup"/>
+      <entry key="systemUser">
+        <value>
+          <Boolean>true</Boolean>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</Identity>

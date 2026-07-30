@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="DIRECT_PERMISSIONS, NO_AGGREGATION, PROVISIONING, UNLOCK, ENABLE, PASSWORD" name="IdentityIQ for Zendesk Service Desk" type="Zendesk SDIM">
+  <Attributes>
+    <Map>
+      <entry key="connectorClass" value="openconnector.connector.servicedesk.ServiceDeskConnector" />
+      <!-- 'authenticationType' can be Basic or OAuth2 or Bearer-->
+      <entry key="authenticationType" value="" />
+      <entry key="url" value="" />
+      <entry key="username" value="" />
+      <entry key="password" value="" />
+
+      <!-- When OAuth2, the token_url, grant_type, client_id, client_secret, 
+           username and password are required to generate an access token. 
+      -->
+      <entry key="token_url" value="https://{subdomain}.zendesk.com/oauth/tokens" />
+      <!-- 'grant_type' can be PASSWORD -->
+      <entry key="grant_type" value="" />
+      <entry key="client_id" value=""/>
+      <entry key="client_secret" value=""/>
+      <entry key="scope" value="tickets:read tickets:write"/>
+
+      <!-- When Bearer, the bearer token is required.-->
+      <entry key="bearerToken" value="" />
+
+      <!-- 'ticketType' can be incident -->
+      <entry key="ticketType" value="incident" />
+      <!-- Configure following variable values to provide maximum number of retries 
+           and retry after threshold value allowed for both provisioning and check status operations -->
+      <entry key="provisioningRateLimitRetryCount" value="5"/>
+      <entry key="provisioningRateLimitRetryAfterSeconds" value="30"/>
+      <entry key="checkStatusRateLimitRetryCount" value="5"/>
+      <entry key="checkStatusRateLimitRetryAfterSeconds" value="30"/>
+
+      <!-- Name of the Zendesk Application in IdentityIQ.
+           It is used to determine opened_by in a plan initializer script.
+           Empty value meaning plan initializer to determine a Link object based on type of the Zendesk 
+           Application which is 'Zendesk', whereas nonempty value promotes plan initializer to 
+           determine a Link object based on name of Zendesk Application.
+      -->
+      <entry key="requesterSource" value="" />
+
+      <!-- When 'multipleTicket' is 'true', a separate ticket will be created for each line item from the IdentityIQ access request. 
+           When false single ticket will be created against all line items from the IdentityIQ access request.
+      -->
+      <entry key="multipleTicket" value="false" />
+
+      <!-- Duration for provisioningRequestExpiration -->
+      <entry key="provisioningRequestExpiration" value="30" />
+
+      <!-- When 'groupTicketBy' is 'Application' and 'multipleTicket' is true, then
+           IdenityIQ access request line items from the same application will be moved to a single ticket.
+      -->
+      <entry key="groupTicketBy" value="Application" />
+      <entry key="encrypted" value="bearerToken,client_secret,oauth_token_info"/>
+      <entry key="templateApplication" value="Zendesk SDIM" />
+      <entry key="incident">
+        <value>
+          <Map>
+            <entry key="provision">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/v2/tickets" />
+                  <entry key="responseElement" value="$.ticket.id" />
+                  <entry key="requestRootElement" value="ticket" />
+                  <entry key="requestRootElementType" value="JSONObject" />
+                  <entry key="request">
+                    <value>
+                      <Map>
+                        <entry key="subject" value="SailPoint Access Request $!plan.arguments.identityRequestId #if($plan.arguments.identityName) for the user $plan.arguments.identityName #end" />
+                        <entry key="comment">
+                          <value>
+                            <Map>
+                              <entry key="body" value="#foreach($req in $plan.requests) #if($req.operation == 'Create') Create Account on application $req.resource #else For $req.id in application $req.resource #end #if($req.items) $newline #foreach($item in $req.items) #if ($item.name == '*disabled*' &amp;&amp; $item.value == 'true') Disable Account. $newline #elseif ($item.name == '*disabled*' &amp;&amp; $item.value == 'false') Enable Account. $newline #elseif ($item.name == '*locked*' &amp;&amp; $item.value == 'false') Unlock Account. $newline #else $!item.Operation $item.name: $item.value $newline #end #end #else $newline $!req.Operation Account #end $newline #end" />
+                            </Map>
+                          </value>
+                        </entry>
+                        <entry key="type" value="incident" />
+                        <entry key="priority" value="normal" />
+                        <entry key="requester_id" value="$!plan.arguments.opened_by" />
+                        <entry key="submitter_id" value="$!plan.arguments.opened_by" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+            <entry key="checkStatus">
+              <value>
+                <Map>
+                  <entry key="resource" value="/api/v2/tickets/$ticketId" />
+                  <entry key="responseElement" value="$.ticket.status" />
+                  <entry key="statusMap">
+                    <value>
+                      <Map>
+                        <entry key="new" value="Queued" />
+                        <entry key="open" value="Queued" />
+                        <entry key="pending" value="Queued" />
+                        <entry key="solved" value="Committed" />
+                        <entry key="closed" value="Committed" />
+                      </Map>
+                    </value>
+                  </entry>
+                </Map>
+              </value>
+            </entry>
+          </Map>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+  <ProvisioningConfig>
+    <ManagedResource>
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="Procurement_System" />
+      </ApplicationRef>
+    </ManagedResource>
+    <PlanInitializerScript>
+      <Source>
+        <![CDATA[
+        import sailpoint.object.Identity;
+        import sailpoint.object.Link;
+        import sailpoint.object.IntegrationConfig;
+        import sailpoint.object.Application;
+        import sailpoint.api.IdentityService;
+        import org.apache.commons.logging.Log;
+        import org.apache.commons.logging.LogFactory;
+        import sailpoint.tools.GeneralException;
+
+        /**
+         * Fields
+         */
+        String applicationType = "Zendesk";
+        // Identity attribute on SailPoint/ UserID on Zendesk
+        String userId = "id";
+
+        /**
+         * Get Zendesk Account name for identity using application type - Zendesk
+         */
+        private String getLinkByAppType(Identity identity) {
+            if (identity == null) {
+                return null;
+            }
+
+            List links = identity.getLinks();
+            String linkName = null;
+            if (links != null ) {
+                for (Link link : links) {
+                    String appType = link.getApplication().getType();
+                    if (appType != null && appType.equals(applicationType)) {
+                        if(link.getAttribute(userId) != null) {
+                            String userName = link.getAttribute(userId);
+                            if(userName != null) {
+                                linkName = userName;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return linkName;
+        }
+
+        /**
+         * Get Zendesk Account name for Identity using application name
+         */
+        private String getLinkByAppName(Identity identity, String requesterSource) {
+            if (identity == null) {
+                return null;
+            }
+
+            String linkName = null;
+            if (requesterSource != null) {
+                Application app = context.getObjectByName(Application.class, requesterSource);
+                IdentityService identService = new IdentityService(context);
+                List links = identService.getLinks(identity, app);
+                Link link = null;
+                if (links != null && links.size() > 0) {
+                    link = links.get(0);
+                }
+
+                if (link != null) {
+                    String userName = (String) link.getAttribute(userId);
+                    if (userName != null) {
+                        linkName = userName;
+                    }
+                }
+            }
+
+            return linkName;
+        }
+
+        ////////////////////////////////////////////////////////////////
+        // Main
+        ////////////////////////////////////////////////////////////////
+        Log log = LogFactory.getLog("openconnector.connector.servicedesk.ServiceDeskConnector");
+
+        if (plan == void || plan == null) {
+            log.error("Zendesk Service Desk - Plan initializer script - Plan is null.");
+            throw new GeneralException("Zendesk Service Desk - Plan initializer script - Plan is null.");
+        }
+
+        //log.info("Zendesk Service Desk - Plan initializer script - Initial Plan: " + plan.toXml());
+        Map arguments = (Map)plan.getArguments();
+        List requesterList = plan.getRequesters();
+        Identity requester = null;
+        if (requesterList != null) {
+            requester = requesterList.get(0);
+            if (requester != null && requester.getName() != null) {
+                requester = context.getObjectByName(Identity.class, requester.getName());
+            }
+        }
+
+        String appName = integration.getName();
+        if (appName != null) {
+            Application appObject = context.getObjectByName(Application.class, appName);
+            requesterSource = appObject.getAttributeValue("requesterSource");
+        }
+
+        // Get Zendesk Account name
+        if (requesterSource != null) {
+            openedBy = getLinkByAppName(requester, requesterSource);
+            requestedFor = getLinkByAppName(identity, requesterSource);
+        } else {
+            openedBy = getLinkByAppType(requester);
+            requestedFor = getLinkByAppType(identity);
+        }
+
+        if (requestedFor != null) {
+            arguments.put("requested_for", requestedFor);
+        }
+
+        if (openedBy != null) {
+            arguments.put("opened_by", openedBy);
+        }
+
+        if (identity.getName() != null) {
+            arguments.put("identityName", identity.getName());
+        }
+        //log.info("Zendesk Service Desk - Plan initializer script - Modified Plan: " + plan.toXml());
+        ]]>
+      </Source>
+    </PlanInitializerScript>
+  </ProvisioningConfig>
+</Application>

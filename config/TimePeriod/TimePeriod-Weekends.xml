@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TimePeriod PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TimePeriod classifier="DaysOfWeek" created="1785394250405" id="c0a801899fb11942819fb1ca42a5010f" name="weekends">
+  <Attributes>
+    <Map>
+      <entry key="days">
+        <value>
+          <List>
+            <String>Saturday</String>
+            <String>Sunday</String>
+          </List>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</TimePeriod>

@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC
+        "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- (c) Copyright 2023 SailPoint Technologies, Inc., All Rights Reserved. -->
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui"
+      xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<ui:composition>
+    <script type="text/javascript">
+        <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if (fileName) {
+                val = fileName.value;
+            }
+            return val;
+        }
+
+        function toggleInactiveOffset() {
+            var inactiveOffset = Ext.getDom('inactiveOffsetTr');
+            // If the checkbox is enabled, show the div for termination offset.
+            var includeTerminatedWorkers = Ext.getDom('editForm:aggregate_terminated_workers');
+            if (includeTerminatedWorkers && includeTerminatedWorkers.checked == true) {
+                inactiveOffset.style.display = "";
+            } else {
+                inactiveOffset.style.display = "none";
+            }
+        }
+
+        function toggleFutureOffset() {
+            var futureOffset = Ext.getDom('futureOffsetTr');
+            // If the checkbox is enabled, show the div for future offset.
+            var includeFutureWorkers = Ext.getDom('editForm:aggregate_future_workers');
+            if (includeFutureWorkers && includeFutureWorkers.checked == true) {
+                futureOffset.style.display = "";
+            } else {
+                futureOffset.style.display = "none";
+            }
+        }
+
+        Ext.onReady(function () {
+            toggleFutureOffset();
+            toggleInactiveOffset();
+            Page.on('beforeSave', function () {
+                if (!hasCredentialConfiguration()) {
+                    var host = getFieldValue('editForm:host');
+                    Validator.validateNonBlankString(host, "The Host URL must be specified!");
+
+                    var userName = getFieldValue('editForm:userName');
+                    Validator.validateNonBlankString(userName, "The Username must be specified!");
+
+                    var password = getFieldValue('editForm:password');
+                    Validator.validateNonBlankString(password, "The Password must be specified!");
+
+                    var applicationKey = getFieldValue('editForm:applicationKey');
+                    Validator.validateNonBlankString(applicationKey, "The Application Key must be specified!");
+
+                    var userReportId = getFieldValue('editForm:userReportId');
+                    Validator.validateNonBlankString(userReportId, "The User Report ID must be specified!");
+
+                    var errors = Validator.getErrors();
+                    if (errors && errors.length > 0) {
+                        var errorDivTop = Ext.get('appErrorsTop');
+                        Validator.displayErrors(errorDivTop);
+                        return false;
+                    }
+                }
+                //return false will cancel the save
+                return true;
+            });
+        });
+        //--><!]]>
+    </script>
+    <f:view>
+        <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_fieldglass_settings}"/>
+        <br/>
+        <br/>
+        <div id="accountSettings" class='spContent'>
+            <!--Connection Settings-->
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_fieldglass_base_url}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpHostName" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_base_url}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="host"
+                                     value="#{applicationObject.attributes['host']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_fieldglass_username}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUserName" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_username}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="userName"
+                                     value="#{applicationObject.attributes['userName']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="passwordTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_sap_fieldglass_password}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpClientLicense" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_password}"/>
+                    </td>
+                    <td>
+                        <sp:inputSecret id="password"
+                                        value="#{applicationObject.attributes['password']}"
+                                        size="20"
+                                        redisplay="true" autocomplete="off"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="applicationKeyTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText
+                                style='padding:5px'
+                                value="#{msgs.con_form_sap_fieldglass_application_key}"/>
+                        <h:outputText
+                                styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpApplicationKey" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_application_key}"/>
+                    </td>
+                    <td>
+                        <sp:inputSecret id="applicationKey"
+                                        value="#{applicationObject.attributes['applicationKey']}"
+                                        redisplay="true" autocomplete="off"
+                                        size="20"
+                                        disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                        readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+            <!--Aggregation Settings-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_fieldglass_aggregation_settings}"/>
+            <br/>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="userReportIdTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_fieldglass_user_report_id}"/>
+                        <h:outputText styleClass="requiredText" value="*"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUserReportId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_user_report_id}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="userReportId"
+                                     value="#{applicationObject.attributes['userReportId']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="workerReportIdTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_sap_fieldglass_worker_report_id}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpWorkerReportId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_worker_report_id}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="workerReportId"
+                                     value="#{applicationObject.attributes['workerReportId']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="singleWorkerReportIdTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_sap_fieldglass_single_worker_report_id}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpSingleWorkerReportId" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_single_worker_report_id}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="singleWorkerReportId"
+                                     value="#{applicationObject.attributes['singleWorkerReportId']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+            <!--Date Offset For Worker Aggregation-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_fieldglass_filter_criteria_workers}"/>
+            <br/>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id='futureWorkers'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText value="#{msgs.con_form_sap_fieldglass_aggregate_future_workers}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAggFutureHires" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_sap_fieldglass_aggregate_future_workers}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregate_future_workers" onclick='toggleFutureOffset()'
+                                                 value="#{applicationObject.attributes['aggregate_future_workers']}"
+                                                 converter="NewLineList"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="futureOffsetTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_sap_fieldglass_future_dated_hires_offset}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpFutureOffset" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_future_dated_hires_offset}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="futureOffset"
+                                     value="#{applicationObject.attributes['futureOffset']}"
+                                     size="20"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+
+                <tr id='terminatedWorkers'>
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText value="#{msgs.con_form_sap_fieldglass_aggregate_terminated_workers}"/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage id="imgHlpAggTerminatedEmployees" styleClass="helpIcon"
+                                        url="/images/icons/dashboard_help_16.png"
+                                        alt="#{help.help_con_sap_fieldglass_aggregate_terminated_workers}"/>
+                    </td>
+                    <td>
+                        <h:selectBooleanCheckbox id="aggregate_terminated_workers" onclick='toggleInactiveOffset()'
+                                                 redisplay="true"
+                                                 value="#{applicationObject.attributes['aggregate_terminated_workers']}"
+                                                 converter="NewLineList"
+                                                 disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                                 readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+                <tr id="inactiveOffsetTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_fieldglass_termination_offset}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpTerminatedOffset" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_termination_offset}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="inactiveOffset"
+                                     value="#{applicationObject.attributes['inactiveOffset']}"
+                                     size="20"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+            <!--Page Size Settings-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_fieldglass_page_size_settings}"/>
+            <br/>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="pageSizeTr">
+                    <td class='titleColumn certScheduleTitleCol'>
+                        <h:outputText style='padding:5px' value="#{msgs.con_form_sap_fieldglass_page_size}"/>
+                        <h:outputText/>
+                    </td>
+                    <td class="certScheduleHelpCol">
+                        <h:graphicImage
+                                id="imgHlpPageSize" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_page_size}"/>
+                    </td>
+                    <td>
+                        <sp:inputText id="pageSize"
+                                      value="#{applicationObject.attributes['pageSize']}"
+                                      size="20"
+                                      disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                      readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+            <!--Provisioning Settings-->
+            <br/>
+            <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_sap_fieldglass_provisioning_settings}"/>
+            <br/>
+            <table class="spTable" style="border: 0px" cellspacing="0">
+                <tr id="userUploadIntegrationNameTr">
+                    <td class='titleColumn certScheduleTitleCol' valign="center">
+                        <h:outputText style='padding:5px'
+                                      value="#{msgs.con_form_sap_fieldglass_connector_integration_name}"/>
+                    </td>
+                    <td class="certScheduleHelpCol" valign="middle">
+                        <h:graphicImage
+                                id="imgHlpUserUploadIntegrationName" styleClass="helpIcon"
+                                url="/images/icons/dashboard_help_16.png"
+                                alt="#{help.help_con_sap_fieldglass_connector_integration_name}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="userUploadIntegrationName"
+                                     value="#{applicationObject.attributes['userUploadIntegrationName']}"
+                                     size="40"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </f:view>
+</ui:composition>
+</body>
+</html>

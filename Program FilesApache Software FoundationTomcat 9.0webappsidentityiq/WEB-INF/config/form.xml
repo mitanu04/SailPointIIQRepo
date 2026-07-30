@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<!-- (c) Copyright 2010 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<!--
+  Initialization file for SailPoint forms.
+-->
+<sailpoint>
+
+<!-- ====================================================================
+
+  Identity refresh form.  This is the default "template" form used in the
+  dynamic generation of work item forms to ask provisioning questions
+  during the background refresh task.
+
+========================================================================= -->
+
+<Form name='Identity Refresh' type="Workflow">
+  <Attributes>
+    <Map>
+      <entry key='pageTitle' value="provision_identity_refresh_title"/>
+      <entry key='pageTitleParam' value='$(identityName)'/>
+    </Map>
+  </Attributes>
+
+  <Section type='text'>
+    <Field displayName="provision_identity_refresh_description"/>
+  </Section>
+
+  <Section label="provision_target_identity" type='datatable'>
+    <Field displayName="provision_account_id" value='script:identity.getName()'/>
+    <Field displayName="provision_first_name" value='script:identity.getFirstname()'/>
+    <Field displayName="provision_last_name" value='script:identity.getLastname()'/>
+    <Field displayName="provision_assigned_roles">
+      <Script><Source>
+          import sailpoint.api.ObjectUtil;
+          import sailpoint.tools.Util;
+          List names = ObjectUtil.getObjectNames(identity.getAssignedRoles());
+          return Util.listToCsv(names);
+      </Source></Script>
+    </Field>
+    <Attributes>
+      <Map>
+        <entry key='hideNulls' value='true'/>
+      </Map>
+    </Attributes>
+  </Section>
+
+  <!-- More sections inserted here -->
+
+  <Button label="button_ok" action='next'/>
+  <Button label="button_cancel" action='cancel'/>
+  <Button label="button_return" action='cancel' readOnly='true'/>
+
+</Form>
+
+<!-- ====================================================================
+
+  Identity update form.  This is the default "template" form used in the
+  dynamic generation of work item form to ask provisioning questions
+  during interaction with the IIQ Define->Identities pages.
+
+========================================================================= -->
+
+<Form name='Identity Update' type="Workflow">
+  <Attributes>
+    <Map>
+      <entry key='pageTitle' value="provision_identity_update_title"/>
+      <entry key='pageTitleParam' value='$(identityName)'/>
+    </Map>
+  </Attributes>
+
+  <Section type='text'>
+    <Field displayName="provision_identity_update_description"/>
+  </Section>
+
+  <Section label="provision_request_information" type='datatable'>
+    <Field displayName="provision_requester">
+      <Script>
+        <Source>
+          import sailpoint.object.Identity;
+
+          Identity launchIdentity = context.getObject(Identity.class, launcher);
+
+          return launchIdentity == null ? launcher : launchIdentity.getDisplayableName();
+        </Source>
+      </Script>
+    </Field>
+    <Field displayName="provision_requested_roles" value='ref:newRoles'/>
+    <Attributes>
+      <Map>
+        <entry key='hideNulls' value='true'/>
+      </Map>
+    </Attributes>
+  </Section>
+
+  <Section label="provision_target_identity" type='datatable' columns='3'>
+    <Field columnSpan="1" displayName="provision_first_name" value='script:(identity != null) ? identity.getFirstname() : null'/>
+    <Field columnSpan="1" displayName="provision_last_name" value='script:(identity != null) ? identity.getLastname() : null'/>
+    <Field columnSpan="1" displayName="provision_account_id" value='script:(identity != null) ? identity.getDisplayableName() : null'/>
+    <Field columnSpan="3" displayName="provision_assigned_roles">
+      <Script><Source>
+          import java.util.ArrayList;
+          import java.util.List;
+          import sailpoint.object.Bundle;
+          import sailpoint.tools.Util;
+
+          String names = null;
+
+          if (identity != null) {
+              List&lt;String&gt; roleNames = new ArrayList&lt;String&gt;();
+
+              for (Bundle bundle : Util.iterate(identity.getAssignedRoles())) {
+                  roleNames.add(bundle.getDisplayableName());
+              }
+
+              names = Util.listToCsv(roleNames);
+          }
+
+          return names;
+      </Source></Script>
+    </Field>
+    <Attributes>
+      <Map>
+        <entry key='hideNulls' value='true'/>
+      </Map>
+    </Attributes>
+  </Section>
+
+  <!-- More sections inserted here -->
+
+  <Button label="button_ok" action='next'/>
+  <Button label="button_cancel" action='cancel'/>
+  <Button label="button_return" action='cancel' readOnly='true'/>
+
+</Form>
+
+</sailpoint>

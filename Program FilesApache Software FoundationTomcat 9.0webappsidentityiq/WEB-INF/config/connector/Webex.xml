@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.OpenConnectorAdapter" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, PASSWORD, ENABLE, UNLOCK, SEARCH" icon="internetIcon" name="Webex" type="Webex">
+    <Attributes>
+      <Map>
+        <entry key="authSearchAttributes">
+          <value>
+            <List>
+              <String>WebexID</String>
+            </List>
+          </value>
+        </entry>
+        <entry key="connectorClass" value="openconnector.connector.Webex"/>
+        <entry key="formPath" value="Webex.xhtml"/>
+        <entry key="accountAttributeMapping">
+          <value>
+            <Map>
+              <entry key="FirstName" value="firstName"/>
+              <entry key="LastName" value="lastName"/>
+              <entry key="title" value="title"/>
+              <entry key="CategoryID" value="categoryId"/>
+              <entry key="Email" value="email"/>
+              <entry key="Active" value="active"/>
+              <entry key="Company" value="company"/>
+              <entry key="Description" value="description"/>
+              <entry key="WebexID" value="webExId"/>
+              <entry key="PersonalURL" value="personalUrl"/>
+              <entry key="ExpirationDate" value="expirationDate"/>
+              <entry key="TimezoneID" value="timeZoneID"/>
+              <entry key="TimeZone" value="timeZone"/>
+              <entry key="TimeZoneWithDST" value="timeZoneWithDST"/>
+              <entry key="Service" value="service"/>
+              <entry key="language" value="language"/>
+              <entry key="locale" value="locale"/>
+              <entry key="languageID" value="languageID"/>
+              <entry key="visitCount" value="visitCount"/>
+              <entry key="userId" value="userId"/>
+              <entry key="passwordExpires" value="passwordExpires"/>
+              <entry key="passwordDaysLeft" value="passwordDaysLeft"/>
+            </Map>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="WebexID" identityAttribute="WebexID" nativeObjectType="account" objectType="account">
+        <AttributeDefinition name="WebexID" remediationModificationType="None" required="true" type="string">
+          <Description>WebEx ID of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="FirstName" remediationModificationType="None" required="true" type="string">
+          <Description>First Name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="LastName" remediationModificationType="None" required="true" type="string">
+          <Description>Last Name of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Email" remediationModificationType="None" required="true" type="string">
+          <Description>Email id of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="RegistrationDate" remediationModificationType="None" required="true" type="string">
+          <Description>The creation date of the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Active" remediationModificationType="None" required="true" type="string">
+          <Description>Determines whether the user account has been staged for use.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TimezoneID" remediationModificationType="None" required="true" type="string">
+           <Description>Determines the time zone for the geographic location of the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Company" remediationModificationType="None" required="true" type="string">
+          <Description>The user’s company name.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Description" remediationModificationType="None" required="true" type="string">
+          <Description>A description of the user’s virtual office.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="CategoryID" remediationModificationType="None" required="true" type="string">
+          <Description>A reference to the office category for the user’s office.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AddressType" remediationModificationType="None" required="true" type="string">
+           <Description>Determines whether the meeting participant is a personal contact of the meeting host or is a site-wide (global) contact.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Country" remediationModificationType="None" required="true" type="string">
+          <Description>The country for the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Phone" remediationModificationType="None" required="true" type="string">
+          <Description>The user’s Office Profile phone number.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MobilePhone" remediationModificationType="None" required="true" type="string">
+          <Description>The attendee’s mobile phone number.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Fax" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates the fax number for the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Pager" remediationModificationType="None" required="true" type="string">
+          <Description>The user’s Office Profile pager number.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PersonalURL" remediationModificationType="None" required="true" type="string">
+          <Description>The user’s website.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ExpirationDate" remediationModificationType="None" required="true" type="string">
+          <Description>A WebEx-maintained date and time at which the user’s account expires.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Prod/ServiceAnnouncement" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates product or service announcements.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TrainingInfo" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates training information.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ElectronicInfo" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates electronic information.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Promos" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates promotions and special offers.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PressRelease" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates press releases.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="UserEmail" remediationModificationType="None" required="true" type="string">
+          <Description>The email address as stored in the user profile.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="UserPhone" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates the phone number for the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MailInfo" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates the mail information for the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TimeZone" remediationModificationType="None" required="true" type="string">
+          <Description>Determines the time zone for the geographic location of the user or user’s office.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TimeZoneWithDST" remediationModificationType="None" required="true" type="string">
+          <Description>A timezone description which is adjusted by DST. For example, GMT-7:00, Pacific (San Francisco)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Service" remediationModificationType="None" required="true" type="string">
+          <Description>The type of service that the user has.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Host" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether the user is the host for the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TelephoneConferenceCallOut" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether conference calling out of meetings is supported for the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TelephoneConferenceCallOutInternational" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether international calling out of meetings is supported for the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TelephoneConferenceCallIn" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether conference calling into meetings is supported for the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TelephoneConferenceTollFreeCallIn" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether toll-free calling into meetings is supported for the user.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SiteAdmin" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether the user has administrative privilege for the meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="VOIP" remediationModificationType="None" required="true" type="string">
+          <Description>Specifies whether Voice Over IP telephony is enabled.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="SiteAdminwithViewOnly" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether the current user is a site administrator with view only privilege.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="LabAdmin" remediationModificationType="None" required="true" type="string">
+          <Description>If TRUE, then user has access to the Hands-on Lab administration pages.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="OtherTeleConferencing" remediationModificationType="None" required="true" type="string">
+          <Description>Specifies whether a user account has the privilege to schedule a session with the other teleconferencing feature enabled.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="TeleConferenceCallInInternational" remediationModificationType="None" required="true" type="string">
+          <Description>Allows a user to access WebEx teleconferencing through international local call-in telephone numbers.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="AttendeeOnly" remediationModificationType="None" required="true" type="string">
+          <Description>If the value is TRUE, indicates that the user’s role is attendee only. If the value is set to TRUE, then the host, siteAdmin, labAdmin and roSiteAdmin elements should be FALSE.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="RecordingEditor" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether a user has the privilege to download WebEx Recording Editor from My WebEx > Support.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MeetingAssist" remediationModificationType="None" required="true" type="string">
+          <Description>Enables Meeting Assist.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition entitlement="true" managed="true" multi="true" name="MeetingType" remediationModificationType="None" schemaObjectType="group" type="string">
+          <Description>The meeting types of which the account is a part of.</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="GroupName" identityAttribute="MeetingTypeID" nativeObjectType="group" objectType="group">
+        <AttributeDefinition name="GroupName" remediationModificationType="None" required="true" type="string">
+          <Description>The name of the group or meeting type.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ProductCodePrefix" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates the product label for the type of meeting.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="Active" remediationModificationType="None" required="true" type="string">
+          <Description>Indicates whether the type of meeting represented by an object of this type is enabled or disabled.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="DisplayName" remediationModificationType="None" required="true" type="string">
+          <Description>The display name for the meeting type.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PrimaryTollCallInNumber" remediationModificationType="None" required="true" type="string">
+          <Description>The telephone number for a toll call-in teleconference.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="PrimaryTollFreeCallInNumber" remediationModificationType="None" required="true" type="string">
+          <Description>The telephone number for a toll free call-in teleconference.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="MeetingTypeID" remediationModificationType="None" required="true" type="string">
+          <Description>Specifies IDs for the meeting types whose detailed information you want to get.</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="ServiceType" remediationModificationType="None" required="true" type="string">
+          <Description>The type of meeting being returned.</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Templates>
+      <Template name="account" schemaObjectType="account" usage="Create">
+        <Field displayName="con_form_webex_webex_ID" helpKey="help_con_form_webex_webex_ID" name="WebexID" required="true" section="" type="string"/>
+        <Field displayName="con_form_webex_first_name" helpKey="help_con_form_webex_first_name" name="FirstName" required="true" section="" type="string"/>
+        <Field displayName="con_form_webex_last_name" helpKey="help_con_form_webex_last_name" name="LastName" required="true" section="" type="string"/>
+        <Field displayName="con_form_webex_email" helpKey="help_con_form_webex_email" name="Email" required="true" section="" type="string"/>
+        <Field displayName="con_form_webex_password" helpKey="help_con_form_webex_password" name="password" required="true" section="" type="secret"/>       
+        <Field displayName="con_form_account_type" helpKey="help_con_form_account_type" name="AccountType" reviewRequired="true" type="string" value="Host">
+          <AllowedValues>
+            <String>SiteAdminWithViewOnly</String>
+            <String>Host</String>
+            <String>SiteAdmin</String>
+          </AllowedValues>
+        </Field>
+      </Template>
+    </Templates>
+    <Settings><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2021 SailPoint Technologies, Inc.  All rights reserved. -->
+<Form xmlns="http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd" name="WebEx" connectorName="Webex" type="SourceConfig" directConnect="true" shortDesc="ShortDesc" status="released">
+  <Menu name="Webex Settings" label="con_form_webex_settings">
+    <Section name="Webex Settings" label="con_form_webex_settings" sectionInfo="con_form_webex_settings" docLinkLabel="docLinkLabel_ConnectionSettings" docLink="https://documentation.sailpoint.com/connectors/cisco/webex/help/">
+      <Field name="siteName" displayName="con_form_webex_site_name" type="text" required="true" helpKey="help_con_form_webex_site_name"
+       />
+      
+      <Field name="xmlURL" displayName="con_form_webex_xml_url" type="text" required="true" placeHolder="PlaceHolder_xmlURL"
+      helpKey="help_con_form_webex_xml_url"/>
+      <Field name="partnerID" displayName="con_form_webex_partner_ID" type="text"
+      helpKey="help_con_form_webex_partner_ID" />
+      <Field name="webexID" displayName="con_form_webex_webex_ID" type="text" required="true"
+      helpKey="help_con_form_webex_webex_ID" />
+      <Field name="password" displayName="con_form_webex_password" type="secret" required="true"
+      helpKey="help_con_form_webex_password" />
+      
+      <Field name="pageSize" displayName="con_form_webex_page_size" type="text" min="1" max="500" required="true"
+      helpKey="help_con_form_webex_page_size" saveAsString="true"/>
+      <Field name="disabled" displayName="con_form_webex_manage_disabled_accounts" type="checkbox" defaultValue="false"
+      helpKey="help_con_form_webex_manage_disabled_accounts" />
+    </Section>
+  </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>

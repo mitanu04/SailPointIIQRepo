@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247870" displayName="capability_plugin_admin" id="c0a801899fb11942819fb1ca38bd00e7" name="PluginAdministrator">
+  <Description>capability_desc_plugin_admin</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca365700c1" name="FullAccessPlugin"/>
+  </RightRefs>
+</Capability>

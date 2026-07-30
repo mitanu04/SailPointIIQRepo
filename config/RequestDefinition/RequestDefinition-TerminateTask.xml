@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250605" executor="sailpoint.request.TerminateRequestExecutor" id="c0a801899fb11942819fb1ca436d012e" name="Terminate Task">
+  <Attributes>
+    <Map>
+      <entry key="hostSpecific" value="true"/>
+    </Map>
+  </Attributes>
+</RequestDefinition>

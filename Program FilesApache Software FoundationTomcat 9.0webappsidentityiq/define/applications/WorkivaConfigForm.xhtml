@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- (c) Copyright 2017 SailPoint Technologies, Inc., All Rights Reserved. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+<ui:composition>
+  <script type="text/javascript">
+      helpKey = 'APPLICATION';
+
+      function getFieldValue(fieldname) {
+          var val = null;
+          var field = Ext.getDom(fieldname);
+          if (field) {
+              val = field.value;
+          }
+          return val;
+      }
+
+      function toggleCredentials(authType) {
+
+          if (authType == "") {
+              authType = "basic";
+              var radioInputs = Ext.getDom(document.getElementsByName('editForm:authType'));
+              radioInputs.item(0).checked = true;
+          }
+
+          var usernameRow = Ext.get('usernameRow');
+          var passwordRow = Ext.get('passwordRow');
+          var apiTokenRow = Ext.get('apiTokenRow');
+
+          if (authType == "oauthBearer") {
+              var radioInputs = Ext.getDom(document.getElementsByName('editForm:authType'));
+              radioInputs.item(1).checked = true;
+              usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+              usernameRow.hide();
+              passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+              passwordRow.hide();
+              apiTokenRow.setVisibilityMode(Ext.Element.DISPLAY)
+              apiTokenRow.show()
+          } else if (authType == "basic") {
+              var radioInputs = Ext.getDom(document.getElementsByName('editForm:authType'));
+              radioInputs.item(0).checked = true;
+              apiTokenRow.setVisibilityMode(Ext.Element.DISPLAY);
+              apiTokenRow.hide();
+              usernameRow.setVisibilityMode(Ext.Element.DISPLAY);
+              usernameRow.show();
+              passwordRow.setVisibilityMode(Ext.Element.DISPLAY);
+              passwordRow.show();
+          }
+      }
+
+      Ext.onReady(function () {
+          Ext.QuickTips.init();
+
+          toggleCredentials('#{applicationObject.attributes["authType"]}');
+
+          // This is our validation hook
+          Page.on('beforeSave', function () {
+              if (!hasCredentialConfiguration()) {
+                  var radioInputs = Ext.getDom(document.getElementsByName('editForm:authType'));
+                  var authType;
+                  if (radioInputs.item(0).checked) {
+                      authType = "basic";
+                  } else if (radioInputs.item(1).checked) {
+                      authType = "oauthBearer";
+                  }
+
+                  var host = getFieldValue('editForm:host');
+                  var userName = getFieldValue('editForm:username');
+                  var password = getFieldValue('editForm:password');
+                  var apiToken = getFieldValue('editForm:apiTokenField');
+
+                  Validator.validateNonBlankString(host, "#{msgs.err_workiva_account_missing_url}");
+
+                  if (authType == "basic") {
+                      Validator.validateNonBlankString(userName, "#{msgs.con_form_workiva_username_null}");
+                      Validator.validateNonBlankString(password, "#{msgs.con_form_workiva_password_null}");
+                  } else if (authType == "oauthBearer") {
+                      Validator.validateNonBlankString(apiToken, "#{msgs.con_form_workiva_api_key_null}");
+                  }
+
+                  var errors = Validator.getErrors();
+                  if (errors &amp;&amp; errors.length > 0) {
+                      Validator.displayErrors('appErrorsTop');
+                      return false;
+                  }
+              }
+              return true;
+          });
+      });
+  </script>
+  <f:view>
+    <div id="accountSettings" class='spContent'>
+      <h:outputText styleClass="sectionHeader" value="Connection Settings"/>
+      <table class="spTable" style="border: 0px" cellspacing="0">
+        <!-- URL field -->
+        <tr id="workivaURLRow">
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_account_url}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpHostName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_account_url}"/>
+          </td>
+          <td valign="center">
+            <sp:inputText id="host"
+                          value="#{applicationObject.attributes['host']}" size="120" redisplay="true"
+                          disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                          readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <!-- Authentication Type field -->
+        <tr id="authTypeRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_auth_type}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpauthtype" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_workiva_auth_type}"/>
+          </td>
+          <td>
+            <h:selectOneRadio id="authType"
+                              value="#{applicationObject.attributes['authType']}"
+                              disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                              layout="pageDirection"
+                              onchange="toggleCredentials(this.value)">
+              <f:selectItem itemValue="basic" itemLabel="#{msgs.con_form_workiva_basic}"/>
+              <f:selectItem itemValue="oauthBearer" itemLabel="#{msgs.con_form_workiva_api_token}"/>
+            </h:selectOneRadio>
+          </td>
+        </tr>
+        <!-- Username field -->
+        <tr id="usernameRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_username}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpAudience" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_workiva_username}"/>
+          </td>
+          <td>
+            <h:inputText id="username" value="#{applicationObject.attributes['user']}"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <!-- Password field -->
+        <tr id="passwordRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_password}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpIssuer" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_workiva_password}"/>
+          </td>
+          <td>
+            <sp:inputSecret id="password" value="#{applicationObject.attributes['password']}"
+                            redisplay="true" autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <!-- API Token field -->
+        <tr id="apiTokenRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_api_token}"/>
+            <h:outputText styleClass="requiredText" value="*"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpApiToken" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_api_token}"/>
+          </td>
+          <td>
+            <sp:inputSecret id="apiTokenField" value="#{applicationObject.attributes['oauthBearerToken']}"
+                            redisplay="true" autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <!-- Custom Timeout field -->
+        <tr id="connectionTimeoutRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_connection_timeout}"/>
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpCustomTimeout" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_connection_timeout}"/>
+          </td>
+          <td>
+            <sp:inputText id="connectionTimeoutField"
+                          value="#{applicationObject.attributes['customTimeout']}" size="120" redisplay="true"
+                          disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                          readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <br/>
+    <div id="aggregationSettings" class='spContent'>
+      <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_workiva_aggregation_settings}"/>
+      <table class="spTable" style="border: 0px" cellspacing="0">
+        <!-- Account Filter field -->
+        <tr id="accountFilterRow">
+          <td class='titleColumn certScheduleTitleCol' valign="center">
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_account_filter}"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpAccountFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_account_filter}"/>
+          </td>
+          <td valign="center">
+            <sp:inputText id="userFilter"
+                          value="#{applicationObject.attributes['userFilter']}" size="120" redisplay="true"
+                          disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                          readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <!-- Group Filter field -->
+        <tr id="groupFilterRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_group_filter}" />
+          </td>
+          <td class="certScheduleHelpCol">
+            <h:graphicImage id="imgHlpGroupFilter" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_group_filter}" />
+          </td>
+          <td>
+            <h:inputText id="groupFilter"
+                         value="#{applicationObject.attributes['groupFilter']}" size="120" redisplay="true"
+                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                         readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}" />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <br/>
+    <div id="provisioningSettings" class='spContent'>
+      <table class="spTable" style="border: 0px" cellspacing="0">
+        <h:outputText styleClass="sectionHeader" value="#{msgs.con_form_workiva_provisioning_settings}"/>
+        <tr>
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_forcefully_add_user_to_workspace}"/>
+          </td>
+          <td class="certScheduleHelpCol" valign="middle">
+            <h:graphicImage id="imgHlpForceAddToWorkspace"
+                            styleClass="helpIcon"
+                            url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_forcefully_add_user_to_workspace}"/>
+          </td>
+          <td>
+            <h:selectBooleanCheckbox id="forceAddUserToWorkspace"
+                                     value="#{applicationObject.attributes['forceAddUserToWorkspace']}" redisplay="true"
+                                     disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                     readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+        <tr id="operationDelayRow">
+          <td class='titleColumn certScheduleTitleCol'>
+            <h:outputText style='padding:5px' value="#{msgs.con_form_workiva_provisioning_delay}"/>
+          </td>
+          <td>
+            <h:graphicImage id="imgHlpOperationDelay" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                            alt="#{help.help_con_form_workiva_connection_timeout}"/>
+          </td>
+          <td valign="center">
+            <sp:inputText id="operationDelayField"
+                          value="#{applicationObject.attributes['operationDelayForProvisioning']}" size="120" redisplay="true"
+                          disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                          readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </f:view>
+</ui:composition>
+</body>
+</html>

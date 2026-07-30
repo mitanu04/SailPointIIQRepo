@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE RequestDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<RequestDefinition created="1785394250623" executor="sailpoint.request.ApplicationStatusRequestExecutor" id="c0a801899fb11942819fb1ca437f0132" name="Application Status Request" type="Event"/>

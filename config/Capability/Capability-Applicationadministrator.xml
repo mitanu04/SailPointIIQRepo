@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Capability PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Capability created="1785394247364" displayName="capability_application_administrator" id="c0a801899fb11942819fb1ca36c400cc" name="ApplicationAdministrator">
+  <Description>capability_desc_application_administrator</Description>
+  <RightRefs>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca32940015" name="ViewApplication"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca329b0016" name="ManageApplication"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca336e0032" name="FullAccessReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca34100052" name="FullAccessAccountGroupMembershipReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33be0043" name="FullAccessApplicationOwnerCertificationReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33d10047" name="FullAccessApplicationCentricCertificationReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33cd0046" name="FullAccessCertificationDecisionReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca338f0039" name="FullAccessApplicationActivityReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33aa003f" name="FullAccessMitigationReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33a4003e" name="FullAccessWorkItemReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33e9004b" name="FullAccessApplicationReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33d80048" name="FullAccessUncorrelatedIdentitiesReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33e2004a" name="FullAccessApplicationUserReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33f4004d" name="FullAccessApplicationRiskReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33fa004e" name="FullAccessApplicationStatusReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33b40041" name="FullAccessRemediationProgressReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca33de0049" name="FullAccessIdentityApplicationRiskReport"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca328d0014" name="ViewApplicationRiskScoreChart"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca32be001a" name="FullAccessGroup"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca32e2001f" name="FullAccessApplicationRiskModel"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca34700063" name="FullAccessApplicationRisk"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca3352002e" name="ViewAccountGroups"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca359000a1" name="ManagedAttributePropertyAdministrator"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca359500a2" name="ManagedAttributeProvisioningAdministrator"/>
+    <Reference class="sailpoint.object.SPRight" id="c0a801899fb11942819fb1ca359d00a3" name="FullAccessForms"/>
+  </RightRefs>
+</Capability>

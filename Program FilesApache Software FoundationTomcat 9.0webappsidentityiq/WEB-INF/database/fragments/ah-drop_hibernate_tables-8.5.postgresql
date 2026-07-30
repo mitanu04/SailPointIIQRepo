@@ -1,0 +1,91 @@
+
+    alter table if exists identityiqah.spt_hist_accounts 
+       drop constraint if exists FK605klb45cwnh86urs1aw07cue;
+
+    alter table if exists identityiqah.spt_hist_assigned_roles 
+       drop constraint if exists FK57arq9l8c10fbrtbixsryavgg;
+
+    alter table if exists identityiqah.spt_hist_detected_roles 
+       drop constraint if exists FKsvem4m5n0f7dqasy8pht1m0dj;
+
+    alter table if exists identityiqah.spt_hist_entitlements 
+       drop constraint if exists FKslsba39xq240608yr2vc59rn3;
+
+    alter table if exists identityiqah.spt_hist_policy_violation_remediation_bundle_ids 
+       drop constraint if exists FKitaxnoflkhnq6ijo5yqmh29jc;
+
+    alter table if exists identityiqah.spt_hist_policy_violation_remediation_entitlements 
+       drop constraint if exists FKjie8pn4nfhcfi3t92br291fc1;
+
+    alter table if exists identityiqah.spt_hist_policy_violations 
+       drop constraint if exists FK431cy516ss4k08rgrpq20x1wb;
+
+    alter table if exists identityiqah.spt_hist_role_remediation_entitlements 
+       drop constraint if exists FKhvwj97ncucp9u2flf5llenlcs;
+
+    alter table if exists identityiqah.spt_hist_identity_req_item_capture 
+       drop constraint if exists FK6dn4yl1mqiub2ejxsgms1vex8;
+
+    drop table if exists identityiqah.spt_hist_accounts cascade;
+
+    drop table if exists identityiqah.spt_hist_assigned_roles cascade;
+
+    drop table if exists identityiqah.spt_hist_detected_roles cascade;
+
+    drop table if exists identityiqah.spt_hist_entitlements cascade;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_bundle_ids cascade;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_entitlements cascade;
+
+    drop table if exists identityiqah.spt_hist_policy_violations cascade;
+
+    drop table if exists identityiqah.spt_hist_role_remediation_entitlements cascade;
+
+    drop table if exists identityiqah.spt_hist_account_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_capability cascade;
+
+    drop table if exists identityiqah.spt_hist_capability_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_cert_remediation_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_certification cascade;
+
+    drop table if exists identityiqah.spt_hist_database_version cascade;
+
+    drop table if exists identityiqah.spt_hist_entitlement_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_identity cascade;
+
+    drop table if exists identityiqah.spt_hist_identity_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_identity_event cascade;
+
+    drop table if exists identityiqah.spt_hist_identity_req_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_identity_req_item_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_mattr cascade;
+
+    drop table if exists identityiqah.spt_hist_mattr_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_mattr_event cascade;
+
+    drop table if exists identityiqah.spt_hist_object_config_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_policy_violation_remediation_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_role cascade;
+
+    drop table if exists identityiqah.spt_hist_role_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_role_event cascade;
+
+    drop table if exists identityiqah.spt_hist_workgroup cascade;
+
+    drop table if exists identityiqah.spt_hist_workgroup_capture cascade;
+
+    drop table if exists identityiqah.spt_hist_workgroup_event cascade;

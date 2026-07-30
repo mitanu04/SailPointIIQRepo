@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- (c) Copyright 2015 SailPoint Technologies, Inc., All Rights Reserved. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sp="http://sailpoint.com/ui">
+<body>
+
+<ui:composition>
+
+    <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+        helpKey = 'APPLICATION';
+   
+        
+        // Handle the Grant Type change in dropdown - show hide respective views
+        
+        function toggleSiteList(){
+            var allSites = Ext.getDom('editForm:AggrAllSites');
+            var include = Ext.getDom('editForm:include');
+            var exclusion = Ext.getDom('exclusionList');
+                if ( allSites && allSites.checked == true) {  
+                  include.value="";
+                  include.disabled="disabled";
+                } else {
+                  include.disabled="";
+                }
+            }
+        
+        function textArea(){
+            var allSites = Ext.getDom('editForm:AggrAllSites');
+            var include = Ext.getDom('editForm:include');
+            allSites.checked=true;
+            include.value="";
+             include.disabled="disabled";
+          }
+        
+        
+        function toggleGrantTypeView() {
+            var grantType = getFieldValue("editForm:grantType");
+            var clientCred = (grantType == "CLIENT_CREDENTIALS" );
+            var saml = (grantType == "SAML_BEARER_ASSERTION" );
+            var refreshToken = (grantType == "REFRESH_TOKEN" ) ;
+            var certificateCred = (grantType == "CERTIFICATE_CREDENTIALS" ) ;
+            
+            if(!clientCred && !saml && !refreshToken && !certificateCred) {
+                    clientCred = true;
+                    document.getElementById("editForm:grantType").selectedIndex = "0";
+            }
+            
+            if(saml) {
+                Ext.fly("authServerDiv").removeCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+            }else if(clientCred){
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+            } else if(refreshToken) {
+                Ext.fly("refreshTokenDiv").removeCls("hidden");
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").addCls("hidden");
+            }  else if(certificateCred) {
+                Ext.fly("refreshTokenDiv").addCls("hidden");
+                Ext.fly("authServerDiv").addCls("hidden");
+                Ext.fly("certificateCredentialsDiv").removeCls("hidden");
+                
+            }
+        }
+        
+        function isSAMLAssertionGrantType() {
+            return "SAML_BEARER_ASSERTION" == getFieldValue("editForm:grantType");
+        }
+        function isJWTGrantType() {
+            return "CERTIFICATE_CREDENTIALS" == getFieldValue("editForm:grantType");
+        }
+        
+        function isRefreshTokenGrantType() {
+            return "REFRESH_TOKEN" == getFieldValue("editForm:grantType");
+        }
+
+        function getFieldValue(field) {
+            var val = null;
+            var fileName = Ext.getDom(field);
+            if ( fileName ) {
+               val = fileName.value;
+            }
+            return val;
+        }
+        Ext.onReady(function () {
+           Ext.QuickTips.init();
+           
+           toggleGrantTypeView();
+           
+           var allSites = Ext.getDom('editForm:AggrAllSites');
+           var includeValue = getFieldValue(Ext.getDom('editForm:include')); 
+           if(includeValue == "") {
+             allSites.checked=true;
+           } 
+           
+           // This is our validation hook
+           Page.on('beforeSave', function() {
+               if (!hasCredentialConfiguration()) {
+                   var clientID = getFieldValue('editForm:clientID');
+                   Validator.validateNonBlankString(clientID, '#{msgs.con_conf_form_o365_sharepoint_online_CLient_id_notNull}');
+
+                   var clientSecret = getFieldValue('editForm:clientSecret');
+                   Validator.validateNonBlankString(clientSecret, "#{msgs.con_conf_form_o365_sharepoint_online_CLient_secret_notNull}");
+                   
+                   var domainName = getFieldValue('editForm:domain');
+                   Validator.validateNonBlankString(domainName, "#{msgs.con_conf_form_o365_sharepoint_online_domain_notNull}");
+                   
+                   if(allSites.checked == false && include == ''){
+                	   Validator.validateNonBlankString(include, "any of \"#{msgs.con_conf_form_o365_sharepoint_online_site_URL_Inclusion}\" or \"#{msgs.con_conf_form_o365_sharepoint_online_All_Sites}\" should have a valid value!");
+                	   }
+                   if(isSAMLAssertionGrantType()) {
+                	   var authURL = getFieldValue('editForm:authURL');
+                	   Validator.validateNonBlankString(authURL, "#{msgs.con_conf_form_o365_sharepoint_online_authUrl_notNull}");
+                	   
+                	   var username = getFieldValue('editForm:username');
+                	   Validator.validateNonBlankString(username, "#{msgs.con_conf_form_o365_sharepoint_online_username_notNull}");
+                	   
+                	   var password = getFieldValue('editForm:password');
+                	   Validator.validateNonBlankString(password, "#{msgs.con_conf_form_o365_sharepoint_online_password_notNull}");
+                	   
+                	   var samlRequest = getFieldValue('editForm:samlRequestBody');
+                	   Validator.validateNonBlankString(samlRequest, "#{msgs.con_conf_form_o365_sharepoint_online_RequestBody_notNull}");
+                	   }
+                   
+                   if(isRefreshTokenGrantType()) {
+                	   var refreshToken = getFieldValue('editForm:refresh_token');
+                	   Validator.validateNonBlankString(refreshToken, "#{msgs.con_conf_form_o365_sharepoint_online_refreshToken_notNull}");
+                	   }
+                   
+                   if(isJWTGrantType()){
+                	   
+                	   var clientCertExists = getFieldValue("editForm:clientCertExists");
+                	   if (!clientCertExists) {
+                		   var certificate = getFieldValue("editForm:clientCertificate");
+                		   Validator.validateNonBlankString(certificate, '#{msgs.err_msg_client_cert_cert_empty}');
+                		   }
+                	   
+                	   var privateKeyExists = getFieldValue('editForm:privateKeyExists');
+                	   if (!privateKeyExists) {
+                		   var privateKey = getFieldValue('editForm:private_key');
+                		   Validator.validateNonBlankString(privateKey, "#{msgs.con_conf_form_o365_sharepoint_online_privatekey_notNull}");
+                		   }
+                	   
+                	   var privateKeyPassword = getFieldValue('editForm:privateKeyPassword');
+                	   Validator.validateNonBlankString(privateKeyPassword, "#{msgs.con_conf_form_o365_sharepoint_online_privatekeypassword_notNull}");
+                        }
+
+                   var errors = Validator.getErrors();
+                   if (errors && errors.length > 0) {
+                       Validator.displayErrors('appErrorsTop');
+                       return false;
+                   }
+               }
+
+               //return false will kill cancel the save
+               return true;
+           });
+
+          toggleSiteList();
+        });
+
+       //--><!]]>
+    </script>
+    <f:view>
+
+      <h:outputText styleClass="sectionHeader" value="#{applicationObject.type} #{msgs.label_configuration}"/><br/><br/>
+        <div class="" id="credentialsContainer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="#{msgs.con_conf_form_o365_sharepoint_online_Connection_Creds}"/>
+                </div>
+            </div>
+        <!-- Grant type selection -->
+            <div class ="row spContent">
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText style='padding:5px' value="#{msgs.label_auth_method}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                    <h:graphicImage id="imgHlpIndexGDetails_authMethod" styleClass="helpIcon"
+                         url="/images/icons/dashboard_help_16.png"
+                         alt="#{help.help_con_form_rws_authentication_method}" />
+                   </td>
+                   <td>
+                    <h:outputText style='font-weight:bold' value="#{msgs.con_conf_form_o365_sharepoint_online_Auth2}" />
+                   </td>
+                </tr>
+                <tr>
+                   <td class='titleColumn certScheduleTitleCol'>
+                       <h:outputText value="#{msgs.label_grant_type}" />
+                   </td>
+                   <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpGrantType"
+                       styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                       alt="#{help.help_con_form_oauth2_grant_type}" />
+                   </td>
+                   <td>
+                    <h:selectOneMenu id="grantType" name="granttype"
+                       disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                       value="#{applicationObject.attributes['grantType']}"
+                       class="" onchange="toggleGrantTypeView()">
+                       <f:selectItem itemValue = "CLIENT_CREDENTIALS" itemLabel = "#{msgs.con_conf_form_o365_sharepoint_online_Client_Credentials}" /> 
+                       <f:selectItem itemValue = "SAML_BEARER_ASSERTION" itemLabel = "#{msgs.con_conf_form_o365_sharepoint_online_SAML}" />
+                       <f:selectItem itemValue = "REFRESH_TOKEN" itemLabel = "#{msgs.con_conf_form_o365_sharepoint_online_Refresh_Token}" /> 
+                       <f:selectItem itemValue = "CERTIFICATE_CREDENTIALS" itemLabel = "#{msgs.con_conf_form_o365_sharepoint_online_JWT}" /> 
+                   </h:selectOneMenu>
+                   </td>
+                </tr>
+                </table>
+                </div>
+            </div> <!-- Grant type selection End-->
+        <!-- Credentials -->
+            <div class ="row spContent" id="credentials">
+                <div class="col-sm-12" id="clientCredentialsDiv">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_client_id}"/>   
+                            <h:outputText styleClass="requiredText" value="*"/>           
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpClientID" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_client_id}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id="clientID"
+                            value="#{applicationObject.attributes['client_Id']}"
+                            size="80"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+          
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_client_secret}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>           
+                        </td>
+
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpClientSecret" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_client_secret}"/>
+                        </td>
+                        <td>
+                            <sp:inputSecret id="clientSecret"
+                            value="#{applicationObject.attributes['client_Secret']}"
+                            redisplay="true"
+                            size="80"
+                            autocomplete="off"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                            <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_sharepoint_domain}"/>
+                            <h:outputText styleClass="requiredText" value="*"/>   
+                        </td>
+                        <td class="certScheduleHelpCol">
+                            <h:graphicImage id="imgHlpDomainName" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_sharepoint_domain}"/>
+
+                        </td>
+                        <td>
+                            <h:inputText id = "domain"
+                            value="#{applicationObject.attributes['sharepoint_Domain']}"
+                            size="20"
+                            disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                            readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}">
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+                <ui:include src="OAuth2GrantTypes.xhtml" />
+              <div class="col-sm-12" id="authenticationEndpointUrlDiv">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                  <tr>
+                    <td class='titleColumn certScheduleTitleCol'>
+                      <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_authentication_endpoint_url}"/>
+                    </td>
+
+                    <td class="certScheduleHelpCol">
+                      <h:graphicImage id="imgHlpAuthenticationEndpointURL" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png"
+                                      alt="#{help.help_con_conf_form_o365_sharepoint_online_authentication_endpoint_url}"/>
+
+                    </td>
+                    <td>
+                      <h:inputText id="authenticationEndpointUrl"
+                                   value="#{applicationObject.attributes['tokenEndpoint']}"
+                                   size="80"
+                                   disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                                   readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+	    </div>	
+        </div> <!-- Connector Credentials Container End-->
+		
+        <!-- Add AllSites and Inclusion/Exclusion List -->
+        <div class="" id="SiteConfigurationContainer">
+          <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="Site Collection Configuration"/>
+                </div>
+                </div>
+                <div class ="row spContent"  >
+                  <div class="col-sm-12">
+                    <table class="spTable" style="border:0px" cellspacing="0">
+                      <tr>
+                        <td class='titleColumn certScheduleTitleCol'>
+                           <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_All_Sites}"/>
+                        </td>
+                        <td class="certScheduleHelpCol">
+                           <h:graphicImage id="imgHlpaggregateAllSites" styleClass="helpIcon" url="/images/icons/dashboard_help_16.png" 
+                                       alt="#{help.help_con_conf_form_o365_sharepoint_online_All_Sites}"/>
+                        </td>
+                        <td width="100%">
+                           <h:selectBooleanCheckbox id='AggrAllSites' onclick='toggleSiteList()' 
+                                         value="#{applicationObject.attributes['allSites']}"
+                                         disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                           <h:outputText id="message" style='padding:5px'/>
+                         </td>
+                    </tr>
+                    <tr id="inclusionList">
+                       <td class='titleColumn certScheduleTitleCol'>
+                          <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_site_URL_Inclusion}"/>
+                       </td>
+                       <td class="certScheduleHelpCol">
+                          <h:graphicImage id="imgHlpInclusion" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_site_URL_Inclusion}"/>
+                       </td>
+                       <td>
+                           <h:inputTextarea converter="NewLineList" id="include" value="#{applicationObject.attributes['siteInclusionList']}"
+                           rows="4" style="width:29.5%"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                      </td>
+                  </tr>
+                  <tr id="exclusionList">
+                     <td class='titleColumn certScheduleTitleCol'>
+                          <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_site_URL_Exclusion}"/>
+                     </td>
+                     <td class="certScheduleHelpCol" >
+                         <h:graphicImage id="imgHlpExclusion" 
+                              styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_site_URL_Exclusion}"/>
+                    </td>
+                    <td>
+                        <h:inputTextarea converter="NewLineList" onchange='textArea()' value="#{applicationObject.attributes['siteExclusionList']}"
+                           rows="4" style="width:29.5%"
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                   </td>
+                </tr>
+             </table>
+           </div>
+         </div>
+       </div>
+        <!-- Add Additionals -->
+        <div class="" id="additionalConfigurationContainer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h:outputText styleClass="sectionHeader" value="Additional Configuration"/>
+                </div>
+            </div>
+            <div class ="row spContent"  >
+                <div class="col-sm-12">
+                <table class="spTable" style="border:0px" cellspacing="0">
+                    <tr>
+                      <td class='titleColumn certScheduleTitleCol'>
+                         <h:outputText style='padding:5px' value="#{msgs.con_conf_form_o365_sharepoint_online_page_size}"/>
+                      </td>
+                      <td class="certScheduleHelpCol">
+                          <h:graphicImage id="imgHlpPageSize" styleClass="helpIcon" 
+                              url="/images/icons/dashboard_help_16.png" 
+                              alt="#{help.help_con_conf_form_o365_sharepoint_online_pageSize}"/>
+                      </td>
+                      <td>
+                          <h:inputText id="pageSize" value="#{applicationObject.attributes['pageSize']}"
+                           size="10"    
+                           disabled="#{!sp:hasRight(facesContext, 'ManageApplication')}"
+                           readonly="#{!sp:hasRight(facesContext, 'ManageApplication')}"/>
+                     </td>
+                   </tr>            
+                    <ui:include src="iqserviceconfig.xhtml">
+                 <ui:param name="IQServiceHostHelpTextKey" value="#{help.help_con_conf_form_o365_sharepoint_online_iqservice_host}"></ui:param>
+                  </ui:include>
+                </table>
+              </div>
+           </div>       
+       </div>
+     </f:view>
+    <style>
+    .hidden {
+        display:none;
+    }
+    .top0{
+        margin-top: 0px !important;
+    }
+</style>
+</ui:composition>
+
+</body>
+</html>

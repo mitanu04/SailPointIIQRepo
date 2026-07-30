@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ImportAction PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<ImportAction name="connectorRegistryUpdateAction">
+  <Application connector="sailpoint.connector.DynamicsCRMConnector" featuresString="PROVISIONING, ENABLE, SEARCH" icon="internetIcon" name="Dynamics 365 CRM template" type="Dynamics 365 CRM">
+    <Attributes>
+      <Map>
+        <entry key="encrypted" value="clientSecret,clientCertificate,private_key,privateKeyPassword,accessToken"/>
+        <entry key="formPath" value="DynamicsCRMConnector.xhtml"/>
+        <entry key="formattedValueProperties" value="accessmode,_businessunitid_value,_territoryid_value,_positionid_value,_administratorid_value,componentstate,isinherited,_parentroleid_value,teamtype,membershiptype"/>
+        <entry key="pageSize" value="500"/>
+      </Map>
+    </Attributes>
+    <Schemas>
+      <Schema displayAttribute="fullName" identityAttribute="systemUserId" nativeObjectType="systemuser" objectType="account">
+        <AttributeDefinition internalName="accessmode" name="accessMode" type="string">
+          <Description>Type of user(Read-Write, Administrative, Read, Support User, Non-interactive, Delegated Admin)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="azureactivedirectoryobjectid" name="azureActiveDirectoryObjectId" type="string">
+          <Description>Object ID from Azure AD</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_businessunitid_value" name="businessunitName" type="string">
+          <Description>Name of the business unit to which the user belongs</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="domainname" name="domainName" type="string">
+          <Description>Domain of which the user is a member</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="employeeid" name="employeeId" type="string">
+          <Description>Employee identifier for the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="firstname" name="firstName" type="string">
+          <Description>First name of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="fullname" name="fullName" type="string">
+          <Description>Full name of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="internalemailaddress" name="internalEmailAddress" type="string">
+          <Description>Internal email address for the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="jobtitle" name="jobTitle" type="string">
+          <Description>Job title of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="lastname" name="lastName" type="string">
+          <Description>Last name of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="middlename" name="middleName" type="string">
+          <Description>Middle name of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="mobilephone" name="mobilePhone" type="string">
+          <Description>Mobile phone number for the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="nickname" name="nickName" type="string">
+          <Description>Nickname of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_parentsystemuserid_value" name="parentSystemUserId" type="string">
+          <Description>Unique identifier of the manager of the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_positionid_value" name="positionName" type="string">
+          <Description>User's position in hierarchical security model</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="securityRoles" entitlement="true" managed="true" multi="true" schemaObjectType="securityRole" type="string">
+          <Description>Security Roles assigned to the User</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="systemuserid" name="systemUserId" type="string">
+          <Description>Unique identifier for the user</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="teams" entitlement="true" managed="true" multi="true" schemaObjectType="group" type="string">
+          <Description>Team memberships of User</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_territoryid_value" name="territoryName" type="string">
+          <Description>Name of the territory to which the user is assigned</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="title" type="string">
+          <Description>Title of the user</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="name" identityAttribute="teamId" nativeObjectType="team" objectType="group">
+        <AttributeDefinition internalName="_administratorid_value" name="administratorName" type="string">
+          <Description>FullName of the primary user responsible for the team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="azureactivedirectoryobjectid" name="azureActiveDirectoryObjectId" type="string">
+          <Description>Object ID from Azure AD</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_businessunitid_value" name="businessunitName" type="string">
+          <Description>Name of the business unit to which the team belongs</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="description" type="string">
+          <Description>Description of the team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="isdefault" name="isDefault" type="boolean">
+          <Description>Information about whether the team is a default business unit team</Description>
+        </AttributeDefinition>
+       <AttributeDefinition internalName="membershiptype" name="membershipType" type="string">
+          <Description>Information about team membership type(Members and guests, Members, Owners, Guests)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" type="string">
+          <Description>Name of the team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="securityRoles" entitlement="true" managed="true" multi="true" schemaObjectType="securityRole" type="string">
+          <Description>Security Roles assigned to the team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="systemmanaged" name="systemManaged" type="boolean">
+          <Description>Select whether the team will be managed by the system</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="teamid" name="teamId" type="string">
+          <Description>Unique identifier for the team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="teamtype" name="teamType" type="string">
+          <Description>The team type(Owner, Access, AAD Security Group, AAD Office Group)</Description>
+        </AttributeDefinition>
+      </Schema>
+      <Schema displayAttribute="displayName" identityAttribute="roleId" nativeObjectType="securityRole" objectType="securityRole">
+        <AttributeDefinition internalName="_businessunitid_value" name="businessunitName" type="string">
+          <Description>Name of the business unit to which the team belongs</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="componentstate" name="componentState" type="string">
+          <Description>State of the role(Published, Unpublished, Unpublished, Deleted Unpublished)</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="displayName" type="string">
+          <Description>Combination of business unit name and role name</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="isinherited" name="isInherited" type="string">
+          <Description>Role is inherited by users from team membership, if role associated with team</Description>
+        </AttributeDefinition>
+        <AttributeDefinition name="name" type="string">
+          <Description>Name of the role</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="organizationid" name="organizationId" type="string">
+          <Description>Unique identifier of the organization associated with the role</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="_parentroleid_value" name="parentRoleName" type="string">
+          <Description>Name of the parent role</Description>
+        </AttributeDefinition>
+        <AttributeDefinition internalName="roleid" name="roleId" type="string">
+          <Description>Unique identifier of the role</Description>
+        </AttributeDefinition>
+      </Schema>
+    </Schemas>
+    <Settings><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright (C) 2016 SailPoint Technologies, Inc.  All rights reserved. -->
+
+<Form xmlns='http://www.sailpoint.com/xsd/sailpoint_form_2_0.xsd'
+	  name='Dynamics 365 CRM' connectorName="Dynamics 365 CRM"
+	  type="SourceConfig" directConnect="true" fileUpload="false" status="released" shortDesc="ShortDesc">
+	<Menu name="Connection Settings" label="con_form_dynamics_lbl_connection_settings">
+        <Section name="Connection Settings" label="con_form_dynamics_lbl_connection_settings" sectionInfo="SECTION_INFO" docLinkLabel="docLinkLabel_AuthenticationtionSettings" docLink="https://documentation.sailpoint.com/connectors/microsoft/dynamics_365/help/">
+            <Field name="envUrl" type="url" required="true" displayName="con_form_dfo_env_url" helpKey="help_con_form_crm_env_url" />
+            <Field name="tenantId" type="text" required="true" displayName="con_form_dfo_tenant_ID" helpKey="help_con_form_dfo_tenant_ID" />
+            <Field type="textLabel" displayName="label_auth_method" helpKey="help_con_form_rws_authentication_method" readOnly="true" labelValue="oauth_2" />
+            <Field name="grantType" type="select" required="false" displayName="label_grant_type" helpKey="help_con_form_oauth2_grant_type" defaultValue="CLIENT_CREDENTIALS">
+                <AllowedValues>
+                    <Option value="CLIENT_CREDENTIALS" label="con_form_dynamics_lbl_client_credentials"/>
+                    <Option value="CERTIFICATE_CREDENTIALS" label="con_form_dynamics_lbl_jwt_client_credentials"/>
+                </AllowedValues>
+            </Field>
+            <Field name="clientID" type="text" required="true" parentKey="grantType" parentValue="CLIENT_CREDENTIALS" displayName="con_form_dfo_client_ID" helpKey="help_con_form_dfo_client_ID"/>
+            <Field name="clientSecret" type="secret" required="true" parentKey="grantType" parentValue="CLIENT_CREDENTIALS" displayName="con_form_dfo_client_secret" helpKey="help_con_form_dfo_client_secret"/>
+            <Field name="clientID" type="text" required="true" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS" displayName="con_form_dfo_client_ID" helpKey="help_con_form_dfo_client_ID"/>
+            <Field name="clientCertificate" type="textarea" required="true" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS" displayName="con_form_dfo_certificate" helpKey="help_con_form_dfo_certificate"/>
+            <Field name="private_key" valueHidden="true" type="textarea" required="true" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS" displayName="con_form_jwt_private_key" helpKey="help_con_form_dynamics_jwt_private_key"/>
+            <Field name="privateKeyPassword" type="secret" required="true" parentKey="grantType" parentValue="CERTIFICATE_CREDENTIALS" displayName="con_form_jwt_private_key_password" helpKey="help_con_form_jwt_private_key_password"/>
+            <Field name="pageSize" type="number" defaultValue="500" min="1" max="1000" displayName="con_form_page_size" helpKey="help_con_form_dfo_page_size" saveAsString="true"/>
+        </Section>
+    </Menu>
+</Form>]]>
+    </Settings>
+  </Application>
+</ImportAction>
