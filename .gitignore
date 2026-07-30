@@ -2,6 +2,7 @@
 build/
 dependency-check-reports/
 dependency-check-data/
+Program FilesApache Software FoundationTomcat 9.0webappsidentityiq/
 
 # Product binaries — re-downloadable from Compass (remove these 3 lines if you want them tracked)
 base/ga/
@@ -18,6 +19,7 @@ dev.iiq.cfg
 dev.iiq.dat
 *.iiq.cfg
 *.iiq.dat
+
 
 # Exported jar of custom Java (rebuilt from src/)
 **/identityiqCustomizations.*.jar
