@@ -30,7 +30,7 @@
          <entry key="processTriggers" value="false"/>
          <entry key="promoteAttributes" value="true"/>
          <entry key="promoteManagedAttributes" value="false"/>
-         <entry key="provision" value="true"/>
+         <entry key="provision" value="false"/>
          <entry key="refreshCompositeApplications" value="false"/>
          <entry key="refreshGroups" value="false"/>
          <entry key="refreshIdentityEntitlements" value="false"/>
