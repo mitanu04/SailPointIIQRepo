@@ -30,6 +30,7 @@
          </entry>
          <entry key="aggregationType" value="account"/>
          <entry key="beforeProvisioningRule"/>
+         <entry key="buildMapRule" value="Aggregate-AccountStatus-Shared_DB"/>         
          <entry key="compositeDefinition"/>
          <entry key="connMaxRetry" value="3"/>
          <entry key="connRetryEnable">
@@ -219,7 +220,7 @@
          <AttributeDefinition name="department" type="string">
             <Description/>
          </AttributeDefinition>
-         <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" type="string">
+         <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" schemaObjectType="group" type="string">
             <Description/>
          </AttributeDefinition>
          <AttributeDefinition name="position" type="string">
