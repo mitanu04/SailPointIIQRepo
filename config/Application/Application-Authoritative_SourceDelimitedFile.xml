@@ -100,39 +100,17 @@
    </Owner>
    <Schemas>
       <Schema displayAttribute="UserName" identityAttribute="PID" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785489667004">
-         <AttributeDefinition name="UserName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="FirstName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="LastName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Manager" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Location" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Position" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Department" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Status" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="PID" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="Type" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition multi="true" name="CostCenter" type="string">
-            <Description/>
-         </AttributeDefinition>
+         <AttributeDefinition name="UserName" type="string"/>
+         <AttributeDefinition name="FirstName" type="string"/>
+         <AttributeDefinition name="LastName" type="string"/>
+         <AttributeDefinition name="Manager" type="string"/>
+         <AttributeDefinition name="Location" type="string"/>
+         <AttributeDefinition name="Position" type="string"/>
+         <AttributeDefinition name="Department" type="string"/>
+         <AttributeDefinition name="Status" type="string"/>
+         <AttributeDefinition name="PID" type="string"/>
+         <AttributeDefinition name="Type" type="string"/>
+         <AttributeDefinition multi="true" name="CostCenter" type="string"/>
       </Schema>
    </Schemas>
    <ApplicationScorecard significantModified="1785489667004"/>
