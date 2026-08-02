@@ -30,7 +30,7 @@
          </entry>
          <entry key="aggregationType" value="account"/>
          <entry key="beforeProvisioningRule"/>
-         <entry key="buildMapRule" value="Aggregate-AccountStatus-Shared_DB"/>         
+         <entry key="buildMapRule" value="Aggregate-AccountStatus-Shared_DB"/>
          <entry key="compositeDefinition"/>
          <entry key="connMaxRetry" value="3"/>
          <entry key="connRetryEnable">
@@ -39,10 +39,10 @@
             </value>
          </entry>
          <entry key="connWaitTimeForRetry" value="2"/>
-<entry key="deltaTable"/>
+         <entry key="deltaTable"/>
          <entry key="driverClass" value="com.mysql.cj.jdbc.Driver"/>
-        <entry key="getDeltaSQL"/>
-        <entry key="getObjectSQL" value="SELECT username, pid, first_name, last_name, email, department, `groups` AS groups, `position` AS  `position`, location, status FROM shared_db_table WHERE username = '$(identity)';"/>
+         <entry key="getDeltaSQL"/>
+         <entry key="getObjectSQL" value="SELECT username, pid, first_name, last_name, email, department, `groups` AS groups, `position` AS  `position`, location, status FROM shared_db_table WHERE username = '$(identity)';"/>
          <entry key="group.SQL" value="select * from app_groups;"/>
          <entry key="group.aggregationMode">
             <value>
@@ -63,8 +63,8 @@
                <Boolean/>
             </value>
          </entry>
-         <entry key="group.password" value="1:ACP:4CIFB/uld/VKnf82vFUrCel9q7c3JIC4ea9Aze1mEyg="/>
-         <entry key="group.url" value="jdbc:mysql://localhost/shared_db_table"/>
+         <entry key="group.password" value="%%SHARED_DB_GROUPS_PASSWORD%%"/>
+         <entry key="group.url" value="%%SHARED_DB_URL_GROUPS%%"/>
          <entry key="group.useExecuteQuery">
             <value>
                <Boolean/>
@@ -121,8 +121,8 @@
             </value>
          </entry>
          <entry key="partitionStatements"/>
-         <entry key="password" value="1:ACP:gUSs9Jtfinvs4KjvP006MVEro8SG69SboQzpISFH/n4="/>
-         <entry key="provisionRule" value="globalRule"/>         
+         <entry key="password" value="1:ACP:gtDhy8bRk/lgZfGKS+VUTiP9m+r1jMq6krgPHj6/cDY="/>
+         <entry key="provisionRule" value="globalRule"/>
          <entry key="sysDescriptions">
             <value>
                <Map>
@@ -132,7 +132,7 @@
          </entry>
          <entry key="templateApplication" value="JDBC Template"/>
          <entry key="testConnSQL"/>
-         <entry key="url" value="jdbc:mysql://localhost/shared_db_table"/>
+         <entry key="url" value="%%SHARED_DB_URL%%"/>
          <entry key="useExecuteQuery">
             <value>
                <Boolean/>
@@ -174,7 +174,7 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
-    <ProvisioningForms>
+   <ProvisioningForms>
       <Form name="Shared_DB_Table" objectType="account" type="Update">
          <Attributes>
             <Map>
@@ -202,44 +202,20 @@
    </ProvisioningForms>
    <Schemas>
       <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785531696190">
-         <AttributeDefinition name="username" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="pid" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="first_name" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="last_name" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="email" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="department" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" schemaObjectType="group" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="position" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="location" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="status" type="string">
-            <Description/>
-         </AttributeDefinition>
+         <AttributeDefinition name="username" type="string"/>
+         <AttributeDefinition name="pid" type="string"/>
+         <AttributeDefinition name="first_name" type="string"/>
+         <AttributeDefinition name="last_name" type="string"/>
+         <AttributeDefinition name="email" type="string"/>
+         <AttributeDefinition name="department" type="string"/>
+         <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" schemaObjectType="group" type="string"/>
+         <AttributeDefinition name="position" type="string"/>
+         <AttributeDefinition name="location" type="string"/>
+         <AttributeDefinition name="status" type="string"/>
       </Schema>
       <Schema descriptionAttribute="description" displayAttribute="group_name" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1785584933366">
-         <AttributeDefinition name="group_name" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="description" type="string">
-            <Description/>
-         </AttributeDefinition>
+         <AttributeDefinition name="group_name" type="string"/>
+         <AttributeDefinition name="description" type="string"/>
       </Schema>
    </Schemas>
    <ApplicationScorecard significantModified="1785531696190"/>
