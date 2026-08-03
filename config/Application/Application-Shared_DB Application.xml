@@ -60,7 +60,7 @@
          </entry>
          <entry key="group.mergeRows">
             <value>
-               <Boolean/>
+               <Boolean/>\
             </value>
          </entry>
          <entry key="group.password" value="%%SHARED_DB_GROUPS_PASSWORD%%"/>
@@ -184,17 +184,17 @@
          <Section name="Section 1">
             <Field displayName="Location" name="location" required="true" type="string">
                <Script>
-                  <Source><![CDATA[return identity.location;]]></Source>
+                  <Source><![CDATA[return identity.getAttribute("location");]]></Source>
                </Script>
             </Field>
             <Field displayName="Department" name="department" required="true" type="string">
                <Script>
-                  <Source><![CDATA[return identity.department;]]></Source>
+                  <Source><![CDATA[return identity.getAttribute("department");]]></Source>
                </Script>
             </Field>
             <Field displayName="Email" name="email" type="string">
                <Script>
-                  <Source><![CDATA[return identity.email;]]></Source>
+                  <Source><![CDATA[return identity.getEmail();]]></Source>
                </Script>
             </Field>
          </Section>

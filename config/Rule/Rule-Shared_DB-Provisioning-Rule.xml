@@ -55,11 +55,10 @@
     import java.sql.Statement;
     import java.sql.ResultSet;
     import java.sql.Connection;
-    import java.sql.PreparedStatement;
 
     Logger log = Logger.getLogger("sailpoint.jdbc.JDBCProvisioner");
     ProvisioningResult result = new ProvisioningResult();
- 
+
     // Helper: pull a single attribute value from an AccountRequest.
     public Object getAttributeRequestValue(AccountRequest acctReq, String attribute) {
       if (acctReq != null) {
@@ -70,7 +69,7 @@
       }
       return null;
     }
- 
+
     try {
       List acctReqs = plan.getAccountRequests();
       if (acctReqs != null && acctReqs.size() > 0) {
@@ -80,43 +79,45 @@
 
             String nativeIdentity = (String) account.getNativeIdentity();
 
-            Statement curr_stmt = connection.createStatement();
-            ResultSet rs = curr_stmt.executeQuery("SELECT * FROM shared_db_table WHERE username = '" + nativeIdentity + "'");
+            // ---- read current roles (groups is a MySQL reserved word -> backtick) ----
+            PreparedStatement curr_stmt = connection.prepareStatement(
+              "SELECT `groups` FROM shared_db_table WHERE username = ?");
+            curr_stmt.setString(1, nativeIdentity);
+            ResultSet rs = curr_stmt.executeQuery();
 
-            List current_roles = null;
             String roles = "";
-            while(rs.next()) {
+            while (rs.next()) {
               roles = rs.getString("groups");
             }
+            rs.close();
+            curr_stmt.close();
 
-            current_roles = Util.csvToList(roles,true);
-
-            if(current_roles == null) {
+            List current_roles = Util.csvToList(roles, true);
+            if (current_roles == null) {
               current_roles = new ArrayList();
             }
 
             System.out.println("Current Roles for User " + nativeIdentity + ": " + Util.listToCsv(current_roles));
 
+            // ---- collect role add/remove requests ----
             List remove_roles = new ArrayList();
             List add_roles = new ArrayList();
 
             List mod_attr_requests = account.getAttributeRequests();
-
             if (mod_attr_requests != null) {
               for (AttributeRequest attrReq : mod_attr_requests) {
                 String attrName = attrReq.getName();
                 if ("groups".equals(attrName)) {
-                  if(ProvisioningPlan.Operation.Remove.equals(attrReq.getOperation())){
-                    if(attrReq.getValue() instanceof String){
+                  if (ProvisioningPlan.Operation.Remove.equals(attrReq.getOperation())) {
+                    if (attrReq.getValue() instanceof String) {
                       remove_roles = Util.csvToList(attrReq.getValue());
-                    }else if (attrReq.getValue() instanceof List){
+                    } else if (attrReq.getValue() instanceof List) {
                       remove_roles = (List) attrReq.getValue();
                     }
-
-                  } else if(ProvisioningPlan.Operation.Add.equals(attrReq.getOperation())) {
-                    if(attrReq.getValue() instanceof String){
+                  } else if (ProvisioningPlan.Operation.Add.equals(attrReq.getOperation())) {
+                    if (attrReq.getValue() instanceof String) {
                       add_roles = Util.csvToList(attrReq.getValue());
-                    }else if (attrReq.getValue() instanceof List){
+                    } else if (attrReq.getValue() instanceof List) {
                       add_roles = (List) attrReq.getValue();
                     }
                   }
@@ -127,12 +128,12 @@
             System.out.println("Add Roles: " + Util.listToCsv(add_roles));
             System.out.println("Remove Roles: " + Util.listToCsv(remove_roles));
 
-            if(!remove_roles.isEmpty()) {
+            if (!remove_roles.isEmpty()) {
               current_roles.removeAll(remove_roles);
             }
-            if(!add_roles.isEmpty()) {
-              for(Object role : add_roles) {
-                if(!current_roles.contains(role)) {
+            if (!add_roles.isEmpty()) {
+              for (Object role : add_roles) {
+                if (!current_roles.contains(role)) {
                   current_roles.add(role);
                 }
               }
@@ -140,43 +141,73 @@
 
             System.out.println("Updating the roles for:" + nativeIdentity + " to: " + Util.listToCsv(current_roles));
 
+            // ---- build a dynamic UPDATE: only touch columns actually present in the plan ----
+            // This stops attributes that are absent from THIS plan (which arrive as null
+            // via getAttributeRequestValue) from being written over existing DB values.
+            List setCols = new ArrayList();
+            List setVals = new ArrayList();
 
- 
-            PreparedStatement statement = connection.prepareStatement(
-              "update shared_db_table SET email = ?, department = ?, location = ?, `groups` = ? WHERE username = ?");
-            statement.setString(1, (String) getAttributeRequestValue(account, "email"));
-            statement.setString(2, (String) getAttributeRequestValue(account, "department"));
-            statement.setString(3, (String) getAttributeRequestValue(account, "location"));
-            statement.setString(4, (String) Util.listToCsv(current_roles));
-            statement.setString(5, (String) nativeIdentity);
+            if (account.getAttributeRequest("email") != null) {
+              setCols.add("email = ?");
+              setVals.add(getAttributeRequestValue(account, "email"));
+            }
+            if (account.getAttributeRequest("department") != null) {
+              setCols.add("department = ?");
+              setVals.add(getAttributeRequestValue(account, "department"));
+            }
+            if (account.getAttributeRequest("location") != null) {
+              setCols.add("location = ?");
+              setVals.add(getAttributeRequestValue(account, "location"));
+            }
 
+            // roles are always recomputed above, so always write them back (no-op if unchanged)
+            setCols.add("`groups` = ?");
+            setVals.add(Util.listToCsv(current_roles));
+
+            StringBuffer sql = new StringBuffer("update shared_db_table SET ");
+            for (int i = 0; i < setCols.size(); i++) {
+              if (i > 0) sql.append(", ");
+              sql.append(setCols.get(i));
+            }
+            sql.append(" WHERE username = ?");
+
+            PreparedStatement statement = connection.prepareStatement(sql.toString());
+            int idx = 1;
+            for (int i = 0; i < setVals.size(); i++) {
+              statement.setString(idx++, (String) setVals.get(i));
+            }
+            statement.setString(idx, nativeIdentity);
             statement.executeUpdate();
             statement.close();
- 
+
             result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+
+            log.debug("Account Request Operation = Modify completed for user: " + nativeIdentity
+              + " | roles: " + Util.listToCsv(current_roles)
+              + " | columns updated: " + Util.listToCsv(setCols));
           }
-          else if(AccountRequest.Operation.Disable.equals(account.getOperation())) {
+          else if (AccountRequest.Operation.Disable.equals(account.getOperation())) {
             log.debug("Account Request Operation = Disable");
             String nativeIdentity = (String) account.getNativeIdentity();
- 
+
             PreparedStatement statement = connection.prepareStatement(
               "update shared_db_table SET status = 'Inactive' WHERE username = ?");
-            statement.setString(1, (String) nativeIdentity);
+            statement.setString(1, nativeIdentity);
             statement.executeUpdate();
             statement.close();
- 
+
             result.setStatus(ProvisioningResult.STATUS_COMMITTED);
           }
-          else if(AccountRequest.Operation.Enable.equals(account.getOperation())) {
+          else if (AccountRequest.Operation.Enable.equals(account.getOperation())) {
             log.debug("Account Request Operation = Enable");
             String nativeIdentity = (String) account.getNativeIdentity();
- 
+
             PreparedStatement statement = connection.prepareStatement(
               "update shared_db_table SET status = 'Active' WHERE username = ?");
-            statement.setString(1, (String) nativeIdentity);
+            statement.setString(1, nativeIdentity);
             statement.executeUpdate();
             statement.close();
- 
+
             result.setStatus(ProvisioningResult.STATUS_COMMITTED);
           }
           else {
@@ -190,6 +221,6 @@
       result.setStatus(ProvisioningResult.STATUS_FAILED);
       result.addError(e.toString());
     }
- 
+
     return result;]]></Source>
 </Rule>
