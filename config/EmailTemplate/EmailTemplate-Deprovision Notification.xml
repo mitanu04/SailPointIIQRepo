@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="Deprovision Notification">
+   <Body>
+&lt;html&gt;
+  &lt;body style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #222;"&gt;
+    &lt;p&gt;Hello,&lt;/p&gt;
+
+    &lt;p&gt;A scheduled &lt;strong&gt;deprovision (sunset)&lt;/strong&gt; action has been completed for the
+       following identity: &lt;td style="border:1px solid #ddd;"&gt;$!{identityName}&lt;/td&gt; &lt;/p&gt;
+
+    &lt;table cellpadding="6" cellspacing="0" border="0"
+           style="border-collapse: collapse; border: 1px solid #ddd;"&gt;
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Identity&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{identityName}&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Event type&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{eventType}&lt;/td&gt;
+      &lt;/tr&gt;
+#if($roleName)
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Role removed&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{roleName}&lt;/td&gt;
+      &lt;/tr&gt;
+#else
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Application&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{applicationName}&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Account&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{nativeIdentity}&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Entitlement&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{attributeName} = $!{attributeValue}&lt;/td&gt;
+      &lt;/tr&gt;
+#end
+      &lt;tr&gt;
+        &lt;td style="background:#f5f5f5; border:1px solid #ddd; font-weight:bold;"&gt;Requested by&lt;/td&gt;
+        &lt;td style="border:1px solid #ddd;"&gt;$!{assigner}&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+
+    &lt;p style="margin-top:16px; color:#666;"&gt;This is an automated notification from IdentityIQ.
+       No action is required.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+  </Body>
+   <Description>
+    Sent by the Scheduled Assignment (sunset) workflow when a role or entitlement
+    is deprovisioned. Args supplied by the workflow step: identityName, eventType,
+    roleName, applicationName, nativeIdentity, attributeName, attributeValue, assigner.
+  </Description>
+   <Subject>#if($roleName)Access removed: role "$!{roleName}" from $!{identityName}#{else}Access removed: entitlement on $!{applicationName} from $!{identityName}#end</Subject>
+</EmailTemplate>
