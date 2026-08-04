@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Shared_DB-Provisioning-Rule" significantModified="1785537401282" type="JDBCProvision">
+   <Description>This rule is used by the JDBC connector to do provisioning of the data .</Description>
+   <Signature returnType="ProvisioningResult">
+      <Inputs>
+         <Argument name="log" type="org.apache.commons.logging.Log">
+            <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+         </Argument>
+         <Argument name="context" type="sailpoint.api.SailPointContext">
+            <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+         </Argument>
+         <Argument name="application">
+            <Description>
+                The application whose data file is being processed.
+                </Description>
+         </Argument>
+         <Argument name="schema">
+            <Description>
+                The Schema currently in use.
+                </Description>
+         </Argument>
+         <Argument name="connection">
+            <Description>
+                A connection object to connect to database.
+                </Description>
+         </Argument>
+         <Argument name="plan">
+            <Description>
+                The ProvisioningPlan created against the JDBC application.
+                </Description>
+         </Argument>
+      </Inputs>
+      <Returns>
+         <Argument name="result">
+            <Description>
+                A Provisioning Result object is desirable to return the status.IT can be a new object or part of  Provisioning Plan
+                </Description>
+         </Argument>
+      </Returns>
+   </Signature>
+   <Source><![CDATA[import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.ProvisioningResult;
+    import java.sql.PreparedStatement;
+    import java.util.ArrayList;
+    import java.util.List;
+    import org.apache.log4j.Logger;
+    import sailpoint.tools.Util;
+    import java.sql.Statement;
+    import java.sql.ResultSet;
+    import java.sql.Connection;
+
+    Logger log = Logger.getLogger("sailpoint.jdbc.JDBCProvisioner");
+    ProvisioningResult result = new ProvisioningResult();
+
+    // Helper: pull a single attribute value from an AccountRequest.
+    public Object getAttributeRequestValue(AccountRequest acctReq, String attribute) {
+      if (acctReq != null) {
+        AttributeRequest attrReq = acctReq.getAttributeRequest(attribute);
+        if (attrReq != null) {
+          return attrReq.getValue();
+        }
+      }
+      return null;
+    }
+
+    try {
+      List acctReqs = plan.getAccountRequests();
+      if (acctReqs != null && acctReqs.size() > 0) {
+        for (AccountRequest account : acctReqs) {
+          if (AccountRequest.Operation.Modify.equals(account.getOperation())) {
+            log.debug("Account Request Operation = Modify");
+
+            String nativeIdentity = (String) account.getNativeIdentity();
+
+            // ---- read current roles (groups is a MySQL reserved word -> backtick) ----
+            PreparedStatement curr_stmt = connection.prepareStatement(
+              "SELECT `groups` FROM shared_db_table WHERE username = ?");
+            curr_stmt.setString(1, nativeIdentity);
+            ResultSet rs = curr_stmt.executeQuery();
+
+            String roles = "";
+            while (rs.next()) {
+              roles = rs.getString("groups");
+            }
+            rs.close();
+            curr_stmt.close();
+
+            List current_roles = Util.csvToList(roles, true);
+            if (current_roles == null) {
+              current_roles = new ArrayList();
+            }
+
+            System.out.println("Current Roles for User " + nativeIdentity + ": " + Util.listToCsv(current_roles));
+
+            // ---- collect role add/remove requests ----
+            List remove_roles = new ArrayList();
+            List add_roles = new ArrayList();
+
+            List mod_attr_requests = account.getAttributeRequests();
+            if (mod_attr_requests != null) {
+              for (AttributeRequest attrReq : mod_attr_requests) {
+                String attrName = attrReq.getName();
+                if ("groups".equals(attrName)) {
+                  if (ProvisioningPlan.Operation.Remove.equals(attrReq.getOperation())) {
+                    if (attrReq.getValue() instanceof String) {
+                      remove_roles = Util.csvToList(attrReq.getValue());
+                    } else if (attrReq.getValue() instanceof List) {
+                      remove_roles = (List) attrReq.getValue();
+                    }
+                  } else if (ProvisioningPlan.Operation.Add.equals(attrReq.getOperation())) {
+                    if (attrReq.getValue() instanceof String) {
+                      add_roles = Util.csvToList(attrReq.getValue());
+                    } else if (attrReq.getValue() instanceof List) {
+                      add_roles = (List) attrReq.getValue();
+                    }
+                  }
+                }
+              }
+            }
+
+            System.out.println("Add Roles: " + Util.listToCsv(add_roles));
+            System.out.println("Remove Roles: " + Util.listToCsv(remove_roles));
+
+            if (!remove_roles.isEmpty()) {
+              current_roles.removeAll(remove_roles);
+            }
+            if (!add_roles.isEmpty()) {
+              for (Object role : add_roles) {
+                if (!current_roles.contains(role)) {
+                  current_roles.add(role);
+                }
+              }
+            }
+
+            System.out.println("Updating the roles for:" + nativeIdentity + " to: " + Util.listToCsv(current_roles));
+
+            // ---- build a dynamic UPDATE: only touch columns actually present in the plan ----
+            // This stops attributes that are absent from THIS plan (which arrive as null
+            // via getAttributeRequestValue) from being written over existing DB values.
+            List setCols = new ArrayList();
+            List setVals = new ArrayList();
+
+            if (account.getAttributeRequest("email") != null) {
+              setCols.add("email = ?");
+              setVals.add(getAttributeRequestValue(account, "email"));
+            }
+            if (account.getAttributeRequest("department") != null) {
+              setCols.add("department = ?");
+              setVals.add(getAttributeRequestValue(account, "department"));
+            }
+            if (account.getAttributeRequest("location") != null) {
+              setCols.add("location = ?");
+              setVals.add(getAttributeRequestValue(account, "location"));
+            }
+
+            // roles are always recomputed above, so always write them back (no-op if unchanged)
+            setCols.add("`groups` = ?");
+            setVals.add(Util.listToCsv(current_roles));
+
+            StringBuffer sql = new StringBuffer("update shared_db_table SET ");
+            for (int i = 0; i < setCols.size(); i++) {
+              if (i > 0) sql.append(", ");
+              sql.append(setCols.get(i));
+            }
+            sql.append(" WHERE username = ?");
+
+            PreparedStatement statement = connection.prepareStatement(sql.toString());
+            int idx = 1;
+            for (int i = 0; i < setVals.size(); i++) {
+              statement.setString(idx++, (String) setVals.get(i));
+            }
+            statement.setString(idx, nativeIdentity);
+            statement.executeUpdate();
+            statement.close();
+
+            result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+
+            log.debug("Account Request Operation = Modify completed for user: " + nativeIdentity
+              + " | roles: " + Util.listToCsv(current_roles)
+              + " | columns updated: " + Util.listToCsv(setCols));
+          }
+          else if (AccountRequest.Operation.Disable.equals(account.getOperation())) {
+            log.debug("Account Request Operation = Disable");
+            String nativeIdentity = (String) account.getNativeIdentity();
+
+            PreparedStatement statement = connection.prepareStatement(
+              "update shared_db_table SET status = 'Inactive' WHERE username = ?");
+            statement.setString(1, nativeIdentity);
+            statement.executeUpdate();
+            statement.close();
+
+            result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+          }
+          else if (AccountRequest.Operation.Enable.equals(account.getOperation())) {
+            log.debug("Account Request Operation = Enable");
+            String nativeIdentity = (String) account.getNativeIdentity();
+
+            PreparedStatement statement = connection.prepareStatement(
+              "update shared_db_table SET status = 'Active' WHERE username = ?");
+            statement.setString(1, nativeIdentity);
+            statement.executeUpdate();
+            statement.close();
+
+            result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+          }
+          else {
+            log.debug("Unsupported operation: " + account.getOperation());
+          }
+        }
+      }
+    }
+    catch (Exception e) {
+      log.debug("JDBC provisioning failed: " + e);
+      result.setStatus(ProvisioningResult.STATUS_FAILED);
+      result.addError(e.toString());
+    }
+
+    return result;]]></Source>
+</Rule>

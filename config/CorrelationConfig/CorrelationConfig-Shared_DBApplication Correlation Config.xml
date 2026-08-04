@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE CorrelationConfig PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<CorrelationConfig name="Shared_DBApplication Correlation Config" significantModified="1785617943816">
+   <AttributeAssignments>
+      <Filter operation="EQ" property="name" value="username"/>
+   </AttributeAssignments>
+</CorrelationConfig>

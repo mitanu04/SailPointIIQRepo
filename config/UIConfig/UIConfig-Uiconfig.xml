@@ -1744,7 +1744,7 @@
           </List>
         </value>
       </entry>
-      <entry key="identityViewAttributes" value="name,firstname,lastname,email,manager,type,softwareVersion,administrator"/>
+      <entry key="identityViewAttributes" value="name,firstname,lastname,email,manager,location,position,department,status,pid,type,softwareVersion,administrator,costcenter"/>
       <entry key="lcmCreateIdentityProvisioningPolicyRequiredFields">
         <value>
           <List>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Shared_DB Application" profileClass="" significantModified="1785703396645" type="JDBC">
+   <AccountCorrelationConfig>
+      <Reference class="sailpoint.object.CorrelationConfig" name="Shared_DBApplication Correlation Config"/>
+   </AccountCorrelationConfig>
+   <Attributes>
+      <Map>
+         <entry key="SQL" value="SELECT username, pid, first_name, last_name, email, department, `groups` AS `groups`, `position` AS `position`, location, status FROM shared_db_table;"/>
+         <entry key="acctAggregationEnd">
+            <value>
+               <Date>1785703396636</Date>
+            </value>
+         </entry>
+         <entry key="acctAggregationStart">
+            <value>
+               <Date>1785703396491</Date>
+            </value>
+         </entry>
+         <entry key="afterProvisioningRule"/>
+         <entry key="aggregationMode">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="aggregationPartitioned">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="aggregationType" value="account"/>
+         <entry key="beforeProvisioningRule"/>
+         <entry key="buildMapRule" value="Aggregate-AccountStatus-Shared_DB"/>
+         <entry key="compositeDefinition"/>
+         <entry key="connMaxRetry" value="3"/>
+         <entry key="connRetryEnable">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="connWaitTimeForRetry" value="2"/>
+         <entry key="deltaTable"/>
+         <entry key="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+         <entry key="getDeltaSQL"/>
+         <entry key="getObjectSQL" value="SELECT username, pid, first_name, last_name, email, department, `groups` AS `groups`, `position` AS  `position`, location, status FROM shared_db_table WHERE username = '$(identity)';"/>
+         <entry key="group.SQL" value="select * from app_groups;"/>
+         <entry key="group.aggregationMode">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.deltaTable"/>
+         <entry key="group.driverClass" value="com.mysql.cj.jdbc.Driver"/>
+         <entry key="group.getDeltaSQL"/>
+         <entry key="group.getObjectSQL" value="select * from app_groups where group_name = '$(identity)';"/>
+         <entry key="group.isPermissionEnabled">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.mergeRows">
+            <value>
+               <Boolean/>\
+            </value>
+         </entry>
+         <entry key="group.password" value="%%SHARED_DB_GROUPS_PASSWORD%%"/>
+         <entry key="group.url" value="%%SHARED_DB_URL_GROUPS%%"/>
+         <entry key="group.useExecuteQuery">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.useStoredProcedureDelta">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.useStoredProcedureDirectPermission">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.useStoredProcedureGetObject">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.useStoredProcedureSqlStmt">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="group.user" value="root"/>
+         <entry key="isPermissionEnabled">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="jdbcExceptionBucketing">
+            <value>
+               <Boolean>true</Boolean>
+            </value>
+         </entry>
+         <entry key="jdbcProvisionRule" value="Shared_DB-Provisioning-Rule"/>
+         <entry key="mergeRows">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
+         <entry key="nativeChangeDetectionAttributes"/>
+         <entry key="nativeChangeDetectionEnabled">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="nativeChangeDetectionOperations"/>
+         <entry key="partitionMode">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="partitionStatements"/>
+         <entry key="password" value="1:ACP:/sgKkD7MsTlQdqgi2/vHUHc8y9ABQ9+zl5lDIh4dUS0="/>
+         <entry key="provisionRule" value="globalRule"/>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US"/>
+               </Map>
+            </value>
+         </entry>
+         <entry key="templateApplication" value="JDBC Template"/>
+         <entry key="testConnSQL"/>
+         <entry key="url" value="%%SHARED_DB_URL%%"/>
+         <entry key="useExecuteQuery">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedureDelta">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedureDirectPermission">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedureGetObject">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedurePartition">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedureSqlStmt">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="useStoredProcedureTestConn">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="user" value="root"/>
+      </Map>
+   </Attributes>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <ProvisioningForms>
+      <Form name="Shared_DB_Table" objectType="account" type="Update">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Shared_DB_Table"/>
+            </Map>
+         </Attributes>
+         <Section name="Section 1">
+            <Field displayName="Location" name="location" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("location");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Department" name="department" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("department");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Email" name="email" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getEmail();]]></Source>
+               </Script>
+            </Field>
+         </Section>
+      </Form>
+   </ProvisioningForms>
+   <Schemas>
+      <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785703389601">
+         <AttributeDefinition name="username" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="pid" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="first_name" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="last_name" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="email" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="department" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" schemaObjectType="group" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="position" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="location" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="status" type="string">
+            <Description/>
+         </AttributeDefinition>
+      </Schema>
+      <Schema descriptionAttribute="description" displayAttribute="group_name" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1785703389601">
+         <AttributeDefinition name="group_name" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="description" type="string">
+            <Description/>
+         </AttributeDefinition>
+      </Schema>
+   </Schemas>
+   <ApplicationScorecard significantModified="1785703389600"/>
+</Application>

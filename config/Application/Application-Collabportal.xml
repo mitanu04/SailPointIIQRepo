@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.DelimitedFileConnector" featuresString="DIRECT_PERMISSIONS, NO_RANDOM_ACCESS, DISCOVER_SCHEMA" icon="enterpriseIcon" name="Collabportal" profileClass="" significantModified="1785789470646" type="DelimitedFile">
+   <AccountCorrelationConfig>
+      <Reference class="sailpoint.object.CorrelationConfig" name="Collabportal Correlation Config"/>
+   </AccountCorrelationConfig>
+   <Attributes>
+      <Map>
+         <entry key="PassphraseForPrivateKey"/>
+         <entry key="PrivateKeyFilePath"/>
+         <entry key="acctAggregationEnd">
+            <value>
+               <Date>1785789470630</Date>
+            </value>
+         </entry>
+         <entry key="acctAggregationStart">
+            <value>
+               <Date>1785789469332</Date>
+            </value>
+         </entry>
+         <entry key="afterProvisioningRule"/>
+         <entry key="aggregationPartitioned">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="aggregationType" value="account"/>
+         <entry key="beforeProvisioningRule"/>
+         <entry key="commentCharacter" value="//"/>
+         <entry key="compositeDefinition"/>
+         <entry key="delimiter" value=","/>
+         <entry key="disableAccountFilter">
+            <value>
+               <List>
+                  <ListFilterValue operation="Equals" property="accountStatus">
+                     <Value>
+                        <String>Disabled</String>
+                     </Value>
+                  </ListFilterValue>
+               </List>
+            </value>
+         </entry>
+         <entry key="file" value="C:\SailPoint\CollabPortalDelimitedFileApplication\CollabPortal_Target_Accounts.csv"/>
+         <entry key="filetransport" value="local"/>
+         <entry key="filterEmptyRecords">
+            <value>
+               <Boolean>true</Boolean>
+            </value>
+         </entry>
+         <entry key="ftpsAuthMethod" value="password"/>
+         <entry key="ftpsClientCertificateFilePath"/>
+         <entry key="ftpsClientCertificatePassphrase"/>
+         <entry key="group.filetransport" value="local"/>
+         <entry key="group.filterEmptyRecords">
+            <value>
+               <Boolean>true</Boolean>
+            </value>
+         </entry>
+         <entry key="group.partitionMode" value="auto"/>
+         <entry key="hasHeader">
+            <value>
+               <Boolean>true</Boolean>
+            </value>
+         </entry>
+         <entry key="isCaseInsensitiveMerge">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="isSortedByIndexColumn">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="lockAccountFilter">
+            <value>
+               <List>
+                  <ListFilterValue operation="Equals" property="accountStatus">
+                     <Value>
+                        <String>Locked</String>
+                     </Value>
+                  </ListFilterValue>
+               </List>
+            </value>
+         </entry>
+         <entry key="mergeRows">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
+         <entry key="nativeChangeDetectionAttributes"/>
+         <entry key="nativeChangeDetectionEnabled">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="nativeChangeDetectionOperations"/>
+         <entry key="parseType" value="delimited"/>
+         <entry key="partitionMode" value="auto"/>
+         <entry key="port"/>
+         <entry key="serviceAccountFilter">
+            <value>
+               <List>
+                  <ListFilterValue operation="Equals" property="jobTitle">
+                     <Value>
+                        <String>Service Account</String>
+                     </Value>
+                  </ListFilterValue>
+               </List>
+            </value>
+         </entry>
+         <entry key="sftpAuthMethod" value="password"/>
+         <entry key="stopIfLineHasWrongColumnLength">
+            <value>
+               <Boolean/>
+            </value>
+         </entry>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US"/>
+               </Map>
+            </value>
+         </entry>
+         <entry key="templateApplication" value="DelimitedFile Template"/>
+      </Map>
+   </Attributes>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <Schemas>
+      <Schema displayAttribute="displayName" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None">
+         <AttributeDefinition name="accountId" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="pid" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="firstName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="lastName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="displayName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="email" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="department" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="jobTitle" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="accountStatus" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="licenseType" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="mfaEnabled" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="officeLocation" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="phone" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="createdDate" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="lastLogin" type="string">
+            <Description/>
+         </AttributeDefinition>
+      </Schema>
+   </Schemas>
+   <ApplicationScorecard significantModified="1785747631639"/>
+</Application>

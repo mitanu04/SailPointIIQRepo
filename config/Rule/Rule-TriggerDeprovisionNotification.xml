@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="TriggerDeprovisionNotification">
+    <Description></Description>
+<Source><![CDATA[
+//Just a sample code, update me
+import sailpoint.object.*;
+import java.util.*;
+EmailTemplate t = context.getObjectByName(EmailTemplate.class, "Deprovision Notification");
+Map a = new HashMap();
+a.put("identityName","Aaron.Nichols"); 
+a.put("eventType","roleDeprovision"); 
+a.put("roleName","Contractor");
+context.sendEmailNotification(t, new EmailOptions("me@example.com", a));
+return "sent";
+]]></Source>
+</Rule>

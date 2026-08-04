@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Policy PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Policy certificationActions="Remediated,Mitigated,Delegated" configPage="entitlementPolicy.xhtml" executor="sailpoint.policy.EntitlementSODPolicyExecutor" name="Shared_DB Entitlement SOD" significantModified="1785673099203" state="Active" type="EntitlementSOD" typeKey="policy_type_entitlement_sod" violationOwnerType="Manager">
+   <PolicyAlert escalationStyle="none">
+      <NotificationEmailTemplateRef>
+         <Reference class="sailpoint.object.EmailTemplate" name="Policy Violation"/>
+      </NotificationEmailTemplateRef>
+      <Owners>
+         <Reference class="sailpoint.object.Identity" name="Observers"/>
+      </Owners>
+   </PolicyAlert>
+   <Attributes>
+      <Map>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US"/>
+               </Map>
+            </value>
+         </entry>
+      </Map>
+   </Attributes>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <GenericConstraints>
+      <GenericConstraint name="Finance Entitlements Conflicts TimeSheet Entitlement" significantModified="1785673099203" violationOwnerType="None">
+         <RemediationAdvice>This identity holds both Finance entitlements and TimeSheet entitlements, which violates segregation of duties. The combination allows a single person to record or approve time/labor data and process the resulting financial transactions (payroll, payments, journal entries)</RemediationAdvice>
+         <IdentitySelector>
+            <MatchExpression>
+               <MatchTerm name="groups" type="Entitlement" value="FinanceTeam">
+                  <ApplicationRef>
+                     <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
+                  </ApplicationRef>
+               </MatchTerm>
+            </MatchExpression>
+         </IdentitySelector>
+         <IdentitySelector>
+            <MatchExpression>
+               <MatchTerm name="groups" type="Entitlement" value="TimeSheetAdmin">
+                  <ApplicationRef>
+                     <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
+                  </ApplicationRef>
+               </MatchTerm>
+            </MatchExpression>
+         </IdentitySelector>
+      </GenericConstraint>
+   </GenericConstraints>
+</Policy>

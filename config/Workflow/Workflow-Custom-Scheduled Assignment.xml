@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity" name="Custom-Scheduled Assignment" resultExpiration="-1" significantModified="1785837497794" type="ScheduledAssignment">
+   <Variable input="true" name="identity">
+      <Description>The database id of the target identity</Description>
+   </Variable>
+   <Variable input="true" name="identityName">
+      <Description>The name of the target identity</Description>
+   </Variable>
+   <Variable input="true" name="assigner">
+      <Description>The name of the identity considered to be the source of the assignment.
+This is used for the audit event.  It is not necessary to make the assignment
+becuase the original assigner will also be stored in RoleAssignment metadata
+in the cube.</Description>
+   </Variable>
+   <Variable editable="true" initializer="script:System.getProperty(&#34;iiq.forceRefreshAfterScheduledRoleChange&#34;)" name="doRefresh">
+      <Description>Set to true to cause a cube refresh after the assignment</Description>
+   </Variable>
+   <Variable input="true" name="eventType">
+      <Description>The type of assignment.  This will be one of the constants defined in RoleEventGenerator.</Description>
+   </Variable>
+   <Variable input="true" name="role">
+      <Description>The database id of the role to assign, if this is a role event</Description>
+   </Variable>
+   <Variable input="true" name="roleName">
+      <Description>The name of the role to assign, if this is a role event</Description>
+   </Variable>
+   <Variable input="true" name="assignmentId">
+      <Description>The unique id of the RoleAssignment, if this is a role event</Description>
+   </Variable>
+   <Variable input="true" name="application">
+      <Description>The database id of an application, if this is an entitlement event</Description>
+   </Variable>
+   <Variable input="true" name="applicationName">
+      <Description>The name of an application, if this is an entitlement event</Description>
+   </Variable>
+   <Variable input="true" name="instance">
+      <Description>The name of an application instance, if this is an entitlement event</Description>
+   </Variable>
+   <Variable input="true" name="nativeIdentity">
+      <Description>The specific id of the target account in the application, if this is an entitlement event</Description>
+   </Variable>
+   <Variable input="true" name="name">
+      <Description>The name of an attribute in the account schema, if this is an entitlement event</Description>
+   </Variable>
+   <Variable input="true" name="value">
+      <Description>The value of the account attribute, if this is an entitlement event</Description>
+   </Variable>
+   <Variable editable="true" initializer="Deprovision Notification" input="true" name="deprovisionEmailTemplate">
+      <Description>Name of the EmailTemplate used to notify on a role or entitlement deprovision (sunset).
+      Override at launch if you want a different template.</Description>
+   </Variable>
+   <Variable editable="true" input="true" name="deprovisionEmailRecipient">
+      <Description>Optional explicit recipient email address for the deprovision notification.
+      If left empty the step falls back to the target identity's manager, then the
+      identity's own email, then the hard-coded fallback address in the step script.</Description>
+   </Variable>
+   <Variable initializer="false" input="true" name="enableRetryRequest">
+      <Description>
+      When set to true it will disable the workflow retry loop and let the
+      Provision step launch requests to handle the retries.  Enabling
+      this flag will enable some older functionality.
+    </Description>
+   </Variable>
+   <Variable initializer="true" input="true" name="enableManualAccountSelection">
+      <Description>When set to &amp;#39;true&amp;#39; the system will send out Account Selection Notification emails 
+    for users with more than one account on any one application and the system 
+    can&amp;#39;t determine the provisioning account.
+    This may be passed in from the refresh task arguments.</Description>
+   </Variable>
+   <Variable name="project">
+      <Description>ProvisioningProject compiled from the Request</Description>
+   </Variable>
+   <Variable editable="true" initializer="false" input="true" name="doManualActions">
+      <Description>When set to &amp;#39;true&amp;#39; the unmanged plan from the provisioning project
+      will be converted into one or more manual action work items to request
+      the changes since they can&amp;#39;t be done automatically.
+      This may be passed in from the refresh task arguments.</Description>
+   </Variable>
+   <Variable initializer="false" name="identityHasOutstandingForms"/>
+   <Description>Workflow called to handle a scheduled assignment and deassignments,
+commonly known as "sunrise" and "sunset".  These are intended to
+be used only from Request objects that are scheduled by the provisioning
+plan evaluator.</Description>
+   <Step icon="Start" name="start" posX="28" posY="10">
+      <Transition to="Compile Assignment Project"/>
+   </Step>
+   <Step action="call:compileScheduledAssignmentProject" icon="Task" name="Compile Assignment Project" posX="161" posY="10" resultVariable="project">
+      <Arg name="role" value="ref:role"/>
+      <Arg name="instance" value="ref:instance"/>
+      <Arg name="assigner" value="ref:assigner"/>
+      <Arg name="eventType" value="ref:eventType"/>
+      <Arg name="enableManualAccountSelection" value="ref:enableManualAccountSelection"/>
+      <Arg name="assignmentId" value="ref:assignmentId"/>
+      <Arg name="nativeIdentity" value="ref:nativeIdentity"/>
+      <Arg name="application" value="ref:application"/>
+      <Arg name="identity" value="ref:identity"/>
+      <Arg name="name" value="ref:name"/>
+      <Arg name="optimisticProvisioning" value="ref:optimisticProvisioning"/>
+      <Arg name="value" value="ref:value"/>
+      <Arg name="disableRetryRequest" value="!ref:enableRetryRequest"/>
+      <Transition to="Inspect Project"/>
+   </Step>
+   <Step name="Inspect Project" posX="336" posY="10">
+      <Script>
+         <Source><![CDATA[
+        // hooks for project customization before execution
+      ]]></Source>
+      </Script>
+      <Transition to="Check For Outstanding Forms" when="!ref:identityHasOutstandingForms"/>
+      <Transition to="Do Provisioning Forms"/>
+   </Step>
+   <Step action="call:outstandingProvisioningFormsForIdentity" name="Check For Outstanding Forms" resultVariable="identityHasOutstandingForms">
+      <Arg name="identity" value="ref:identity"/>
+      <Arg name="project" value="ref:project"/>
+      <Transition to="Recompile" when="ref:identityHasOutstandingForms"/>
+      <Transition to="Do Provisioning Forms"/>
+   </Step>
+   <Step action="call:compileScheduledAssignmentProject" condition="identityHasOutstandingForms" icon="Task" name="Recompile" resultVariable="project" wait="script:new Integer(5);">
+      <Arg name="role" value="ref:role"/>
+      <Arg name="instance" value="ref:instance"/>
+      <Arg name="assigner" value="ref:assigner"/>
+      <Arg name="eventType" value="ref:eventType"/>
+      <Arg name="enableManualAccountSelection" value="ref:enableManualAccountSelection"/>
+      <Arg name="assignmentId" value="ref:assignmentId"/>
+      <Arg name="nativeIdentity" value="ref:nativeIdentity"/>
+      <Arg name="application" value="ref:application"/>
+      <Arg name="identity" value="ref:identity"/>
+      <Arg name="name" value="ref:name"/>
+      <Arg name="optimisticProvisioning" value="ref:optimisticProvisioning"/>
+      <Arg name="value" value="ref:value"/>
+      <Arg name="disableRetryRequest" value="!ref:enableRetryRequest"/>
+      <Transition to="Inspect Project"/>
+   </Step>
+   <Step name="Do Provisioning Forms" posX="486" posY="10">
+      <Arg name="formTemplate" value="Identity Refresh"/>
+      <Arg name="requiredOwner"/>
+      <Arg name="fallbackOwner" value="spadmin"/>
+      <Arg name="identityName" value="ref:identityName"/>
+      <Arg name="accountSelectionOwner" value="applicationOwner"/>
+      <Arg name="accountSelectionForm"/>
+      <Arg name="workItemForm"/>
+      <Arg name="approvalSet" value="ref:approvalSet"/>
+      <Arg name="preferredOwner"/>
+      <Arg name="workItemPriority"/>
+      <Arg name="workItemComments"/>
+      <Arg name="project" value="ref:project"/>
+      <Arg name="calculatedAccountSelectionOwner"/>
+      <Arg name="identityDisplayName"/>
+      <Arg name="formOwnerError"/>
+      <Arg name="disableManualAccountSelection" value="script:!isTrue(enableManualAccountSelection)"/>
+      <ConditionScript>
+         <Source><![CDATA[project != null && (project.hasQuestions() || (isTrue(enableManualAccountSelection) && (project.hasUnansweredAccountSelections() ||  project.hasUnansweredProvisioningTargets())))]]></Source>
+      </ConditionScript>
+      <Description>
+      Call the standard subprocess for assembling, presenting, and assimilating
+      provisioning forms.
+    </Description>
+      <Return name="approvalSet" to="approvalSet"/>
+      <Return name="project" to="project"/>
+      <WorkflowRef>
+         <Reference class="sailpoint.object.Workflow" name="Do Provisioning Forms"/>
+      </WorkflowRef>
+      <Transition to="Process Project Pre-Actions"/>
+   </Step>
+   <Step action="call:processProject" name="Process Project Pre-Actions">
+      <Arg name="identity" value="ref:identity"/>
+      <Arg name="project" value="ref:project"/>
+      <Transition to="Provision"/>
+   </Step>
+   <Step icon="Task" name="Provision" posX="633" posY="9">
+      <Arg name="enableRetryRequest"/>
+      <Arg name="recompileBeforeProvisioning"/>
+      <Arg name="project" value="ref:project"/>
+      <Arg name="identityRequestId"/>
+      <Arg name="splitProvisioning"/>
+      <Arg name="provisioningRetryThreshold"/>
+      <Arg name="foregroundProvisioning" value="true"/>
+      <Arg name="retries"/>
+      <Arg name="trace" value="ref:trace"/>
+      <Arg name="maxRetries"/>
+      <Arg name="disableIdentityRequests" value="true"/>
+      <Arg name="provisioningMaxRetries"/>
+      <Arg name="retryProject"/>
+      <Description>
+      Execute the scheduled assignment project.
+      We call the standard subprocess that handles retries.
+      Note that the disableIdentityRequests option is passed
+      to prevent logging a warning since this workflow does
+      not maintain IdentityRequest objects.
+    </Description>
+      <Return name="project" to="project"/>
+      <WorkflowRef>
+         <Reference class="sailpoint.object.Workflow" name="Provision with retries"/>
+      </WorkflowRef>
+      <Transition to="Refresh Identity"/>
+   </Step>
+   <Step action="call:refreshIdentity" condition="script:isTrue(doRefresh)" icon="Task" name="Refresh Identity" posX="786" posY="10">
+      <Arg name="identity" value="ref:identity"/>
+      <Arg name="provision" value="true"/>
+      <Arg name="correlateEntitlements" value="true"/>
+      <Arg name="doManualActions" value="false"/>
+      <Description>
+Add arguments as necessary to enable refresh features.  Provisioning is usually done
+with an option to the Activate Assignment step.  Here you might want to check
+policies or refresh the scorecard.  Correlating entitlements might pick up new
+detected roles if the provisioning was done synchronously.
+    </Description>
+      <Transition to="Manual Actions"/>
+   </Step>
+   <Step condition="script:project.getUnmanagedPlan() != null" name="Manual Actions" posX="944" posY="10">
+      <Arg name="identityDisplayName"/>
+      <Arg name="identityName" value="ref:identityName"/>
+      <Arg name="doAudit"/>
+      <Arg name="fallbackApprover"/>
+      <Arg name="project" value="ref:project"/>
+      <Arg name="workItemPriority"/>
+      <Description>
+      Present work items for the parts of the project that could not be sent
+      to an integrated IDM system.
+    </Description>
+      <WorkflowRef>
+         <Reference class="sailpoint.object.Workflow" name="Do Manual Actions"/>
+      </WorkflowRef>
+      <Transition to="Send Deprovision Notification"/>
+   </Step>
+   <Step name="Send Deprovision Notification" posX="1000" posY="120">
+    <ConditionScript>
+      <Source><![CDATA[eventType != null && ("roleDeassignment".equals(eventType) || "attributeDeassignment".equals(eventType))]]></Source>
+   </ConditionScript>
+      <Description>
+      Fires only for sunset events, i.e. when the scheduled event is a role
+      deprovision (EVENT_TYPE_ROLE_DEPROVISION) or an entitlement deprovision
+      (EVENT_TYPE_ATTRIBUTE_DEPROVISION).  Looks up the configured EmailTemplate
+      and sends a notification.  Recipient resolution order:
+      explicit deprovisionEmailRecipient -&gt; target identity's manager -&gt;
+      target identity's own email -&gt; hard-coded fallback address.
+    </Description>
+      <Script>
+         <Source><![CDATA[
+        import sailpoint.object.EmailTemplate;
+        import sailpoint.object.EmailOptions;
+        import sailpoint.object.Identity;
+        import java.util.HashMap;
+        import java.util.Map;
+ 
+        // Resolve the target identity so we can work out a recipient.
+        Identity target = null;
+        if (identity != null) {
+            target = context.getObjectById(Identity.class, identity);
+        }
+ 
+        // Work out who should receive the notification.
+        String recipient = null;
+        if (deprovisionEmailRecipient != null && deprovisionEmailRecipient.trim().length() > 0) {
+            recipient = deprovisionEmailRecipient.trim();
+        }
+        if (recipient == null && target != null) {
+            Identity mgr = target.getManager();
+            if (mgr != null && mgr.getEmail() != null) {
+                recipient = mgr.getEmail();
+            }
+            if (recipient == null && target.getEmail() != null) {
+                recipient = target.getEmail();
+            }
+        }
+        // Final fallback - point this at your IAM / security mailbox.
+        if (recipient == null || recipient.length() == 0) {
+            recipient = "iam-notifications@example.com";
+        }
+ 
+        EmailTemplate template = context.getObjectByName(EmailTemplate.class, deprovisionEmailTemplate);
+        if (template == null) {
+            log.error("Scheduled Assignment: deprovision email template not found: " + deprovisionEmailTemplate);
+        } else {
+            Map args = new HashMap();
+            args.put("identityName", identityName);
+            args.put("eventType", eventType);
+            args.put("roleName", roleName);
+            args.put("applicationName", applicationName);
+            args.put("nativeIdentity", nativeIdentity);
+            args.put("attributeName", name);
+            args.put("attributeValue", value);
+            args.put("assigner", assigner);
+ 
+            EmailOptions options = new EmailOptions(recipient, args);
+            context.sendEmailNotification(template, options);
+        } 
+        System.out.println("eventType = " + eventType);
+        System.out.println("roleName = " + roleName);
+        System.out.println("recipient = " + recipient);
+      ]]></Source>
+      </Script>
+      <Transition to="audit"/>
+   </Step>
+   <Step action="call:auditScheduledProject" icon="audit" name="audit" posX="1000" posY="10">
+      <Transition to="end"/>
+   </Step>
+   <Step icon="Stop" name="end" posX="1086" posY="10"/>
+</Workflow>
