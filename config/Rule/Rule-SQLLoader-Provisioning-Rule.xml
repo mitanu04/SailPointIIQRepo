@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="SQLLoader-Provisioning-Rule" type="JDBCProvision">
+   <Description>This rule is used by the JDBC connector to do provisioning of the data .</Description>
+   <Signature returnType="ProvisioningResult">
+      <Inputs>
+         <Argument name="log" type="org.apache.commons.logging.Log">
+            <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+         </Argument>
+         <Argument name="context" type="sailpoint.api.SailPointContext">
+            <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+         </Argument>
+         <Argument name="application">
+            <Description>
+                The application whose data file is being processed.
+                </Description>
+         </Argument>
+         <Argument name="schema">
+            <Description>
+                The Schema currently in use.
+                </Description>
+         </Argument>
+         <Argument name="connection">
+            <Description>
+                A connection object to connect to database.
+                </Description>
+         </Argument>
+         <Argument name="plan">
+            <Description>
+                The ProvisioningPlan created against the JDBC application.
+                </Description>
+         </Argument>
+      </Inputs>
+      <Returns>
+         <Argument name="result">
+            <Description>
+                A Provisioning Result object is desirable to return the status.IT can be a new object or part of  Provisioning Plan
+                </Description>
+         </Argument>
+      </Returns>
+   </Signature>
+   <Source><![CDATA[  
+
+   import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.ProvisioningResult;
+    import java.sql.PreparedStatement;
+    import java.util.ArrayList;
+    import java.util.List;
+    import org.apache.log4j.Logger;
+    import sailpoint.tools.Util;
+    import java.sql.Statement;
+    import java.sql.ResultSet;
+    import java.sql.Connection;
+   
+   Logger log = Logger.getLogger("sailpoint.jdbc.SQLLoaderProvisioningRule");
+    ProvisioningResult result = new ProvisioningResult();
+
+    // Helper: pull a single attribute value from an AccountRequest.
+    public Object getAttributeRequestValue(AccountRequest acctReq, String attribute) {
+      if (acctReq != null) {
+        AttributeRequest attrReq = acctReq.getAttributeRequest(attribute);
+        if (attrReq != null) {
+          return attrReq.getValue();
+        }
+      }
+      return null;
+    }
+
+    try {
+      List acctReqs = plan.getAccountRequests();
+      if (acctReqs != null && acctReqs.size() > 0) {
+        for (AccountRequest account : acctReqs) {
+
+          if(AccountRequest.Operation.Create.equals(account.getOperation())) {
+            log.debug("Account Request Operation = Create");
+            String nativeIdentity = (String) account.getNativeIdentity();
+
+            PreparedStatement statement = connection.prepareStatement(
+              "INSERT INTO sqlloader_accounts (accountId, pid, fullName, email, department, title, status, username) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+              );
+            statement.setString(1, nativeIdentity);
+            statement.setString(2, (String) getAttributeRequestValue(account, "pid"));
+            statement.setString(3, (String) getAttributeRequestValue(account, "fullName"));
+            statement.setString(4, (String) getAttributeRequestValue(account, "email"));
+            statement.setString(5, (String) getAttributeRequestValue(account, "department"));
+            statement.setString(6, (String) getAttributeRequestValue(account, "title"));
+            statement.setString(7, (String) getAttributeRequestValue(account, "status"));
+            statement.setString(8, (String) getAttributeRequestValue(account, "username"));
+            statement.executeUpdate();
+            statement.close();
+            result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+
+            log.debug("Account created successfully for native identity: " + nativeIdentity + " with attributes:");
+            log.debug("  accountId: " + nativeIdentity);
+            log.debug("  pid: " + getAttributeRequestValue(account, "pid"));
+            log.debug("  fullName: " + getAttributeRequestValue(account, "fullName"));
+            log.debug("  email: " + getAttributeRequestValue(account, "email"));
+            log.debug("  department: " + getAttributeRequestValue(account, "department"));
+            log.debug("  title: " + getAttributeRequestValue(account, "title"));
+            log.debug("  status: " + getAttributeRequestValue(account, "status"));
+            log.debug("  username: " + getAttributeRequestValue(account, "username"));
+
+          }else{
+            log.debug("Unsupported operation: " + account.getOperation());
+          }
+        }
+      }
+          }catch(Exception e) {
+      log.debug("SQLLoader provisioning failed: " + e);
+      result.setStatus(ProvisioningResult.STATUS_FAILED);
+      result.addError(e.toString());
+          }
+      return result;
+
+          ]]></Source>
+</Rule>

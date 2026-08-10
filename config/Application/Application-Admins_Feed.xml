@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, ENABLE, PASSWORD" icon="databaseIcon" name="Admins_Feed" profileClass="" significantModified="1785789459876" type="SQLLoader">
+<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, ENABLE, PASSWORD" icon="databaseIcon" name="Admins_Feed" profileClass="" significantModified="1786021641799" type="SQLLoader">
+   <AccountCorrelationConfig>
+      <Reference class="sailpoint.object.CorrelationConfig" name="Admins_Feed Correlation Config"/>
+   </AccountCorrelationConfig>
    <Attributes>
       <Map>
-         <entry key="SQL" value="SELECT accountId, pid, username, fullName, email, department,&#13;&#10;       title, status, systemRole, lastAccess&#13;&#10;FROM sqlloader_accounts"/>
+         <entry key="SQL" value="SELECT accountId, pid, username, fullName, email, department, title, status, systemRole, lastAccess FROM sqlloader_accounts"/>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1785789459862</Date>
+               <Date>1786019300235</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1785789459310</Date>
+               <Date>1786019299627</Date>
             </value>
          </entry>
          <entry key="additionalConnProperties">
@@ -30,14 +33,16 @@
          </entry>
          <entry key="aggregationType" value="account"/>
          <entry key="beforeProvisioningRule"/>
+         <entry key="buildMapRule" value="SQLLoader-Status-Aggregation"/>
          <entry key="compositeDefinition"/>
          <entry key="driverClass" value="com.hxtt.sql.text.TextDriver"/>
-         <entry key="getObjectSQL" value="SELECT accountId, pid, username, fullName, email, department,&#13;&#10;       title, status, systemRole, lastAccess&#13;&#10;FROM sqlloader_accounts&#13;&#10;WHERE accountId = '$(identity)'"/>
+         <entry key="getObjectSQL" value="SELECT accountId, pid, username, fullName, email, department, title, status, systemRole, lastAccess FROM sqlloader_accounts WHERE accountId = '$(identity)'"/>
          <entry key="isPermissionEnabled">
             <value>
                <Boolean/>
             </value>
          </entry>
+         <entry key="jdbcProvisionRule" value="SQLLoader-Provisioning-Rule"/>
          <entry key="mergeRows">
             <value>
                <Boolean/>
@@ -66,7 +71,7 @@
             </value>
          </entry>
          <entry key="templateApplication" value="SQLLoader Template"/>
-         <entry key="url" value="%%ADMIN_FEED%%"/>
+         <entry key="url" value="jdbc:csv:/C:/SailPoint/SQLLoader/sqlloader_accounts.csv"/>
          <entry key="useExecuteQuery">
             <value>
                <Boolean/>
@@ -78,8 +83,60 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
+   <ProvisioningForms>
+      <Form name="Create" objectType="account" type="Create">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Create"/>
+            </Map>
+         </Attributes>
+         <Section name="Section 1">
+            <Field name="pid" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("pid");]]></Source>
+               </Script>
+            </Field>
+            <Field name="username" type="string">
+               <Script>
+                  <Source><![CDATA[return (identity.getAttribute("firstname").substring(0,1) + identity.getAttribute("lastname")).toLowerCase();]]></Source>
+               </Script>
+            </Field>
+            <Field name="fullName" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("firstname") + " " + identity.getAttribute("lastname");]]></Source>
+               </Script>
+            </Field>
+            <Field name="email" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("firstname") + "." + identity.getAttribute("lastname") + "@example.com";
+]]></Source>
+               </Script>
+            </Field>
+            <Field name="department" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("department");]]></Source>
+               </Script>
+            </Field>
+            <Field name="title" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("position");]]></Source>
+               </Script>
+            </Field>
+            <Field name="status" type="string" value="Active"/>
+            <Field name="accountId" type="string">
+               <Script>
+                  <Source><![CDATA[ import java.util.Random;
+
+      Random rand = new Random();
+      int num = rand.nextInt(10000);      // 0 - 9999
+      return "SL" + String.format("%04d", num);   // SL0000 .. SL9999]]></Source>
+               </Script>
+            </Field>
+         </Section>
+      </Form>
+   </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="username" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785789426642">
+      <Schema displayAttribute="username" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1786021641498">
          <AttributeDefinition name="accountId" type="string">
             <Description/>
          </AttributeDefinition>
@@ -112,5 +169,5 @@
          </AttributeDefinition>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1785789426642"/>
+   <ApplicationScorecard significantModified="1786021641498"/>
 </Application>

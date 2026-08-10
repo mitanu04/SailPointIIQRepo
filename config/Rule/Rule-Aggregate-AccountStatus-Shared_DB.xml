@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Rule language="beanshell" name="Aggregate-AccountStatus-Shared_DB" significantModified="1785621304674" type="JDBCBuildMap">
+<Rule language="beanshell" name="Aggregate-AccountStatus-Shared_DB" significantModified="1786017914300" type="JDBCBuildMap">
    <Description>This rule is used by the JDBC connector to build a map representation of the Resultset.</Description>
    <Signature returnType="Map"/>
    <Source><![CDATA[import sailpoint.connector.JDBCConnector;
