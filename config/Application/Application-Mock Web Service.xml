@@ -477,7 +477,9 @@
          <Section name="Section 1">
             <Field name="id" required="true" type="string">
                <Script>
-                  <Source><![CDATA[import sailpoint.object.Link;
+                  <Source><![CDATA[
+                  
+                  import sailpoint.object.Link;
 import sailpoint.object.QueryOptions;
 import sailpoint.object.Filter;
 import sailpoint.tools.Util;
