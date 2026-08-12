@@ -34,7 +34,7 @@
       </Returns>
    </Signature>
    <Source><![CDATA[List groups = link.getAttribute("groups");
-if(null = groups || (groups.contains("Admin")) return false;
+if(null == groups || !(groups.contains("Admin")) ) return false;
 else return true;
 
  ]]></Source>
