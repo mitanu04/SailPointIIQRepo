@@ -9,6 +9,7 @@ base/ga/
 base/patch/
 base/efix/
 base/ap/
+exportedObjects/**
 
 # Secrets — environment credentials must never be committed
 build.properties

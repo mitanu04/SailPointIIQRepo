@@ -72,6 +72,51 @@ The everyday loop, start to finish:
 
 **What `-u` (`--set-upstream`) actually does:** it links your local branch to a specific remote branch, so Git remembers where it goes. Without it, a brand-new local branch has nowhere to push to by default — `git push` alone will error asking you to specify the remote and branch. After one `-u` push, `git push` / `git pull` with no arguments know to sync with that same remote branch, and `git status` can show "ahead/behind" counts against it. You only need `-u` once per branch, the first time you push it.
 
+## Ignoring files (`.gitignore`)
+
+A `.gitignore` at the repo root is just a plain text file, one pattern per line — Git checks it before showing untracked files in `git status`, so matching paths stop cluttering `??` output and stop being `git add -A` candidates. This repo's already has real patterns to copy from:
+
+```gitignore
+# Build output — regenerated every build, never commit
+build/
+dependency-check-reports/
+
+# Secrets — environment credentials must never be committed
+build.properties
+*.iiq.properties
+
+# Exported jar of custom Java (rebuilt from src/)
+**/identityiqCustomizations.*.jar
+
+# OS / IDE noise
+.DS_Store
+*.log
+```
+
+| Pattern | Matches |
+|---|---|
+| `build/` | A directory named `build`, anywhere it's a top-level entry relative to the `.gitignore`; trailing `/` means "directory only" |
+| `*.log` | Any file ending `.log`, in the same directory as the `.gitignore` |
+| `**/identityiqCustomizations.*.jar` | The `**` matches any number of directories — so this hits the file at any depth |
+| `!important.log` | Negation — un-ignores one path that a broader pattern above it would otherwise catch (order matters: the `!` line must come after the pattern it's excepting from) |
+| `# comment` | Ignored by Git, for humans only |
+
+**To add a new ignore rule:** open `.gitignore`, add the pattern, save — no git command needed, it takes effect immediately.
+
+**The gotcha that trips people up:** `.gitignore` only stops *untracked* files from being picked up. If a file is already committed, adding it to `.gitignore` does nothing — Git keeps tracking it. To actually stop tracking it (while leaving the file on disk):
+```
+git rm --cached path/to/file
+```
+then commit that removal. Add the pattern to `.gitignore` in the same commit so it doesn't immediately reappear as untracked.
+
+**Debugging why a file is (or isn't) ignored:**
+```
+git check-ignore -v path/to/file
+```
+Prints which `.gitignore` line matched, useful when a pattern isn't behaving the way you expect.
+
+**Ignoring something only on your machine**, without changing the shared `.gitignore` everyone commits: add the path to `.git/info/exclude` instead — same syntax, but local-only and never pushed. For rules you want across *every* repo on your machine (editor swap files, OS clutter), point Git at a personal global ignore file once: `git config --global core.excludesfile ~/.gitignore_global`.
+
 ## Spotting a rename
 
 An untracked new file next to a deleted one normally shows as two unrelated lines (`D` and `??`) even if most of the content is identical.
