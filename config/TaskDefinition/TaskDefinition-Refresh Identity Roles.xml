@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition name="Refresh Identity Cubes" resultAction="Rename" significantModified="1786615631027" subType="task_item_type_identity" type="Identity">
+<TaskDefinition name="Refresh Identity Roles" resultAction="Rename" significantModified="1786615671949" subType="task_item_type_identity" type="Identity">
    <Attributes>
       <Map>
-         <entry key="TaskDefinition.runLengthAverage" value="3"/>
-         <entry key="TaskDefinition.runLengthTotal" value="153"/>
-         <entry key="TaskDefinition.runs" value="47"/>
          <entry key="TaskSchedule.host"/>
          <entry key="checkHistory" value="false"/>
-         <entry key="checkPolicies" value="true"/>
+         <entry key="checkPolicies" value="false"/>
          <entry key="correlateEntitlements" value="false"/>
          <entry key="correlateScope" value="false"/>
          <entry key="deleteDormantGroups" value="false"/>
@@ -26,15 +23,15 @@
          <entry key="noAutoCreateScopes" value="false"/>
          <entry key="noMaintenanceWindowRetry" value="false"/>
          <entry key="noResetNeedsRefresh" value="false"/>
-         <entry key="noRoleDeprovisioning" value="false"/>
+         <entry key="noRoleDeprovisioning" value="true"/>
          <entry key="processTriggers" value="false"/>
-         <entry key="promoteAttributes" value="true"/>
+         <entry key="promoteAttributes" value="false"/>
          <entry key="promoteManagedAttributes" value="false"/>
-         <entry key="provision" value="false"/>
+         <entry key="provision" value="true"/>
          <entry key="refreshCompositeApplications" value="false"/>
-         <entry key="refreshGroups" value="true"/>
+         <entry key="refreshGroups" value="false"/>
          <entry key="refreshIdentityEntitlements" value="false"/>
-         <entry key="refreshManagerStatus" value="true"/>
+         <entry key="refreshManagerStatus" value="false"/>
          <entry key="refreshRoleMetadata" value="false"/>
          <entry key="refreshScorecard" value="false"/>
          <entry key="synchronizeAttributes" value="false"/>

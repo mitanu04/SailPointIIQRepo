@@ -58,7 +58,7 @@
     import java.sql.ResultSet;
     import java.sql.Connection;
    
-   Logger log = Logger.getLogger("sailpoint.jdbc.SQLLoaderProvisioningRule");
+   Logger log = Logger.getLogger("sailpoint.jdbc.JDBCProvisioner");
     ProvisioningResult result = new ProvisioningResult();
 
     // Helper: pull a single attribute value from an AccountRequest.
@@ -82,7 +82,7 @@
             String nativeIdentity = (String) account.getNativeIdentity();
 
             PreparedStatement statement = connection.prepareStatement(
-              "INSERT INTO sqlloader_accounts (accountId, pid, fullName, email, department, title, status, username) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+              "INSERT INTO sqlloader_accounts (accountId, pid, fullName, email, department, title, status, username, systemRole) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
               );
             statement.setString(1, nativeIdentity);
             statement.setString(2, (String) getAttributeRequestValue(account, "pid"));
@@ -92,6 +92,7 @@
             statement.setString(6, (String) getAttributeRequestValue(account, "title"));
             statement.setString(7, (String) getAttributeRequestValue(account, "status"));
             statement.setString(8, (String) getAttributeRequestValue(account, "username"));
+            statement.setString(9, (String) getAttributeRequestValue(account, "systemRole"));
             statement.executeUpdate();
             statement.close();
             result.setStatus(ProvisioningResult.STATUS_COMMITTED);
@@ -105,13 +106,34 @@
             log.debug("  title: " + getAttributeRequestValue(account, "title"));
             log.debug("  status: " + getAttributeRequestValue(account, "status"));
             log.debug("  username: " + getAttributeRequestValue(account, "username"));
+            log.debug("  systemRole: " + getAttributeRequestValue(account, "systemRole"));
 
-          }else{
+          }else if(AccountRequest.Operation.Disable.equals(account.getOperation())) {
+            log.debug("Account Request Operation = Disable");
+            String nativeIdentity = (String) account.getNativeIdentity();
+
+            PreparedStatement statement = connection.prepareStatement(
+              "UPDATE sqlloader_accounts SET status = ? WHERE accountId = ?"
+              );
+            statement.setString(1, (String) getAttributeRequestValue(account, "status"));
+            statement.setString(2, nativeIdentity);
+            int rowsUpdated = statement.executeUpdate();
+            statement.close();
+
+            if (rowsUpdated > 0) {
+              result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+              log.debug("Account disabled successfully for native identity: " + nativeIdentity);
+            } else {
+              result.setStatus(ProvisioningResult.STATUS_FAILED);
+              log.debug("No account found to disable for native identity: " + nativeIdentity);
+            }
+          }
+          else{
             log.debug("Unsupported operation: " + account.getOperation());
           }
         }
       }
-          }catch(Exception e) {
+    }catch(Exception e) {
       log.debug("SQLLoader provisioning failed: " + e);
       result.setStatus(ProvisioningResult.STATUS_FAILED);
       result.addError(e.toString());

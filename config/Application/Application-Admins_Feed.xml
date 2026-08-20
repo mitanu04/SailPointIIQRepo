@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, ENABLE, PASSWORD" icon="databaseIcon" name="Admins_Feed" profileClass="" significantModified="1786021641799" type="SQLLoader">
+<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, ENABLE, PASSWORD" icon="databaseIcon" name="Admins_Feed" profileClass="" significantModified="1787049092398" type="SQLLoader">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="Admins_Feed Correlation Config"/>
    </AccountCorrelationConfig>
@@ -9,12 +9,12 @@
          <entry key="SQL" value="SELECT accountId, pid, username, fullName, email, department, title, status, systemRole, lastAccess FROM sqlloader_accounts"/>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1786019300235</Date>
+               <Date>1786634234737</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1786019299627</Date>
+               <Date>1786634233322</Date>
             </value>
          </entry>
          <entry key="additionalConnProperties">
@@ -132,11 +132,22 @@
       return "SL" + String.format("%04d", num);   // SL0000 .. SL9999]]></Source>
                </Script>
             </Field>
+            <Field displayName="systemRole" name="systemRole" required="true" type="string" value="APP_USER"/>
+         </Section>
+      </Form>
+      <Form name="Disable" objectType="account" type="Disable">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Disable"/>
+            </Map>
+         </Attributes>
+         <Section name="Disable">
+            <Field displayName="Status" name="status" type="string" value="Inactive"/>
          </Section>
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="username" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1786021641498">
+      <Schema displayAttribute="username" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1787049092161">
          <AttributeDefinition name="accountId" type="string">
             <Description/>
          </AttributeDefinition>
@@ -169,5 +180,5 @@
          </AttributeDefinition>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1786021641498"/>
+   <ApplicationScorecard significantModified="1787049092160"/>
 </Application>

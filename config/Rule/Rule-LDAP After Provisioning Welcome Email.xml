@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="LDAP After Provisioning Welcome Email" significantModified="1786610346603" type="AfterProvisioning">
+   <Description>
+    Sends a welcome email (username + initial password) to the user after a
+    successful CREATE account operation on the OpenLDAP application.
+  </Description>
+   <Source><![CDATA[
+    import sailpoint.object.*;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.ProvisioningResult;
+    import sailpoint.tools.Util;
+    import java.util.HashMap;
+    import java.util.List;
+    import java.util.Map;
+
+    // Name of the EmailTemplate object to send (import it separately)
+    String TEMPLATE_NAME = "LDAP New Account Welcome";
+    String applicationName = "OpenLDAP";
+
+    if (plan == null) {
+      return;
+    }
+
+    List accounts = plan.getAccountRequests(applicationName);
+    if (accounts == null) {
+      return;
+    }
+
+    for (AccountRequest acct : accounts) {
+
+      // Only act on CREATE operations for THIS application
+      if (!AccountRequest.Operation.Create.equals(acct.getOperation())) {
+        continue;
+      }
+
+      // Only send if the create actually succeeded
+      ProvisioningResult acctResult = acct.getResult();
+      
+      if (acctResult != null && !acctResult.isCommitted()) {
+        log.warn("Skipping welcome email: create failed for " + acct.getNativeIdentity());
+        continue;
+      }
+
+      log.debug(acct.toXml());
+
+      // ---- Username ----
+      
+      String username = "";
+      
+      AttributeRequest uidReq = acct.getAttributeRequest("uid");
+      if (uidReq != null && uidReq.getValue() != null) {
+        username = uidReq.getValue().toString();
+      }else{
+         username= "Unkown";
+      }
+
+      // ---- Password (decrypt if stored encrypted; never log it) ----
+      String password = null;
+      AttributeRequest pwdReq = acct.getAttributeRequest("password");
+      
+      if (pwdReq != null && pwdReq.getValue() != null) {
+
+        //is not encryped
+        
+        log.debug("Password is not encrypted");
+        password = pwdReq.getValue().toString();
+        log.debug(password);
+      }else{
+        log.debug("Password default set");
+        password = "Unkown";
+      }
+      
+
+      // ---- Resolve the identity + email ----
+      String identityName = plan.getIdentity() != null
+          ? plan.getIdentity().getName() : null;
+      Identity id = (identityName != null)
+          ? context.getObjectByName(Identity.class, identityName) : null;
+
+      String toEmail = (id != null) ? id.getEmail() : null;
+      if (Util.isNullOrEmpty(toEmail)) {
+        log.warn("No email address for " + username + "; welcome email not sent.");
+        continue;
+      }
+      
+
+      // ---- Load template and send ----
+      EmailTemplate template =
+          context.getObjectByName(EmailTemplate.class, TEMPLATE_NAME);
+      if (template == null) {
+        log.error("EmailTemplate not found: " + TEMPLATE_NAME);
+        continue;
+      }
+
+      Map args = new HashMap();
+      args.put("firstName", (id != null) ? id.getFirstname() : username);
+      args.put("lastName", (id != null) ? id.getLastname(): username);
+      args.put("username", username);
+      args.put("password", password);
+      args.put("applicationName", "OpenLDAP");
+
+      EmailOptions options = new EmailOptions(toEmail, args);
+      try {
+        context.sendEmailNotification(template, options);
+        log.info("Welcome email sent to " + toEmail + " for account " + username);
+      } catch (Exception e) {
+        log.error("Failed to send welcome email for " + username + ": " + e.getMessage());
+      }
+    }
+
+    return;
+  ]]></Source>
+</Rule>

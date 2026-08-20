@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.LDAPConnector" featuresString="AUTHENTICATE, PROVISIONING, SYNC_PROVISIONING, PASSWORD, MANAGER_LOOKUP, SEARCH" icon="directory2Icon" name="OpenLDAP" profileClass="" significantModified="1786444154060" type="OpenLDAP - Direct">
+<Application connector="sailpoint.connector.LDAPConnector" featuresString="AUTHENTICATE, PROVISIONING, SYNC_PROVISIONING, PASSWORD, MANAGER_LOOKUP, SEARCH" icon="directory2Icon" name="OpenLDAP" profileClass="" significantModified="1787061416766" type="OpenLDAP - Direct">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="OpenLDAP Correlation Config"/>
    </AccountCorrelationConfig>
@@ -9,15 +9,15 @@
          <entry key="LDAPApplicationVersion" value="2.0"/>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1786444154043</Date>
+               <Date>1787061416745</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1786444153876</Date>
+               <Date>1787061416073</Date>
             </value>
          </entry>
-         <entry key="afterProvisioningRule"/>
+         <entry key="afterProvisioningRule" value="LDAP After Provisioning Welcome Email"/>
          <entry key="aggregationPartitioned">
             <value>
                <Boolean/>
@@ -32,7 +32,7 @@
             </value>
          </entry>
          <entry key="authorizationType" value="simple"/>
-         <entry key="beforeProvisioningRule"/>
+         <entry key="beforeProvisioningRule" value="Move_LDAPAccount_to_OU"/>
          <entry key="charsToEscapeAtEndInDN" value=" "/>
          <entry key="charsToEscapeAtStartInDN" value=" #"/>
          <entry key="charsToEscapeInDN" value=",+\&#34;&lt;&gt;;"/>
@@ -62,7 +62,23 @@
                </List>
             </value>
          </entry>
+         <entry key="groupProvisioning">
+            <value>
+               <Boolean>true</Boolean>
+            </value>
+         </entry>
          <entry key="host" value="%%LDAP_HOST%%"/>
+         <entry key="lockAccountFilter">
+            <value>
+               <List>
+                  <ListFilterValue operation="Equals" property="employeeType">
+                     <Value>
+                        <String>locked</String>
+                     </Value>
+                  </ListFilterValue>
+               </List>
+            </value>
+         </entry>
          <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
          <entry key="nativeChangeDetectionAttributes"/>
          <entry key="nativeChangeDetectionEnabled">
@@ -71,10 +87,59 @@
             </value>
          </entry>
          <entry key="nativeChangeDetectionOperations"/>
+         <entry key="noGroupPermissions">
+            <value>
+               <Map>
+                  <entry key="group">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+                  <entry key="nisNetgroup">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+                  <entry key="posixgroup">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+               </Map>
+            </value>
+         </entry>
+         <entry key="noPermissions" value="true"/>
+         <entry key="operations" value="Create, Modify, Delete, SetPassword"/>
          <entry key="pageSize" value="100"/>
-         <entry key="password" value="1:ACP:rgX+W+2WheVKorukVfAwZeb7GCKu4moG6/SCG/HPIWk="/>
+         <entry key="password" value="1:ACP:p3Zw1q8gkAfMsx9L8w3thQoFc/6PtW4O4bfEmEHcDrA="/>
          <entry key="passwordAttr" value="userPassword"/>
          <entry key="port" value="%%LDAP_PORT%%"/>
+         <entry key="restoreAction" value="ADD"/>
+         <entry key="restoreAttr" value="employeeType"/>
+         <entry key="restoreVal" value="active"/>
+         <entry key="revokeAttr" value="employeeType"/>
+         <entry key="revokeVal" value="disabled"/>
+         <entry key="schemaProvisioningMap">
+            <value>
+               <Map>
+                  <entry key="group">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+                  <entry key="nisNetgroup">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+                  <entry key="posixgroup">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+               </Map>
+            </value>
+         </entry>
          <entry key="searchDNs">
             <value>
                <List>
@@ -100,6 +165,50 @@
                      <entry key="searchDN" value="ou=employees,dc=example,dc=com"/>
                      <entry key="searchScope" value="SUBTREE"/>
                   </Map>
+                  <Map>
+                     <entry key="groupMembershipSearchScope">
+                        <value>
+                           <List>
+                              <Map>
+                                 <entry key="groupMemberFilterString"/>
+                                 <entry key="groupMembershipSearchDN">
+                                    <value>
+                                       <List>
+                                          <String>ou=groups,dc=example,dc=com</String>
+                                       </List>
+                                    </value>
+                                 </entry>
+                                 <entry key="objectType" value="group"/>
+                              </Map>
+                           </List>
+                        </value>
+                     </entry>
+                     <entry key="iterateSearchFilter"/>
+                     <entry key="searchDN" value="ou=contractors,dc=example,dc=com"/>
+                     <entry key="searchScope" value="SUBTREE"/>
+                  </Map>
+                  <Map>
+                     <entry key="groupMembershipSearchScope">
+                        <value>
+                           <List>
+                              <Map>
+                                 <entry key="groupMemberFilterString"/>
+                                 <entry key="groupMembershipSearchDN">
+                                    <value>
+                                       <List>
+                                          <String>ou=groups,dc=example,dc=com</String>
+                                       </List>
+                                    </value>
+                                 </entry>
+                                 <entry key="objectType" value="group"/>
+                              </Map>
+                           </List>
+                        </value>
+                     </entry>
+                     <entry key="iterateSearchFilter"/>
+                     <entry key="searchDN" value="ou=disabled,dc=example,dc=com"/>
+                     <entry key="searchScope" value="SUBTREE"/>
+                  </Map>
                </List>
             </value>
          </entry>
@@ -123,6 +232,13 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
+   <PasswordPolicies>
+      <PasswordPolicyHolder significantModified="1787057951363">
+         <PolicyRef>
+            <Reference class="sailpoint.object.PasswordPolicy" name="LDAP Password Policy"/>
+         </PolicyRef>
+      </PasswordPolicyHolder>
+   </PasswordPolicies>
    <ProvisioningForms>
       <Form name="account" objectType="account" type="Create">
          <Attributes>
@@ -131,11 +247,70 @@
             </Map>
          </Attributes>
          <Section>
-            <Field displayName="con_prov_policy_ldap_user_DN" helpKey="help_con_prov_policy_ldap_user_DN" name="dn" required="true" type="string"/>
-            <Field displayName="con_prov_policy_ldap_password" helpKey="help_con_prov_policy_ldap_password" name="password" required="true" type="secret"/>
-            <Field displayName="con_prov_policy_ldap_full_name" helpKey="help_con_prov_policy_ldap_full_name" name="cn" required="true" type="string"/>
-            <Field displayName="con_prov_policy_ldap_first_name" helpKey="help_con_prov_policy_ldap_first_name" name="givenName" reviewRequired="true" type="string"/>
-            <Field displayName="con_prov_policy_ldap_last_name" helpKey="help_con_prov_policy_ldap_last_name" name="sn" required="true" type="string"/>
+            <Field displayName="con_prov_policy_ldap_user_DN" helpKey="help_con_prov_policy_ldap_user_DN" name="dn" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[
+                  if(identity.getType().equals("employee")) return "cn=" + identity.getFirstname() + "  " + identity.getLastname() + ",ou=employees,dc=example,dc=com";
+                  else if(identity.getType().equals("contractor")) return "cn=" + identity.getFirstname() + "  " + identity.getLastname() + ",ou=contractors,dc=example,dc=com";
+                       else return "cn=" + identity.getFirstname() + "  " + identity.getLastname() + ",ou=others,dc=example,dc=com"; ]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ldap_password" name="password" required="true" type="secret">
+               <RuleRef>
+                  <Reference class="sailpoint.object.Rule" name="Generate OpenLDAP Password"/>
+               </RuleRef>
+            </Field>
+            <Field displayName="con_prov_policy_ldap_full_name" helpKey="help_con_prov_policy_ldap_full_name" name="cn" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getFirstname() + " " + identity.getLastname() ;]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ldap_first_name" helpKey="help_con_prov_policy_ldap_first_name" name="givenName" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getFirstname();]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ldap_last_name" helpKey="help_con_prov_policy_ldap_last_name" name="sn" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getLastname();]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Email" name="mail" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String email = identity != null ? identity.getEmail() : null;
+return (email != null && !email.isBlank()) ? email : "mock@example.com";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Position" name="title" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String position = identity.getAttribute("position");
+return (position != null && !position.isEmpty()) ? position : "Unknown";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Location" name="l" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String location = identity.getAttribute("location");
+return (location != null && !location.isEmpty()) ? location : "Unknown";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Pid" name="employeeNumber" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String pid = identity.getAttribute("pid");
+return (pid != null && !pid .isEmpty()) ? pid : "Unknown";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Department" name="physicalDeliveryOfficeName" type="string">
+               <Script>
+                  <Source><![CDATA[String department = identity.getAttribute("department");
+return (department  != null && !department .isEmpty()) ? department : "Unknown";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Status" name="employeeType" type="string" value="active"/>
+            <Field displayName="Uid" name="uid" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getName();]]></Source>
+               </Script>
+            </Field>
          </Section>
       </Form>
       <Form name="group create" objectType="group" type="Create">
@@ -205,7 +380,7 @@
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="cn" identityAttribute="dn" instanceAttribute="" nativeObjectType="inetOrgPerson" objectType="account" significantModified="1786444146794">
+      <Schema displayAttribute="cn" identityAttribute="dn" instanceAttribute="" nativeObjectType="inetOrgPerson" objectType="account" significantModified="1787057951363">
          <AttributeDefinition name="businessCategory" type="string">
             <Description>business category</Description>
          </AttributeDefinition>
@@ -345,7 +520,7 @@
             <Description>object classes of the entity</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema aggregationType="group" descriptionAttribute="" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="posixgroup" objectType="posixgroup" significantModified="1786444146794">
+      <Schema aggregationType="group" descriptionAttribute="" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="posixgroup" objectType="posixgroup" significantModified="1787057951363">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -375,7 +550,7 @@
             </Map>
          </Attributes>
       </Schema>
-      <Schema aggregationType="group" descriptionAttribute="" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="nisNetgroup" objectType="nisNetgroup" significantModified="1786444146794">
+      <Schema aggregationType="group" descriptionAttribute="" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="nisNetgroup" objectType="nisNetgroup" significantModified="1787057951363">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -404,7 +579,7 @@
             </Map>
          </Attributes>
       </Schema>
-      <Schema descriptionAttribute="description" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="groupOfUniqueNames" objectType="group" significantModified="1786444146794">
+      <Schema descriptionAttribute="description" displayAttribute="cn" featuresString="PROVISIONING" identityAttribute="dn" instanceAttribute="" nativeObjectType="groupOfUniqueNames" objectType="group" significantModified="1787057951363">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -431,5 +606,5 @@
          </Attributes>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1786444146793"/>
+   <ApplicationScorecard significantModified="1787057951362"/>
 </Application>
