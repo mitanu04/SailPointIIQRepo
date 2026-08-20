@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="BirthrightRapidSetup" name="BirthrightRapidSetup" significantModified="1786014076554" type="rapidSetupBirthright">
+<Bundle displayName="IT_SalesTeam" name="IT_SalesTeam" significantModified="1785620494082" type="it">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -19,13 +19,6 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
-   <Selector>
-      <IdentitySelector>
-         <MatchExpression>
-            <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
-         </MatchExpression>
-      </IdentitySelector>
-   </Selector>
    <Profiles>
       <Profile>
          <ApplicationRef>
@@ -35,8 +28,7 @@
             <Filter operation="CONTAINS_ALL" property="groups">
                <Value>
                   <List>
-                     <String>ITTeam</String>
-                     <String>FileShareAdmin</String>
+                     <String>SalesTeam</String>
                   </List>
                </Value>
             </Filter>

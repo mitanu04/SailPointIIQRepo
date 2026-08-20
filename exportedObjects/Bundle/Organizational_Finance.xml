@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="IT_ITTeam" name="IT_ITTeam" significantModified="1786980633639" type="it">
+<Bundle displayName="Organizational_Finance" name="Organizational_Finance" significantModified="1786980553549" type="organizational">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -16,23 +16,10 @@
          </entry>
       </Map>
    </Attributes>
+   <Inheritance>
+      <Reference class="sailpoint.object.Bundle" name="Organizational_HR"/>
+   </Inheritance>
    <Owner>
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
-   <Profiles>
-      <Profile significantModified="1785763424217">
-         <ApplicationRef>
-            <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
-         </ApplicationRef>
-         <Constraints>
-            <Filter operation="CONTAINS_ALL" property="groups">
-               <Value>
-                  <List>
-                     <String>ITTeam</String>
-                  </List>
-               </Value>
-            </Filter>
-         </Constraints>
-      </Profile>
-   </Profiles>
 </Bundle>

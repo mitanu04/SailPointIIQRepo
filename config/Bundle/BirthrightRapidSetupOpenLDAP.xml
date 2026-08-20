@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="IT_ITTeam" name="IT_ITTeam" significantModified="1786980633639" type="it">
+<Bundle displayName="BirthrightRapidSetupOpenLDAP" name="BirthrightRapidSetupOpenLDAP" significantModified="1786715806143" type="rapidSetupBirthright">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -19,16 +19,24 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
+   <Selector>
+      <IdentitySelector>
+         <MatchExpression and="true">
+            <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
+         </MatchExpression>
+      </IdentitySelector>
+   </Selector>
    <Profiles>
-      <Profile significantModified="1785763424217">
+      <Profile significantModified="1786541329436">
          <ApplicationRef>
-            <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
+            <Reference class="sailpoint.object.Application" name="OpenLDAP"/>
          </ApplicationRef>
          <Constraints>
             <Filter operation="CONTAINS_ALL" property="groups">
                <Value>
                   <List>
-                     <String>ITTeam</String>
+                     <String>cn=TimeSheetAdmin,ou=groups,dc=example,dc=com</String>
+                     <String>cn=ITTeam,ou=groups,dc=example,dc=com</String>
                   </List>
                </Value>
             </Filter>

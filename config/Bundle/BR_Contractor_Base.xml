@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Bundle displayName="BR_Contractor_Base" name="BR_Contractor_Base" type="business">
+   <Attributes>
+      <Map>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US" value="Baseline business role for contractors"/>
+               </Map>
+            </value>
+         </entry>
+      </Map>
+   </Attributes>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+</Bundle>

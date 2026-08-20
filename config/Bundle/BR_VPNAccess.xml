@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="Business_Shared_DB Admin" name="Business_Shared_DB Admin" significantModified="1786980633639" type="business">
+<Bundle displayName="BR_VPNAccess" name="BR_VPNAccess" significantModified="1786980485253" type="business">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -17,21 +17,15 @@
       </Map>
    </Attributes>
    <Inheritance>
-      <Reference class="sailpoint.object.Bundle" name="Organizational_Admin"/>
+      <Reference class="sailpoint.object.Bundle" name="Organizational_IT"/>
    </Inheritance>
    <Owner>
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
-   <Permits>
-      <Reference class="sailpoint.object.Bundle" name="IT_HRTeam"/>
-   </Permits>
-   <Requirements>
-      <Reference class="sailpoint.object.Bundle" name="IT_ITTeam"/>
-   </Requirements>
    <Selector>
       <IdentitySelector>
          <MatchExpression and="true">
-            <MatchTerm name="department" type="IdentityAttribute" value="IT"/>
+            <MatchTerm name="location" type="IdentityAttribute" value="Bucharest"/>
             <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
          </MatchExpression>
       </IdentitySelector>

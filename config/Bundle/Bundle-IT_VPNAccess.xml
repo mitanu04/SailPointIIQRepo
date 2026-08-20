@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="IT_ITTeam" name="IT_ITTeam" significantModified="1786980633639" type="it">
+<Bundle displayName="IT_VPNAccess" name="IT_VPNAccess" significantModified="1786979972517" type="it">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -17,18 +17,18 @@
       </Map>
    </Attributes>
    <Owner>
-      <Reference class="sailpoint.object.Identity" name="spadmin"/>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
    <Profiles>
-      <Profile significantModified="1785763424217">
+      <Profile>
          <ApplicationRef>
-            <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
+            <Reference class="sailpoint.object.Application" name="OpenLDAP"/>
          </ApplicationRef>
          <Constraints>
             <Filter operation="CONTAINS_ALL" property="groups">
                <Value>
                   <List>
-                     <String>ITTeam</String>
+                     <String>cn=VPNAccess,ou=groups,dc=example,dc=com</String>
                   </List>
                </Value>
             </Filter>

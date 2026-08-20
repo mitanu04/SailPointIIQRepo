@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="IT_ITTeam" name="IT_ITTeam" significantModified="1786980633639" type="it">
+<Bundle displayName="Organizational_Admin" name="Organizational_Admin" significantModified="1786980633639" type="organizational">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -19,20 +19,4 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
-   <Profiles>
-      <Profile significantModified="1785763424217">
-         <ApplicationRef>
-            <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
-         </ApplicationRef>
-         <Constraints>
-            <Filter operation="CONTAINS_ALL" property="groups">
-               <Value>
-                  <List>
-                     <String>ITTeam</String>
-                  </List>
-               </Value>
-            </Filter>
-         </Constraints>
-      </Profile>
-   </Profiles>
 </Bundle>
