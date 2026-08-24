@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1787317007192" type="Active Directory - Direct">
+<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1787582265543" type="Active Directory - Direct">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="ActiveDirectory Correlation Config"/>
    </AccountCorrelationConfig>
@@ -12,7 +12,7 @@
                <List>
                   <Map>
                      <entry key="IQServiceHost" value="%%LDAP_HOST%%"/>
-                     <entry key="IQServicePassword" value="%%AD_IQSERVICE_PASSWORD%%"/>
+                     <entry key="IQServicePassword" value="1:ACP:skakSmNxJsQMzgb2IYbeKZg6M2HmoF4u8ypBOLFotVI="/>
                      <entry key="IQServicePort" value="%%AD_IQSERVICE_PORT%%"/>
                      <entry key="IQServiceUser" value="desktop-9icgl95\iqservice-svc"/>
                      <entry key="useTLSForIQService">
@@ -26,12 +26,12 @@
          </entry>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1787316916391</Date>
+               <Date>1787575386141</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1787316916214</Date>
+               <Date>1787575385875</Date>
             </value>
          </entry>
          <entry key="afterProvisioningRule"/>
@@ -40,7 +40,7 @@
                <Boolean/>
             </value>
          </entry>
-         <entry key="aggregationType" value="group"/>
+         <entry key="aggregationType" value="account"/>
          <entry key="allowAutoPartitioning">
             <value>
                <Boolean/>
@@ -55,7 +55,8 @@
                </List>
             </value>
          </entry>
-         <entry key="beforeProvisioningRule"/>
+         <entry key="autoPartitionCount" value="256"/>
+         <entry key="beforeProvisioningRule" value="AD_CreateAccount"/>
          <entry key="cacheRemoteObjectPort" value="40002"/>
          <entry key="cacheRmiPort" value="40001"/>
          <entry key="compositeDefinition"/>
@@ -66,9 +67,9 @@
                   <entry key="dc=test,dc=local">
                      <value>
                         <Map>
-                           <entry key="groups_cookie" value="TVNEUwMAAAAAO66FbDHdAQAAAAAAAAAAKAAAAP0PAAAAAAAAAAAAAAAAAAD9DwAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdP0PAAAAAAAA"/>
+                           <entry key="groups_cookie" value="TVNEUwMAAACAcAz1oDPdAQAAAAAAAAAAKAAAAAEQAAAAAAAAAAAAAAAAAAABEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAEQAAAAAAAA"/>
                            <entry key="lastDirsyncServer" value="%%AD_DC%%"/>
-                           <entry key="users_cookie" value="TVNEUwMAAAAAUglQbDHdAQAAAAAAAAAAKAAAAP0PAAAAAAAAAAAAAAAAAAD9DwAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdP0PAAAAAAAA"/>
+                           <entry key="users_cookie" value="TVNEUwMAAACA0pAbxjPdAQAAAAAAAAAAKAAAAAUQAAAAAAAAAAAAAAAAAAAFEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAUQAAAAAAAA"/>
                         </Map>
                      </value>
                   </entry>
@@ -91,7 +92,7 @@
             <value>
                <List>
                   <Map>
-                     <entry key="authenticationType"/>
+                     <entry key="authenticationType" value="simple"/>
                      <entry key="authorizationType" value="simple"/>
                      <entry key="domainDN" value="DC=test,DC=local"/>
                      <entry key="domainIterateSearchFilter"/>
@@ -102,7 +103,7 @@
                         </value>
                      </entry>
                      <entry key="forestName" value="%%AD_DC%%"/>
-                     <entry key="password" value="%%AD_PASSWORD%%"/>
+                     <entry key="password" value="1:ACP:bHUFyWaLMwzuetxyO1MAsXaEOSoQy1Z9kveqdFyKTms="/>
                      <entry key="port" value="%%LDAP_PORT%%"/>
                      <entry key="servers"/>
                      <entry key="useSSL">
@@ -125,7 +126,7 @@
             <value>
                <List>
                   <Map>
-                     <entry key="authenticationType"/>
+                     <entry key="authenticationType" value="simple"/>
                      <entry key="authorizationType" value="simple"/>
                      <entry key="enablePasswordLessAuthenticationForForest">
                         <value>
@@ -144,7 +145,7 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="password" value="1:ACP:ScTB42exz//9JIruVNl525LgfZdg8immnkU8H1MJfL4="/>
+                     <entry key="password" value="1:ACP:bnsFJ3ZQiwX3hd+kYxHNFWzatppGATfb8bK6jozZAPQ="/>
                      <entry key="useGroupMembershipPreloading"/>
                      <entry key="useSSL">
                         <value>
@@ -380,19 +381,68 @@
                   </Map>
                </Attributes>
             </Field>
-            <Field displayName="con_prov_policy_ad_distinguishedName" helpKey="help_con_prov_policy_ad_distinguishedName" name="distinguishedName" required="true" section="Account" type="string"/>
+            <Field displayName="con_prov_policy_ad_distinguishedName" helpKey="help_con_prov_policy_ad_distinguishedName" name="distinguishedName" required="true" section="Account" type="string">
+               <Script>
+                  <Source><![CDATA[return "CN=" + identity.getFirstname() + " " + identity.getLastname() + ",OU=Employees,OU=Test,DC=test,DC=local";]]></Source>
+               </Script>
+            </Field>
          </Section>
          <Section label="User Details" name="User Details">
-            <Field displayName="con_prov_policy_ad_sAMAccountName" helpKey="help_con_prov_policy_ad_sAMAccountName" name="sAMAccountName" reviewRequired="true" section="User Details" type="string"/>
-            <Field displayName="con_prov_policy_ad_password" helpKey="help_con_prov_policy_ad_password" name="password" reviewRequired="true" section="User Details" type="secret"/>
+            <Field displayName="con_prov_policy_ad_sAMAccountName" helpKey="help_con_prov_policy_ad_sAMAccountName" name="sAMAccountName" reviewRequired="true" section="User Details" type="string">
+               <Script>
+                  <Source><![CDATA[String sam = (identity.getFirstname().substring(0,1) + identity.getLastname()).toLowerCase();
+  return sam.length() > 20 ? sam.substring(0, 20) : sam;]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ad_password" helpKey="help_con_prov_policy_ad_password" name="password" reviewRequired="true" section="User Details" type="secret" value="Pa$$w0rd!"/>
             <Field displayName="con_prov_policy_ad_pwdLastSet" helpKey="help_con_prov_policy_ad_pwdLastSet" name="pwdLastSet" reviewRequired="true" section="User Details" type="boolean"/>
             <Field displayName="con_prov_policy_ad_IIQDisabled" helpKey="help_con_prov_policy_ad_IIQDisabled" name="IIQDisabled" reviewRequired="true" section="User Details" type="boolean" value="false"/>
             <Field displayName="con_prov_policy_ad_primaryGroupDN" helpKey="help_con_prov_policy_ad_primaryGroupDN" name="primaryGroupDN" reviewRequired="true" section="User Details" type="string"/>
+            <Field displayName="con_prov_policy_ad_mail" helpKey="help_con_prov_policy_ad_mail" name="mail" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String email = identity.getEmail();
+  return (email != null && !email.isEmpty()) ? email : null;]]></Source>
+               </Script>
+            </Field>
          </Section>
          <Section label="General" name="General">
-            <Field displayName="con_prov_policy_ad_givenName" helpKey="help_con_prov_policy_ad_givenName" name="givenName" reviewRequired="true" section="General" type="string"/>
-            <Field displayName="con_prov_policy_ad_sn" helpKey="help_con_prov_policy_ad_sn" name="sn" reviewRequired="true" section="General" type="string"/>
-            <Field displayName="con_prov_policy_ad_description" helpKey="help_con_prov_policy_ad_description" name="description" reviewRequired="true" section="General" type="string"/>
+            <Field displayName="con_prov_policy_ad_givenName" helpKey="help_con_prov_policy_ad_givenName" name="givenName" reviewRequired="true" section="General" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.firstname;]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ad_sn" name="sn" section="General" type="string"/>
+            <Field displayName="con_prov_policy_ad_description" helpKey="help_con_prov_policy_ad_description" name="description" reviewRequired="true" section="General" type="string">
+               <Script>
+                  <Source><![CDATA[return "User Account";]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="EmployeeNumber" name="employeeNumber" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("pid");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Location" name="l" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("location");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Department" name="department" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("department");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Position" name="title" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("position");]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="con_prov_policy_ad_userPrincipalName" helpKey="help_con_prov_policy_ad_userPrincipalName" name="userPrincipalName" required="true" type="string">
+               <Script>
+                  <Source><![CDATA[String email = identity.getEmail();
+ return (email != null && !email.isEmpty()) ? email : null;]]></Source>
+               </Script>
+            </Field>
          </Section>
          <Section label="Dial-in" name="Dial-in">
             <Field displayName="con_prov_policy_ad_msNPAllowDialin" helpKey="help_con_prov_policy_ad_msNPAllowDialin" name="msNPAllowDialin" reviewRequired="true" section="Dial-in" type="string" value="Not Set">
@@ -499,7 +549,7 @@
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787316877027">
+      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787582265173">
          <AttributeDefinition name="businessCategory" type="string">
             <Description>business category</Description>
          </AttributeDefinition>
@@ -729,7 +779,7 @@
             <Description>Name of the entity in the format "NetBIOS domain name\sAMAccountName"</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787316877028">
+      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787582265173">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -773,5 +823,5 @@
          </Attributes>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1787316877027"/>
+   <ApplicationScorecard significantModified="1787582265173"/>
 </Application>

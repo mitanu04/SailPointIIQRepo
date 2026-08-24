@@ -24,6 +24,12 @@ document it. Specifically:
   DTD-validated config files should stay close to what IdentityIQ itself exports.
 - If asked to help onboard or modify an application, proactively point out what
   should be documented, even if the user does not ask for it directly.
+- `doc/Applications.md` is an index into `doc/applications/<AppName>.md`, one file
+  per onboarded application — these are the living reference and must be kept up
+  to date. Whenever a provisioning policy field, schema attribute, correlation
+  config, or supporting rule changes for an app, update its file in the same pass
+  rather than leaving the doc stale. If a new application is onboarded, add a new
+  file under `doc/applications/` and link it from the index.
 
 ## Working conventions
 
