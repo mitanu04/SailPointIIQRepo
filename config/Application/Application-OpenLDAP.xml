@@ -111,7 +111,7 @@
          <entry key="noPermissions" value="true"/>
          <entry key="operations" value="Create, Modify, Delete, SetPassword"/>
          <entry key="pageSize" value="100"/>
-         <entry key="password" value="1:ACP:p3Zw1q8gkAfMsx9L8w3thQoFc/6PtW4O4bfEmEHcDrA="/>
+         <entry key="password" value="%%LDAP_PASSWORD%%"/>
          <entry key="passwordAttr" value="userPassword"/>
          <entry key="port" value="%%LDAP_PORT%%"/>
          <entry key="restoreAction" value="ADD"/>
