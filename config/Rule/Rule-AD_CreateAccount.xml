@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="AD_CreateAccount" type="BeforeProvisioning">
+   <Description>An IdentityIQ server-side rule that is executed before the connector's provisioning method is called. This gives the customer the ability to customize or react to anything in the ProvisioningPlan BEFORE it is sent to the underlying connectors used in provisioning. 
+
+This rule will be called for any application found in a plan that also has a configured 'beforeProvisioningRule' configured.  
+
+The plan can be updated directly in the rule by reference and does not need to return the plan.</Description>
+   <Signature>
+      <Inputs>
+         <Argument name="log" type="org.apache.commons.logging.Log">
+            <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+         </Argument>
+         <Argument name="context" type="sailpoint.api.SailPointContext">
+            <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+         </Argument>
+         <Argument name="plan">
+            <Description>
+          The ProvisioningPlan object on its way to the Connector.
+        </Description>
+         </Argument>
+         <Argument name="application">
+            <Description>
+          The application object that references this before/after script.
+        </Description>
+         </Argument>
+      </Inputs>
+   </Signature>
+   <Source><![CDATA[import sailpoint.object.Filter;
+  import sailpoint.object.ProvisioningPlan.AccountRequest;
+  import sailpoint.object.ProvisioningPlan.AttributeRequest;
+  import sailpoint.connector.Connector;
+  import sailpoint.connector.ConnectorFactory;
+  import sailpoint.connector.ObjectNotFoundException;
+
+  if (plan == null || plan.getAccountRequests() == null) return;
+
+  for (Object o : plan.getAccountRequests()) {
+      AccountRequest acctReq = (AccountRequest) o;
+      if (!"ActiveDirectory".equals(acctReq.getApplicationName())
+              || !AccountRequest.Operation.Create.equals(acctReq.getOperation())) {
+          continue;
+      }
+
+      AttributeRequest dnReq = acctReq.getAttributeRequest("distinguishedName");
+      if (dnReq == null || dnReq.getValue() == null) continue;
+
+      AttributeRequest samReq = acctReq.getAttributeRequest("sAMAccountName");
+      String baseSam = (samReq != null) ? (String) samReq.getValue() : null;
+
+      String candidateDn = (String) dnReq.getValue();
+      String rdn = candidateDn.substring(3, candidateDn.indexOf(","));
+      String parentDn = candidateDn.substring(candidateDn.indexOf(",") + 1);
+      String candidateSam = baseSam;
+
+      Connector connector = ConnectorFactory.getConnector(application, null);
+      int suffix = 1;
+
+      while (true) {
+          boolean dnExists = true;
+           try {
+                connector.getObject("account", candidateDn, null);
+            } catch (ObjectNotFoundException e) {
+                dnExists = false;
+            } catch (Exception e) {
+                log.error("DN uniqueness check failed for " + candidateDn + ": " + e.getMessage());
+                dnExists = false;   // decide: fail-open (proceed) vs. rethrow (abort)
+            }
+
+          boolean samExists = false;
+          if (candidateSam != null) {
+              Object it = null;
+              try {
+                  it = connector.iterateObjects("account", Filter.eq("sAMAccountName", candidateSam), null);
+                  samExists = (it != null && it.hasNext());
+              } catch (Exception e) {
+                  log.error("Failed checking sAMAccountName uniqueness: " + e.getMessage());
+              } finally {
+                  if (it != null) it.close();
+              }
+          }
+
+          if (!dnExists && !samExists) break;
+
+          suffix++;
+          candidateDn = "CN=" + rdn + " " + suffix + "," + parentDn;
+          if (baseSam != null) {
+              String suffixedSam = baseSam + suffix;
+              candidateSam = suffixedSam.length() > 20 ? suffixedSam.substring(0, 20) : suffixedSam;
+          }
+      }
+
+      dnReq.setValue(candidateDn);
+      acctReq.setNativeIdentity(candidateDn);
+      if (samReq != null && candidateSam != null) {
+          samReq.setValue(candidateSam);
+      }
+  }]]></Source>
+</Rule>

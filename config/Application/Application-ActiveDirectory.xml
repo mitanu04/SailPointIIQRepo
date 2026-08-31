@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1787582265543" type="Active Directory - Direct">
+<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1787909952296" type="Active Directory - Direct">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="ActiveDirectory Correlation Config"/>
    </AccountCorrelationConfig>
@@ -11,9 +11,9 @@
             <value>
                <List>
                   <Map>
-                     <entry key="IQServiceHost" value="%%LDAP_HOST%%"/>
-                     <entry key="IQServicePassword" value="1:ACP:skakSmNxJsQMzgb2IYbeKZg6M2HmoF4u8ypBOLFotVI="/>
-                     <entry key="IQServicePort" value="%%AD_IQSERVICE_PORT%%"/>
+                     <entry key="IQServiceHost" value="localhost"/>
+                     <entry key="IQServicePassword" value="1:ACP:L36BfiYiUo2XTiHV3Dtfnsy1sbPs7nb2YyxwKKpMJgU="/>
+                     <entry key="IQServicePort" value="5051"/>
                      <entry key="IQServiceUser" value="desktop-9icgl95\iqservice-svc"/>
                      <entry key="useTLSForIQService">
                         <value>
@@ -56,7 +56,7 @@
             </value>
          </entry>
          <entry key="autoPartitionCount" value="256"/>
-         <entry key="beforeProvisioningRule" value="AD_CreateAccount"/>
+         <entry key="beforeProvisioningRule"/>
          <entry key="cacheRemoteObjectPort" value="40002"/>
          <entry key="cacheRmiPort" value="40001"/>
          <entry key="compositeDefinition"/>
@@ -68,7 +68,7 @@
                      <value>
                         <Map>
                            <entry key="groups_cookie" value="TVNEUwMAAACAcAz1oDPdAQAAAAAAAAAAKAAAAAEQAAAAAAAAAAAAAAAAAAABEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAEQAAAAAAAA"/>
-                           <entry key="lastDirsyncServer" value="%%AD_DC%%"/>
+                           <entry key="lastDirsyncServer" value="test.local"/>
                            <entry key="users_cookie" value="TVNEUwMAAACA0pAbxjPdAQAAAAAAAAAAKAAAAAUQAAAAAAAAAAAAAAAAAAAFEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAUQAAAAAAAA"/>
                         </Map>
                      </value>
@@ -102,16 +102,22 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="forestName" value="%%AD_DC%%"/>
-                     <entry key="password" value="1:ACP:bHUFyWaLMwzuetxyO1MAsXaEOSoQy1Z9kveqdFyKTms="/>
-                     <entry key="port" value="%%LDAP_PORT%%"/>
-                     <entry key="servers"/>
-                     <entry key="useSSL">
+                     <entry key="forestName" value="test.local"/>
+                     <entry key="password" value="1:ACP:erRVGDl4Hm0+ppFwDqlEa5MQ40rH+WRkN6GSjowgNzo="/>
+                     <entry key="port" value="636"/>
+                     <entry key="servers">
                         <value>
-                           <Boolean/>
+                           <List>
+                              <String>dc1.test.local</String>
+                           </List>
                         </value>
                      </entry>
-                     <entry key="user" value="%%AD_USER%%"/>
+                     <entry key="useSSL">
+                        <value>
+                           <Boolean>true</Boolean>
+                        </value>
+                     </entry>
+                     <entry key="user" value="Administrator@test.local"/>
                   </Map>
                </List>
             </value>
@@ -133,8 +139,8 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="forestName" value="%%AD_DC%%"/>
-                     <entry key="gcServer" value="%%LDAP_HOST%%:3268"/>
+                     <entry key="forestName" value="test.local"/>
+                     <entry key="gcServer" value="localhost:3268"/>
                      <entry key="isResourceForest">
                         <value>
                            <Boolean/>
@@ -145,14 +151,14 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="password" value="1:ACP:bnsFJ3ZQiwX3hd+kYxHNFWzatppGATfb8bK6jozZAPQ="/>
+                     <entry key="password" value="1:ACP:yTKgmwS4vJgoiN+8pkSyKZETxtpgLmSVxatzesNaCJg="/>
                      <entry key="useGroupMembershipPreloading"/>
                      <entry key="useSSL">
                         <value>
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="user" value="%%AD_USER%%"/>
+                     <entry key="user" value="Administrator@test.local"/>
                   </Map>
                </List>
             </value>
@@ -388,17 +394,17 @@
             </Field>
          </Section>
          <Section label="User Details" name="User Details">
-            <Field displayName="con_prov_policy_ad_sAMAccountName" helpKey="help_con_prov_policy_ad_sAMAccountName" name="sAMAccountName" reviewRequired="true" section="User Details" type="string">
+            <Field displayName="con_prov_policy_ad_sAMAccountName" helpKey="help_con_prov_policy_ad_sAMAccountName" name="sAMAccountName" required="true" section="User Details" type="string">
                <Script>
-                  <Source><![CDATA[String sam = (identity.getFirstname().substring(0,1) + identity.getLastname()).toLowerCase();
+                  <Source><![CDATA[String sam = (identity.getFirstname().substring(0,1) + "." + identity.getLastname()).toLowerCase();
   return sam.length() > 20 ? sam.substring(0, 20) : sam;]]></Source>
                </Script>
             </Field>
-            <Field displayName="con_prov_policy_ad_password" helpKey="help_con_prov_policy_ad_password" name="password" reviewRequired="true" section="User Details" type="secret" value="Pa$$w0rd!"/>
+            <Field displayName="con_prov_policy_ad_password" helpKey="help_con_prov_policy_ad_password" name="password" required="true" section="User Details" type="secret" value="Pa$$w0rd!"/>
             <Field displayName="con_prov_policy_ad_pwdLastSet" helpKey="help_con_prov_policy_ad_pwdLastSet" name="pwdLastSet" reviewRequired="true" section="User Details" type="boolean"/>
             <Field displayName="con_prov_policy_ad_IIQDisabled" helpKey="help_con_prov_policy_ad_IIQDisabled" name="IIQDisabled" reviewRequired="true" section="User Details" type="boolean" value="false"/>
             <Field displayName="con_prov_policy_ad_primaryGroupDN" helpKey="help_con_prov_policy_ad_primaryGroupDN" name="primaryGroupDN" reviewRequired="true" section="User Details" type="string"/>
-            <Field displayName="con_prov_policy_ad_mail" helpKey="help_con_prov_policy_ad_mail" name="mail" required="true" type="string">
+            <Field displayName="Email" helpKey="Email" name="mail" required="true" type="string">
                <Script>
                   <Source><![CDATA[String email = identity.getEmail();
   return (email != null && !email.isEmpty()) ? email : null;]]></Source>
@@ -437,7 +443,7 @@
                   <Source><![CDATA[return identity.getAttribute("position");]]></Source>
                </Script>
             </Field>
-            <Field displayName="con_prov_policy_ad_userPrincipalName" helpKey="help_con_prov_policy_ad_userPrincipalName" name="userPrincipalName" required="true" type="string">
+            <Field displayName="UserPrincipalName" helpKey="UserPrincipalName" name="userPrincipalName" required="true" type="string">
                <Script>
                   <Source><![CDATA[String email = identity.getEmail();
  return (email != null && !email.isEmpty()) ? email : null;]]></Source>
@@ -549,7 +555,7 @@
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787582265173">
+      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787909952297">
          <AttributeDefinition name="businessCategory" type="string">
             <Description>business category</Description>
          </AttributeDefinition>
@@ -779,7 +785,7 @@
             <Description>Name of the entity in the format "NetBIOS domain name\sAMAccountName"</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787582265173">
+      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787909952297">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -823,5 +829,5 @@
          </Attributes>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1787582265173"/>
+   <ApplicationScorecard significantModified="1787909952296"/>
 </Application>

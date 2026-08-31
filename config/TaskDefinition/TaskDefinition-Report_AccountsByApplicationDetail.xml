@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition executor="sailpoint.reporting.LiveReportExecutor"
+                name="Accounts by Application Detail Report"
+                progressMode="Percentage"
+                resultAction="Rename"
+                subType="Identity and User Reports"
+                template="true"
+                type="LiveReport">
+  <Description>One row per account: application, native id, and owning IdentityIQ identity.</Description>
+  <Attributes>
+    <Map>
+      <entry key="report">
+        <value>
+          <LiveReport title="Accounts by Application Detail Report">
+
+            <!-- One bar per application, counting its accounts. The chart groups
+                 the detail rows (accounts) by application; it respects the
+                 Applications filter. -->
+            <Chart category="application.name"
+                   groupBy="application.name"
+                   value="count(*)"
+                   title="Accounts per Application"
+                   leftLabel="Accounts"
+                   bottomLabel="Application"
+                   type="column"/>
+
+            <DataSource objectType="Link" type="Filter" defaultSort="application.name,nativeIdentity">
+              <QueryParameters>
+               
+                <Parameter argument="applications" property="application.id" operation="IN"/>
+              </QueryParameters>
+            </DataSource>
+
+            <Columns>
+              <ReportColumnConfig field="application" header="Application"               property="application.name" sortable="true" width="220"/>
+              <ReportColumnConfig field="account"     header="Account"       property="nativeIdentity"   sortable="true" width="260"/>
+              <ReportColumnConfig field="identity"    header="Identity Name "  property="identity.name"    sortable="true" width="200"/>
+            </Columns>
+
+            <!-- Summary: per-application account counts. ReportSummary tiles are
+                 static, so the dynamic per-app breakdown is built as ONE text tile
+                 ("App: n | App: n | ..."), plus a Total tile. Respects the filter. -->
+            <ReportSummary title="Accounts by Application - Summary">
+              <DataSourceScript>
+                <Source>
+                  import java.util.*;
+                  import sailpoint.object.*;
+
+                  QueryOptions ops = new QueryOptions(baseQueryOptions);  // clone the filter
+                  ops.setOrderings(new ArrayList());
+                  ops.addGroupBy("application.name");
+                  ops.addOrdering("application.name", true);
+
+                  List fields = new ArrayList();
+                  fields.add("application.name");
+                  fields.add("count(*)");
+
+                  StringBuffer sb = new StringBuffer();
+                  int total = 0;
+                  Iterator iter = context.search(Link.class, ops, fields);
+                  while (iter.hasNext()) {
+                    Object[] row = iter.next();
+                    String app = (row[0] != null) ? row[0].toString() : "(none)";
+                    int cnt = (row[1] != null) ? ((Number) row[1]).intValue() : 0;
+                    total += cnt;
+                    if (sb.length() > 0) sb.append("   |   ");
+                    sb.append(app).append(": ").append(cnt);
+                  }
+
+                  Map map = new HashMap();
+                  map.put("perApp", (sb.length() > 0) ? sb.toString() : "(no accounts)");
+                  map.put("total", total);
+                  return map;
+                </Source>
+              </DataSourceScript>
+              <Values>
+                <LiveReportSummaryValue label="Accounts by application" name="perApp"/>
+                <LiveReportSummaryValue label="Total accounts"          name="total"/>
+              </Values>
+            </ReportSummary>
+          </LiveReport>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+  <!-- No <ReportForm>: with a type="Application" argument, IIQ auto-renders a
+       native application multi-picker on the report's Filters page. -->
+  <Signature>
+    <Inputs>
+      <Argument name="applications" type="Application" multi="true">
+        <Prompt>Applications (optional)</Prompt>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <RequiredRights>
+    <Reference class="sailpoint.object.SPRight" name="FullAccessReport"/>
+  </RequiredRights>
+</TaskDefinition>

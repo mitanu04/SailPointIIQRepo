@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition executor="sailpoint.reporting.LiveReportExecutor"
+                name="Application Access Summary Report"
+                progressMode="Percentage"
+                resultAction="Rename"
+                subType="Identity and User Reports"
+                template="true"
+                type="LiveReport">
+  <Description>Per-application overview via HQL: type, owner, account count, and entitlement-catalog count.</Description>
+  <Attributes>
+    <Map>
+      <entry key="report">
+        <value>
+          <LiveReport title="Application Access Summary Report">
+
+            <DataSource objectType="Application" type="Hql">
+
+              <Query>from Application a</Query>
+              <QueryParameters>
+                <Parameter argument="appType"/>
+              </QueryParameters>
+              <QueryScript>
+                <Source><![CDATA[
+                  Object t = args.get("appType");
+                  if (t != null && t.toString().trim().length() > 0) {
+                    return query + " WHERE a.type = :appType";
+                  }
+                  return query;   // blank -> no extra filter
+                ]]></Source>
+              </QueryScript>
+            </DataSource>
+
+            <Columns>
+              <ReportColumnConfig field="name"  header="Application" property="name"       sortable="true" width="220"/>
+              <ReportColumnConfig field="type"  header="Type"        property="type"       sortable="true" width="120"/>
+              <ReportColumnConfig field="owner" header="Owner"       property="owner.name" sortable="true" width="160"/>
+
+              <!-- HQL scalar subqueries, correlated to the row alias 'a'. -->
+              <ReportColumnConfig field="accounts" header="Accounts"
+                  property="(select count(l.id) from sailpoint.object.Link l where l.application.id = a.id)"
+                  width="120"/>
+              <ReportColumnConfig field="entitlements" header="Entitlements (catalog)"
+                  property="(select count(m.id) from sailpoint.object.ManagedAttribute m where m.application.id = a.id)"
+                  width="170"/>
+            </Columns>
+          </LiveReport>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+  <Signature>
+    <Inputs>
+      <Argument name="appType" type="string">
+        <Prompt>Application Type (optional; exact, e.g. Active Directory - Direct)</Prompt>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <RequiredRights>
+    <Reference class="sailpoint.object.SPRight" name="FullAccessReport"/>
+  </RequiredRights>
+</TaskDefinition>
