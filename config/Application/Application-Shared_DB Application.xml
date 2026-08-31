@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Shared_DB Application" profileClass="" significantModified="1786009251704" type="JDBC">
+<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Shared_DB Application" profileClass="" significantModified="1788185586871" type="JDBC">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="Shared_DBApplication Correlation Config"/>
    </AccountCorrelationConfig>
@@ -63,8 +63,8 @@
                <Boolean/>
             </value>
          </entry>
-         <entry key="group.password" value="1:ACP:4CIFB/uld/VKnf82vFUrCel9q7c3JIC4ea9Aze1mEyg="/>
-         <entry key="group.url" value="jdbc:mysql://localhost/shared_db_table"/>
+         <entry key="group.password" value="%%SHARED_DB_GROUPS_PASSWORD%%"/>
+         <entry key="group.url" value="%%SHARED_DB_URL%%"/>
          <entry key="group.useExecuteQuery">
             <value>
                <Boolean/>
@@ -123,7 +123,7 @@
             </value>
          </entry>
          <entry key="partitionStatements"/>
-         <entry key="password" value="1:ACP:YWaTfG6emH3t5V+nZhawLAd/gHUOebaDhK0t5ToDzLA="/>
+         <entry key="password" value="1:ACP:q4U1hZ0gj4HzH+eNjTGDFwPvcqobqJg23ffgWSANroo="/>
          <entry key="provisionRule" value="globalRule"/>
          <entry key="sysDescriptions">
             <value>
@@ -134,7 +134,7 @@
          </entry>
          <entry key="templateApplication" value="JDBC Template"/>
          <entry key="testConnSQL"/>
-         <entry key="url" value="jdbc:mysql://localhost/shared_db_table"/>
+         <entry key="url" value="%%SHARED_DB_URL%%"/>
          <entry key="useExecuteQuery">
             <value>
                <Boolean/>
@@ -177,10 +177,10 @@
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
    <ProvisioningForms>
-      <Form name="Shared_DB_Table" objectType="account" type="Update">
+      <Form name="Update" objectType="account" type="Update">
          <Attributes>
             <Map>
-               <entry key="pageTitle" value="Shared_DB_Table"/>
+               <entry key="pageTitle" value="Update"/>
             </Map>
          </Attributes>
          <Section name="Section 1">
@@ -197,6 +197,11 @@
             <Field displayName="Email" name="email" type="string">
                <Script>
                   <Source><![CDATA[return identity.getEmail();]]></Source>
+               </Script>
+            </Field>
+            <Field displayName="Position" name="Position" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("position");]]></Source>
                </Script>
             </Field>
          </Section>
@@ -251,9 +256,20 @@
             </Field>
          </Section>
       </Form>
+      <Form name="Create Group" objectType="group" type="Create">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Create Group"/>
+            </Map>
+         </Attributes>
+         <Section name="Section 1">
+            <Field displayName="Group Name" name="group_name" type="string"/>
+            <Field displayName="Description" name="description" type="string"/>
+         </Section>
+      </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1786009251704">
+      <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1788185586871">
          <AttributeDefinition name="username" type="string">
             <Description/>
          </AttributeDefinition>
@@ -285,7 +301,7 @@
             <Description/>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="description" displayAttribute="group_name" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1786009251705">
+      <Schema descriptionAttribute="description" displayAttribute="group_name" featuresString="PROVISIONING" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1788185586871">
          <AttributeDefinition name="group_name" type="string">
             <Description/>
          </AttributeDefinition>
@@ -294,5 +310,5 @@
          </AttributeDefinition>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1786009251704"/>
+   <ApplicationScorecard significantModified="1788185586871"/>
 </Application>

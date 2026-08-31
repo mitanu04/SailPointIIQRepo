@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.webservices.WebServicesConnector" featuresString="PROVISIONING, ENABLE, PASSWORD, AUTHENTICATE, UNLOCK" name="Mock Web Service" profileClass="" significantModified="1786368335316" type="Web Services">
+<Application connector="sailpoint.connector.webservices.WebServicesConnector" featuresString="PROVISIONING, ENABLE, PASSWORD, AUTHENTICATE, UNLOCK" name="Mock Web Service" profileClass="" significantModified="1788183186489" type="Web Services">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="MockWebService Correlation Config"/>
    </AccountCorrelationConfig>
@@ -404,7 +404,7 @@
          <entry key="enableStatus" value="status=ACTIVE"/>
          <entry key="encrypted" value="accesstoken,refresh_token,oauth_token_info,client_secret,private_key,private_key_password,clientCertificate,clientKeySpec,resourceOwnerPassword,custom_auth_token_info"/>
          <entry key="fixedPlanMultivaluedAttribute" value="true"/>
-         <entry key="genericWebServiceBaseUrl" value="http://localhost:8081/api/v1"/>
+         <entry key="genericWebServiceBaseUrl" value="http://%%LDAP_HOST%%:8081/api/v1"/>
          <entry key="httpCookieSpecsStandard" value="true"/>
          <entry key="isGetObjectRequiredForPTA">
             <value>
@@ -437,7 +437,7 @@
                </Map>
             </value>
          </entry>
-         <entry key="password" value="1:ACP:3MoDFlHGItfWOsAkli2KXbbH221D0IWP5xmS62SkvFI="/>
+         <entry key="password" value="1:ACP:/UlCQqw+e4/hAIaeIWIV3TfhXQNhkCkXRNQsDQg8KwQ="/>
          <entry key="private_key_to_update"/>
          <entry key="saml_assertion_url"/>
          <entry key="saml_request_body"/>
@@ -547,7 +547,7 @@ return String.valueOf(maxId + 1);]]></Source>
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="userName" groupAttribute="" identityAttribute="id" instanceAttribute="" nativeObjectType="user" objectType="account" significantModified="1786368335042">
+      <Schema displayAttribute="userName" groupAttribute="" identityAttribute="id" instanceAttribute="" nativeObjectType="user" objectType="account" significantModified="1788183186491">
          <AttributeDefinition name="id" type="string">
             <Description>id</Description>
          </AttributeDefinition>
@@ -582,7 +582,7 @@ return String.valueOf(maxId + 1);]]></Source>
             <Description>phoneNumber</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="" displayAttribute="" identityAttribute="" instanceAttribute="" nativeObjectType="group" objectType="group" significantModified="1786368335042"/>
+      <Schema descriptionAttribute="" displayAttribute="" identityAttribute="" instanceAttribute="" nativeObjectType="group" objectType="group" significantModified="1788183186491"/>
    </Schemas>
-   <ApplicationScorecard significantModified="1786368335042"/>
+   <ApplicationScorecard significantModified="1788183186491"/>
 </Application>

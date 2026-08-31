@@ -46,6 +46,8 @@
    <Source><![CDATA[import sailpoint.object.ProvisioningPlan;
     import sailpoint.object.ProvisioningPlan.AccountRequest;
     import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.object.ProvisioningPlan.ObjectRequest;
+    import sailpoint.object.ProvisioningPlan.ObjectOperation;
     import sailpoint.object.ProvisioningResult;
     import java.sql.PreparedStatement;
     import java.util.ArrayList;
@@ -202,6 +204,10 @@
               setCols.add("department = ?");
               setVals.add(getAttributeRequestValue(account, "department"));
             }
+            if (account.getAttributeRequest("position") != null) {
+              setCols.add("position = ?");
+              setVals.add(getAttributeRequestValue(account, "position"));
+            }
             if (account.getAttributeRequest("location") != null) {
               setCols.add("location = ?");
               setVals.add(getAttributeRequestValue(account, "location"));
@@ -337,6 +343,28 @@
           }
         }
       }
+
+      List objReqs = plan.getObjectRequests();
+      if (objReqs != null && objReqs.size() > 0) {
+        for (ObjectRequest objReq : objReqs) {
+          log.debug("Object Request Operation = " + objReq.getOp());
+          log.debug("Object Request Type = " + objReq.getTargetClass());
+          if(ObjectOperation.Create.equals(objReq.getOp())){
+            AttributeRequest group = objReq.getAttributeRequest("group_name");
+            String group_name = (group != null) ? (String) group.getValue() : null;
+            AttributeRequest group_description = objReq.getAttributeRequest("description");
+            String description = (group_description != null) ? (String) group_description.getValue() : null;
+
+            PreparedStatement stmt = connection.prepareStatement(
+                "INSERT INTO app_groups (group_name, description) VALUES (?, ?)");
+              stmt.setString(1, group_name);
+              stmt.setString(2, description);
+              stmt.executeUpdate();
+              stmt.close();
+
+              result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+
+          }}}
     }
     catch (Exception e) {
       log.debug("JDBC provisioning failed: " + e);
