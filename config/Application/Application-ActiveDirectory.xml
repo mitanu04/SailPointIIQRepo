@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1788182580364" type="Active Directory - Direct">
+<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1788348266171" type="Active Directory - Direct">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="ActiveDirectory Correlation Config"/>
    </AccountCorrelationConfig>
@@ -12,7 +12,7 @@
                <List>
                   <Map>
                      <entry key="IQServiceHost" value="%%LDAP_HOST%%"/>
-                     <entry key="IQServicePassword" value="1:ACP:GhMOsYQxSxclP9oc5eClXowGXTqpm8IPRd+ypncJg3U="/>
+                     <entry key="IQServicePassword" value="1:ACP:mRgtxWnXHSBX+C3Ox9aNDFtYxfXhBUG/j+Yk+pDU9QI="/>
                      <entry key="IQServicePort" value="%%AD_IQSERVICE_PORT%%"/>
                      <entry key="IQServiceUser" value="desktop-9icgl95\iqservice-svc"/>
                      <entry key="useTLSForIQService">
@@ -103,7 +103,7 @@
                         </value>
                      </entry>
                      <entry key="forestName" value="%%AD_DC%%"/>
-                     <entry key="password" value="1:ACP:4d4jz7oF4fes2lOI0tONM3SB3078I8Ew5VNmgXa8Fgw="/>
+                     <entry key="password" value="1:ACP:dUPX5HPPjXfgJfbDxz5qkJbWKywxeNbf2sy8oj0BQTk="/>
                      <entry key="port" value="636"/>
                      <entry key="servers">
                         <value>
@@ -151,7 +151,7 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="password" value="1:ACP:mu6rX9Npbdx/5Ybn0euprqsxCZCiYHYSffIKMokV5ik="/>
+                     <entry key="password" value="1:ACP:yCJPDQj4Kur7hCTY6Dd5OZ0jE/3sxO3m3m4WjyF8ROU="/>
                      <entry key="useGroupMembershipPreloading"/>
                      <entry key="useSSL">
                         <value>
@@ -457,12 +457,12 @@
                   <Source><![CDATA[return identity.getAttribute("pid");]]></Source>
                </Script>
             </Field>
-            <Field displayName="Location" name="l" type="string">
+            <Field displayName="Location" helpKey="Location for identities" name="l" type="string">
                <Script>
                   <Source><![CDATA[return identity.getAttribute("location");]]></Source>
                </Script>
             </Field>
-            <Field displayName="Department" name="department" type="string">
+            <Field displayName="Department" helpKey="Department for identities" name="department" type="string">
                <Script>
                   <Source><![CDATA[return identity.getAttribute("department");]]></Source>
                </Script>
@@ -584,7 +584,7 @@
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787910958744">
+      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1788348265891">
          <AttributeDefinition name="businessCategory" type="string">
             <Description>business category</Description>
          </AttributeDefinition>
@@ -814,7 +814,7 @@
             <Description>Name of the entity in the format "NetBIOS domain name\sAMAccountName"</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787910958744">
+      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1788348265892">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -858,5 +858,5 @@
          </Attributes>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1787910958744"/>
+   <ApplicationScorecard significantModified="1788348265891"/>
 </Application>
