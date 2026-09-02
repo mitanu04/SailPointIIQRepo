@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="DisableAccount-BeforeRule" type="WebServiceBeforeOperationRule">
+   <Description>The Web Services connector will call this rule before performing ANY defined operation. This rule can be used to add/update values in the endpoint object before performing the operation and/or add persistent values to the application's data.
+(See information about what to return for more information)</Description>
+   <Signature returnType="Object">
+      <Inputs>
+         <Argument name="log" type="org.apache.commons.logging.Log">
+            <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+         </Argument>
+         <Argument name="context" type="sailpoint.api.SailPointContext">
+            <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+         </Argument>
+         <Argument name="application">
+            <Description>The application associated with the operation being processed.</Description>
+         </Argument>
+         <Argument name="requestEndPoint">
+            <Description>The current request information containing the header, body, context url, method type, response attribute map, 
+                and response code. This object can be modified directly and returned by the rule to update the endpoint information that is
+                used by the current operation.
+                </Description>
+         </Argument>
+         <Argument name="oldResponseMap">
+            <Description>Earlier response object </Description>
+         </Argument>
+         <Argument name="restClient">
+            <Description>REST Client Object</Description>
+         </Argument>
+         <Argument name="provisioningPlan">
+            <Description>A ProvisioningPlan object containing the payload of the http request. A provisioning plan has an account request which defines the operation to be performed on the account.
+                 An account request can contain multiple attribute requests and each attribute request represents an operation on a single account attribute.
+                </Description>
+         </Argument>
+         <Argument name="partition">
+            <Description>If applicable, a Partition object with the current aggregation's partitioning information.
+                </Description>
+         </Argument>
+      </Inputs>
+      <Returns>
+         <Argument name="Map">
+            <Description>An updated or unmodified 'requestEndPoint' object. If application object modifications are desired, create a map containing keys 'updatedEndPoint' and 'connectorStateMap' and use it as the return value;
+                Within the new map, the 'updatedEndPoint' can be set to an updated or unmodified 'requestEndPoint' object. The 'connectorStateMap' will be saved as persistent values in the application definition.
+                </Description>
+         </Argument>
+      </Returns>
+   </Signature>
+   <Source><![CDATA[
+    import sailpoint.connector.webservices.EndPoint;
+    import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+    import sailpoint.tools.Util;
+    import java.util.List;
+
+    // 'requestEndPoint' and 'application' are provided by the connector context.
+    // Resolve the native identity of the account being disabled from the plan.
+    String nativeIdentity = null;
+
+    if (provisioningPlan != null) {
+      List accountRequests = provisioningPlan.getAccountRequests();
+      if (accountRequests != null) {
+        for (AccountRequest acctReq : accountRequests) {
+          if (AccountRequest.Operation.Disable.equals(acctReq.getOperation())
+              || AccountRequest.Operation.Modify.equals(acctReq.getOperation())) {
+            nativeIdentity = acctReq.getNativeIdentity();
+            break;
+          }
+        }
+      }
+    }
+
+    if (Util.isNullOrEmpty(nativeIdentity) && requestEndPoint != null) {
+      // Fallback: some flows expose the identity on the EndPoint context map.
+      Object ni = requestEndPoint.getEndpointConfigMap() != null ? requestEndPoint.getEndpointConfigMap().get("nativeIdentity") : null;
+      if (ni != null) {
+        nativeIdentity = ni.toString();
+      }
+    }
+
+    if (requestEndPoint != null && !Util.isNullOrEmpty(nativeIdentity)) {
+      // Base URL is configured on the application (e.g. http://localhost:8080).
+      String baseUrl = (String) application.getAttributeValue("genericWebServiceBaseUrl");
+      if (Util.isNullOrEmpty(baseUrl)) {
+        baseUrl = (String) application.getAttributeValue("baseUrl");
+      }
+      if (baseUrl != null && baseUrl.endsWith("/")) {
+        baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+      }
+
+      String fullUrl = baseUrl + "/users/" + nativeIdentity + "/disable";
+
+      requestEndPoint.setFullUrl(fullUrl);
+      requestEndPoint.setHttpMethodType("PATCH");
+
+      // No request body is required; the disable is driven by the URL path.
+      requestEndPoint.setBody(null);
+
+      if (log.isInfoEnabled()) {
+        log.info("WebService Disable Account -> PATCH " + fullUrl);
+      }
+    }
+]]></Source>
+</Rule>

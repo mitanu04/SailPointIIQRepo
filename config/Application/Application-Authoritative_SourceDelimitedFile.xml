@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application authoritative="true" connector="sailpoint.connector.DelimitedFileConnector" featuresString="DIRECT_PERMISSIONS, NO_RANDOM_ACCESS, DISCOVER_SCHEMA" icon="enterpriseIcon" name="Authoritative_SourceDelimitedFile" profileClass="" significantModified="1785489710116" type="DelimitedFile">
+<Application authoritative="true" connector="sailpoint.connector.DelimitedFileConnector" featuresString="DIRECT_PERMISSIONS, NO_RANDOM_ACCESS, DISCOVER_SCHEMA" icon="enterpriseIcon" name="Authoritative_SourceDelimitedFile" profileClass="" significantModified="1788183313273" type="DelimitedFile">
    <Attributes>
       <Map>
          <entry key="PassphraseForPrivateKey"/>
          <entry key="PrivateKeyFilePath"/>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1785489710105</Date>
+               <Date>1788183313257</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1785489709292</Date>
+               <Date>1788183310737</Date>
             </value>
          </entry>
          <entry key="afterProvisioningRule"/>
@@ -26,7 +26,7 @@
          <entry key="commentCharacter" value="//"/>
          <entry key="compositeDefinition"/>
          <entry key="delimiter" value=","/>
-         <entry key="file" value="%%AUTHORITATIVE_DELIMITED_FILE%%"/>
+         <entry key="file" value="C:\SailPoint\DelimitedFileApplications\authoritative_source.csv"/>
          <entry key="filetransport" value="local"/>
          <entry key="filterEmptyRecords">
             <value>
@@ -60,7 +60,7 @@
          </entry>
          <entry key="managerCorrelationFilter">
             <value>
-               <Filter operation="EQ" property="displayName" value="UserName"/>
+               <Filter operation="EQ" property="name" value="Manager"/>
             </value>
          </entry>
          <entry key="mergeRows">
@@ -99,19 +99,44 @@
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
    <Schemas>
-      <Schema displayAttribute="UserName" identityAttribute="PID" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785489667004">
-         <AttributeDefinition name="UserName" type="string"/>
-         <AttributeDefinition name="FirstName" type="string"/>
-         <AttributeDefinition name="LastName" type="string"/>
-         <AttributeDefinition name="Manager" type="string"/>
-         <AttributeDefinition name="Location" type="string"/>
-         <AttributeDefinition name="Position" type="string"/>
-         <AttributeDefinition name="Department" type="string"/>
-         <AttributeDefinition name="Status" type="string"/>
-         <AttributeDefinition name="PID" type="string"/>
-         <AttributeDefinition name="Type" type="string"/>
-         <AttributeDefinition multi="true" name="CostCenter" type="string"/>
+      <Schema displayAttribute="UserName" identityAttribute="PID" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None">
+         <AttributeDefinition name="UserName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="FirstName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="LastName" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Manager" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Email" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Location" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Position" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Department" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Status" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="PID" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="Type" type="string">
+            <Description/>
+         </AttributeDefinition>
+         <AttributeDefinition name="CostCenter" type="string">
+            <Description/>
+         </AttributeDefinition>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1785489667004"/>
+   <ApplicationScorecard significantModified="1787907143299"/>
 </Application>

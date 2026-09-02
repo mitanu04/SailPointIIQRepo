@@ -131,51 +131,21 @@
    </Owner>
    <Schemas>
       <Schema displayAttribute="displayName" identityAttribute="accountId" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None">
-         <AttributeDefinition name="accountId" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="pid" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="firstName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="lastName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="displayName" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="email" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="department" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="jobTitle" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="accountStatus" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="licenseType" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="mfaEnabled" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="officeLocation" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="phone" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="createdDate" type="string">
-            <Description/>
-         </AttributeDefinition>
-         <AttributeDefinition name="lastLogin" type="string">
-            <Description/>
-         </AttributeDefinition>
+         <AttributeDefinition name="accountId" type="string"/>
+         <AttributeDefinition name="pid" type="string"/>
+         <AttributeDefinition name="firstName" type="string"/>
+         <AttributeDefinition name="lastName" type="string"/>
+         <AttributeDefinition name="displayName" type="string"/>
+         <AttributeDefinition name="email" type="string"/>
+         <AttributeDefinition name="department" type="string"/>
+         <AttributeDefinition name="jobTitle" type="string"/>
+         <AttributeDefinition name="accountStatus" type="string"/>
+         <AttributeDefinition name="licenseType" type="string"/>
+         <AttributeDefinition name="mfaEnabled" type="string"/>
+         <AttributeDefinition name="officeLocation" type="string"/>
+         <AttributeDefinition name="phone" type="string"/>
+         <AttributeDefinition name="createdDate" type="string"/>
+         <AttributeDefinition name="lastLogin" type="string"/>
       </Schema>
    </Schemas>
    <ApplicationScorecard significantModified="1785747631639"/>

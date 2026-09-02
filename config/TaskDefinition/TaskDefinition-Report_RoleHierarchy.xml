@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<TaskDefinition executor="sailpoint.reporting.LiveReportExecutor"
+                name="Role Hierarchy Report"
+                progressMode="Percentage"
+                resultAction="Rename"
+                subType="Role and Entitlement Reports"
+                template="true"
+                type="LiveReport">
+  <Description>Business roles with their required and permitted IT roles, each IT role showing its entitlements inline.</Description>
+  <Attributes>
+    <Map>
+      <entry key="report">
+        <value>
+          <LiveReport title="Role Hierarchy Report">
+
+            <DataSource objectType="Bundle" type="Filter" defaultSort="name">
+              <QueryParameters>
+                <Parameter property="type" defaultValue="business" valueClass="string"/>
+              </QueryParameters>
+            </DataSource>
+
+            <Columns>
+
+              <ReportColumnConfig field="businessRole" header="Business Role" property="name" sortable="true" width="180"/>
+
+              <!-- Required IT roles, each with its entitlements encapsulated inline. -->
+              <ReportColumnConfig field="requiredItRoles" header="Required IT Roles" property="id" width="320">
+                <RenderScript>
+                  <Source><![CDATA[
+                    import sailpoint.object.Bundle;
+                    import sailpoint.object.Profile;
+                    import sailpoint.object.Filter;
+                    import sailpoint.object.Application;
+                    import sailpoint.tools.Util;
+                    import java.util.*;
+
+                    String id = (value != null) ? value.toString() : null;
+                    if (id == null) return "";
+                    Bundle br = context.getObjectById(Bundle.class, id);
+                    if (br == null || br.getRequirements() == null) return "(none)";
+
+                    List roleCells = new ArrayList();
+                    for (Object o : br.getRequirements()) {
+                      Bundle it = (Bundle) o;
+                      if (!"it".equals(it.getType())) continue;
+
+                      // gather this IT role's entitlements from its profiles
+                      List ents = new ArrayList();
+                      if (it.getProfiles() != null) {
+                        for (Object po : it.getProfiles()) {
+                          Profile p = (Profile) po;
+                          Application app = p.getApplication();
+                          String appName = (app != null) ? app.getName() : "?";
+                          if (p.getConstraints() == null) continue;
+                          for (Object fo : p.getConstraints()) {
+                            Filter f = (Filter) fo;
+                            if (f instanceof Filter.LeafFilter) {
+                              Object v = ((Filter.LeafFilter) f).getValue();
+                              if (v instanceof Collection) {
+                                for (Object vv : (Collection) v) ents.add(appName + ": " + vv);
+                              } else if (v != null) {
+                                ents.add(appName + ": " + v);
+                              }
+                            }
+                          }
+                        }
+                      }
+                      String entStr = ents.isEmpty() ? "no entitlements" : Util.listToCsv(ents);
+                      roleCells.add(it.getName() + " [" + entStr + "]");
+                    }
+                    if (roleCells.isEmpty()) return "(none)";
+
+                    StringBuffer sb = new StringBuffer();
+                    for (int i = 0; i < roleCells.size(); i++) {
+                      if (i > 0) sb.append("   |   ");
+                      sb.append(roleCells.get(i));
+                    }
+                    return sb.toString();
+                  ]]></Source>
+                </RenderScript>
+              </ReportColumnConfig>
+
+              <!-- Permitted IT roles, same shape (getPermits instead of getRequirements). -->
+              <ReportColumnConfig field="permittedItRoles" header="Permitted IT Roles" property="id" width="320">
+                <RenderScript>
+                  <Source><![CDATA[
+                    import sailpoint.object.Bundle;
+                    import sailpoint.object.Profile;
+                    import sailpoint.object.Filter;
+                    import sailpoint.object.Application;
+                    import sailpoint.tools.Util;
+                    import java.util.*;
+
+                    String id = (value != null) ? value.toString() : null;
+                    if (id == null) return "";
+                    Bundle br = context.getObjectById(Bundle.class, id);
+                    if (br == null || br.getPermits() == null) return "(none)";
+
+                    List roleCells = new ArrayList();
+                    for (Object o : br.getPermits()) {
+                      Bundle it = (Bundle) o;
+                      if (!"it".equals(it.getType())) continue;
+
+                      List ents = new ArrayList();
+                      if (it.getProfiles() != null) {
+                        for (Object po : it.getProfiles()) {
+                          Profile p = (Profile) po;
+                          Application app = p.getApplication();
+                          String appName = (app != null) ? app.getName() : "?";
+                          if (p.getConstraints() == null) continue;
+                          for (Object fo : p.getConstraints()) {
+                            Filter f = (Filter) fo;
+                            if (f instanceof Filter.LeafFilter) {
+                              Object v = ((Filter.LeafFilter) f).getValue();
+                              if (v instanceof Collection) {
+                                for (Object vv : (Collection) v) ents.add(appName + ": " + vv);
+                              } else if (v != null) {
+                                ents.add(appName + ": " + v);
+                              }
+                            }
+                          }
+                        }
+                      }
+                      String entStr = ents.isEmpty() ? "no entitlements" : Util.listToCsv(ents);
+                      roleCells.add(it.getName() + " [" + entStr + "]");
+                    }
+                    if (roleCells.isEmpty()) return "(none)";
+
+                    StringBuffer sb = new StringBuffer();
+                    for (int i = 0; i < roleCells.size(); i++) {
+                      if (i > 0) sb.append("   |   ");
+                      sb.append(roleCells.get(i));
+                    }
+                    return sb.toString();
+                  ]]></Source>
+                </RenderScript>
+              </ReportColumnConfig>
+
+            </Columns>
+          </LiveReport>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+  <RequiredRights>
+    <Reference class="sailpoint.object.SPRight" name="FullAccessRoleManagement"/>
+  </RequiredRights>
+</TaskDefinition>

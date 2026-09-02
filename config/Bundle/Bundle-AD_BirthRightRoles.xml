@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="IT_ITTeam" name="IT_ITTeam" significantModified="1786980633639" type="it">
+<Bundle displayName="AD_BirthRightRoles" name="AD_BirthRightRoles" significantModified="1787906222567" type="rapidSetupBirthright">
    <Attributes>
       <Map>
          <entry key="accountSelectorRules"/>
@@ -19,16 +19,24 @@
    <Owner>
       <Reference class="sailpoint.object.Identity" name="spadmin"/>
    </Owner>
+   <Selector>
+      <IdentitySelector>
+         <MatchExpression>
+            <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
+         </MatchExpression>
+      </IdentitySelector>
+   </Selector>
    <Profiles>
-      <Profile significantModified="1785763424217">
+      <Profile>
          <ApplicationRef>
-            <Reference class="sailpoint.object.Application" name="Shared_DB Application"/>
+            <Reference class="sailpoint.object.Application" name="ActiveDirectory"/>
          </ApplicationRef>
          <Constraints>
-            <Filter operation="CONTAINS_ALL" property="groups">
+            <Filter operation="CONTAINS_ALL" property="memberOf">
                <Value>
                   <List>
-                     <String>ITTeam</String>
+                     <String>CN=VPN_Access,OU=Groups,OU=Test,DC=test,DC=local</String>
+                     <String>CN=IT-Staff,OU=Groups,OU=Test,DC=test,DC=local</String>
                   </List>
                </Value>
             </Filter>

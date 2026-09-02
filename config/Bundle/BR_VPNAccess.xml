@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Bundle displayName="BR_VPNAccess" name="BR_VPNAccess" significantModified="1786980485253" type="business">
+   <Attributes>
+      <Map>
+         <entry key="accountSelectorRules"/>
+         <entry key="allowDuplicateAccounts" value="false"/>
+         <entry key="allowMultipleAssignments" value="false"/>
+         <entry key="mergeTemplates" value="false"/>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US"/>
+               </Map>
+            </value>
+         </entry>
+      </Map>
+   </Attributes>
+   <Inheritance>
+      <Reference class="sailpoint.object.Bundle" name="Organizational_IT"/>
+   </Inheritance>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <Selector>
+      <IdentitySelector>
+         <MatchExpression and="true">
+            <MatchTerm name="location" type="IdentityAttribute" value="Bucharest"/>
+            <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
+         </MatchExpression>
+      </IdentitySelector>
+   </Selector>
+</Bundle>

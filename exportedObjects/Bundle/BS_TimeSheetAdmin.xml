@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Bundle displayName="BS_TimeSheetAdmin" name="BS_TimeSheetAdmin" type="business">
+   <Attributes>
+      <Map>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US" value="Test business role for managers"/>
+               </Map>
+            </value>
+         </entry>
+      </Map>
+   </Attributes>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <Requirements>
+      <Reference class="sailpoint.object.Bundle" name="IT_VPNAccess"/>
+      <Reference class="sailpoint.object.Bundle" name="IT_TimeSheetAdmin"/>
+   </Requirements>
+</Bundle>

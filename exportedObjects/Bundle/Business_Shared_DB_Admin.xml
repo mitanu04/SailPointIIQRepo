@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Bundle displayName="Business_Shared_DB Admin" name="Business_Shared_DB Admin" significantModified="1786980633639" type="business">
+   <Attributes>
+      <Map>
+         <entry key="accountSelectorRules"/>
+         <entry key="allowDuplicateAccounts" value="false"/>
+         <entry key="allowMultipleAssignments" value="false"/>
+         <entry key="mergeTemplates" value="false"/>
+         <entry key="sysDescriptions">
+            <value>
+               <Map>
+                  <entry key="en_US"/>
+               </Map>
+            </value>
+         </entry>
+      </Map>
+   </Attributes>
+   <Inheritance>
+      <Reference class="sailpoint.object.Bundle" name="Organizational_Admin"/>
+   </Inheritance>
+   <Owner>
+      <Reference class="sailpoint.object.Identity" name="Admins"/>
+   </Owner>
+   <Permits>
+      <Reference class="sailpoint.object.Bundle" name="IT_HRTeam"/>
+   </Permits>
+   <Requirements>
+      <Reference class="sailpoint.object.Bundle" name="IT_ITTeam"/>
+   </Requirements>
+   <Selector>
+      <IdentitySelector>
+         <MatchExpression and="true">
+            <MatchTerm name="department" type="IdentityAttribute" value="IT"/>
+            <MatchTerm name="inactive" type="IdentityAttribute" value="false"/>
+         </MatchExpression>
+      </IdentitySelector>
+   </Selector>
+</Bundle>

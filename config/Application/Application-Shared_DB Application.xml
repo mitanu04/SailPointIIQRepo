@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Shared_DB Application" profileClass="" significantModified="1785703396645" type="JDBC">
+<Application connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Shared_DB Application" profileClass="" significantModified="1788185586871" type="JDBC">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="Shared_DBApplication Correlation Config"/>
    </AccountCorrelationConfig>
@@ -9,12 +9,12 @@
          <entry key="SQL" value="SELECT username, pid, first_name, last_name, email, department, `groups` AS `groups`, `position` AS `position`, location, status FROM shared_db_table;"/>
          <entry key="acctAggregationEnd">
             <value>
-               <Date>1785703396636</Date>
+               <Date>1785961708453</Date>
             </value>
          </entry>
          <entry key="acctAggregationStart">
             <value>
-               <Date>1785703396491</Date>
+               <Date>1785961708113</Date>
             </value>
          </entry>
          <entry key="afterProvisioningRule"/>
@@ -60,11 +60,11 @@
          </entry>
          <entry key="group.mergeRows">
             <value>
-               <Boolean/>\
+               <Boolean/>
             </value>
          </entry>
          <entry key="group.password" value="%%SHARED_DB_GROUPS_PASSWORD%%"/>
-         <entry key="group.url" value="%%SHARED_DB_URL_GROUPS%%"/>
+         <entry key="group.url" value="%%SHARED_DB_URL%%"/>
          <entry key="group.useExecuteQuery">
             <value>
                <Boolean/>
@@ -115,13 +115,15 @@
             </value>
          </entry>
          <entry key="nativeChangeDetectionOperations"/>
+         <entry key="noPermissions" value="false"/>
+         <entry key="operations" value="Create, Modify, Delete, Enable, Disable, Unlock"/>
          <entry key="partitionMode">
             <value>
                <Boolean/>
             </value>
          </entry>
          <entry key="partitionStatements"/>
-         <entry key="password" value="1:ACP:/sgKkD7MsTlQdqgi2/vHUHc8y9ABQ9+zl5lDIh4dUS0="/>
+         <entry key="password" value="1:ACP:q4U1hZ0gj4HzH+eNjTGDFwPvcqobqJg23ffgWSANroo="/>
          <entry key="provisionRule" value="globalRule"/>
          <entry key="sysDescriptions">
             <value>
@@ -175,10 +177,10 @@
       <Reference class="sailpoint.object.Identity" name="Admins"/>
    </Owner>
    <ProvisioningForms>
-      <Form name="Shared_DB_Table" objectType="account" type="Update">
+      <Form name="Update" objectType="account" type="Update">
          <Attributes>
             <Map>
-               <entry key="pageTitle" value="Shared_DB_Table"/>
+               <entry key="pageTitle" value="Update"/>
             </Map>
          </Attributes>
          <Section name="Section 1">
@@ -197,11 +199,77 @@
                   <Source><![CDATA[return identity.getEmail();]]></Source>
                </Script>
             </Field>
+            <Field displayName="Position" name="Position" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("position");]]></Source>
+               </Script>
+            </Field>
+         </Section>
+      </Form>
+      <Form name="Create" objectType="account" type="Create">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Create"/>
+            </Map>
+         </Attributes>
+         <Section name="Section 1">
+            <Field name="firstname" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("firstname");]]></Source>
+               </Script>
+            </Field>
+            <Field name="lastname" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("lastname");]]></Source>
+               </Script>
+            </Field>
+            <Field name="email" type="string">
+               <ValidationScript>
+                  <Source><![CDATA[return identity.getAttribute("firstname") + "." + identity.getAttribute("lastname)+ "@example.com";]]></Source>
+               </ValidationScript>
+            </Field>
+            <Field name="department" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("department");]]></Source>
+               </Script>
+            </Field>
+            <Field name="position" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("position");]]></Source>
+               </Script>
+            </Field>
+            <Field name="location" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("location");]]></Source>
+               </Script>
+            </Field>
+            <Field name="status" type="string" value="Active"/>
+            <Field name="pid" type="string">
+               <Script>
+                  <Source><![CDATA[return identity.getAttribute("pid");]]></Source>
+               </Script>
+            </Field>
+            <Field name="username" type="string">
+               <Script>
+                  <Source><![CDATA[return (identity.getAttribute("firstname").substring(0,1) + identity.getAttribute("lastname")).toLowerCase();]]></Source>
+               </Script>
+            </Field>
+         </Section>
+      </Form>
+      <Form name="Create Group" objectType="group" type="Create">
+         <Attributes>
+            <Map>
+               <entry key="pageTitle" value="Create Group"/>
+            </Map>
+         </Attributes>
+         <Section name="Section 1">
+            <Field displayName="Group Name" name="group_name" type="string"/>
+            <Field displayName="Description" name="description" type="string"/>
          </Section>
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1785703389601">
+      <Schema displayAttribute="pid" identityAttribute="username" instanceAttribute="" nativeObjectType="account" objectType="account" permissionsRemediationModificationType="None" significantModified="1788185586871">
          <AttributeDefinition name="username" type="string">
             <Description/>
          </AttributeDefinition>
@@ -233,7 +301,7 @@
             <Description/>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="description" displayAttribute="group_name" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1785703389601">
+      <Schema descriptionAttribute="description" displayAttribute="group_name" featuresString="PROVISIONING" identityAttribute="group_name" instanceAttribute="" nativeObjectType="group" objectType="group" permissionsRemediationModificationType="None" significantModified="1788185586871">
          <AttributeDefinition name="group_name" type="string">
             <Description/>
          </AttributeDefinition>
@@ -242,5 +310,5 @@
          </AttributeDefinition>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1785703389600"/>
+   <ApplicationScorecard significantModified="1788185586871"/>
 </Application>

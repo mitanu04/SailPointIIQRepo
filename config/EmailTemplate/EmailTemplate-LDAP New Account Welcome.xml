@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="LDAP New Account Welcome" significantModified="1786610401132">
+   <Body>
+Hello $firstName $lastName,
+
+Your new $applicationName account has been created. You can sign in with the
+credentials below:
+
+    Username: $username
+    Temporary password: $password
+
+For security reasons, please sign in and change your password immediately.
+
+If you did not expect this account, contact the IT Service Desk.
+
+Regards,
+Identity &amp; Access Management
+  </Body>
+   <Description>Welcome email sent after a new LDAP account is created.</Description>
+   <From>admin_ldap@example.org</From>
+   <Subject>Your new $applicationName account is ready</Subject>
+</EmailTemplate>
