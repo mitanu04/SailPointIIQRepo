@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1787909952296" type="Active Directory - Direct">
+<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD" icon="directory1Icon" name="ActiveDirectory" profileClass="" significantModified="1788182580364" type="Active Directory - Direct">
    <AccountCorrelationConfig>
       <Reference class="sailpoint.object.CorrelationConfig" name="ActiveDirectory Correlation Config"/>
    </AccountCorrelationConfig>
@@ -11,9 +11,9 @@
             <value>
                <List>
                   <Map>
-                     <entry key="IQServiceHost" value="localhost"/>
-                     <entry key="IQServicePassword" value="1:ACP:L36BfiYiUo2XTiHV3Dtfnsy1sbPs7nb2YyxwKKpMJgU="/>
-                     <entry key="IQServicePort" value="5051"/>
+                     <entry key="IQServiceHost" value="%%LDAP_HOST%%"/>
+                     <entry key="IQServicePassword" value="1:ACP:GhMOsYQxSxclP9oc5eClXowGXTqpm8IPRd+ypncJg3U="/>
+                     <entry key="IQServicePort" value="%%AD_IQSERVICE_PORT%%"/>
                      <entry key="IQServiceUser" value="desktop-9icgl95\iqservice-svc"/>
                      <entry key="useTLSForIQService">
                         <value>
@@ -68,7 +68,7 @@
                      <value>
                         <Map>
                            <entry key="groups_cookie" value="TVNEUwMAAACAcAz1oDPdAQAAAAAAAAAAKAAAAAEQAAAAAAAAAAAAAAAAAAABEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAEQAAAAAAAA"/>
-                           <entry key="lastDirsyncServer" value="test.local"/>
+                           <entry key="lastDirsyncServer" value="%%AD_DC%%"/>
                            <entry key="users_cookie" value="TVNEUwMAAACA0pAbxjPdAQAAAAAAAAAAKAAAAAUQAAAAAAAAAAAAAAAAAAAFEAAAAAAAAHYBKE1m&#13;&#10;Ga5EofQpvnZ+rHQBAAAAAAAAAAEAAAAAAAAAdgEoTWYZrkSh9Cm+dn6sdAUQAAAAAAAA"/>
                         </Map>
                      </value>
@@ -102,13 +102,13 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="forestName" value="test.local"/>
-                     <entry key="password" value="1:ACP:erRVGDl4Hm0+ppFwDqlEa5MQ40rH+WRkN6GSjowgNzo="/>
+                     <entry key="forestName" value="%%AD_DC%%"/>
+                     <entry key="password" value="1:ACP:4d4jz7oF4fes2lOI0tONM3SB3078I8Ew5VNmgXa8Fgw="/>
                      <entry key="port" value="636"/>
                      <entry key="servers">
                         <value>
                            <List>
-                              <String>dc1.test.local</String>
+                              <String>dc1.%%AD_DC%%</String>
                            </List>
                         </value>
                      </entry>
@@ -117,7 +117,7 @@
                            <Boolean>true</Boolean>
                         </value>
                      </entry>
-                     <entry key="user" value="Administrator@test.local"/>
+                     <entry key="user" value="Administrator@%%AD_DC%%"/>
                   </Map>
                </List>
             </value>
@@ -139,8 +139,8 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="forestName" value="test.local"/>
-                     <entry key="gcServer" value="localhost:3268"/>
+                     <entry key="forestName" value="%%AD_DC%%"/>
+                     <entry key="gcServer" value="%%LDAP_HOST%%:3268"/>
                      <entry key="isResourceForest">
                         <value>
                            <Boolean/>
@@ -151,14 +151,14 @@
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="password" value="1:ACP:yTKgmwS4vJgoiN+8pkSyKZETxtpgLmSVxatzesNaCJg="/>
+                     <entry key="password" value="1:ACP:mu6rX9Npbdx/5Ybn0euprqsxCZCiYHYSffIKMokV5ik="/>
                      <entry key="useGroupMembershipPreloading"/>
                      <entry key="useSSL">
                         <value>
                            <Boolean/>
                         </value>
                      </entry>
-                     <entry key="user" value="Administrator@test.local"/>
+                     <entry key="user" value="Administrator@%%AD_DC%%"/>
                   </Map>
                </List>
             </value>
@@ -172,6 +172,11 @@
                      <entry key="searchScope" value="SUBTREE"/>
                   </Map>
                </List>
+            </value>
+         </entry>
+         <entry key="groupProvisioning">
+            <value>
+               <Boolean>true</Boolean>
             </value>
          </entry>
          <entry key="ldapExtendedControls">
@@ -200,7 +205,31 @@
             </value>
          </entry>
          <entry key="nativeChangeDetectionOperations"/>
+         <entry key="noGroupPermissions">
+            <value>
+               <Map>
+                  <entry key="group">
+                     <value>
+                        <Boolean/>
+                     </value>
+                  </entry>
+               </Map>
+            </value>
+         </entry>
+         <entry key="noPermissions" value="false"/>
+         <entry key="operations" value="Create, Modify, Delete, Enable, Disable, Unlock, SetPassword"/>
          <entry key="pageSize" value="100"/>
+         <entry key="schemaProvisioningMap">
+            <value>
+               <Map>
+                  <entry key="group">
+                     <value>
+                        <Boolean>true</Boolean>
+                     </value>
+                  </entry>
+               </Map>
+            </value>
+         </entry>
          <entry key="searchDNs">
             <value>
                <List>
@@ -555,7 +584,7 @@
       </Form>
    </ProvisioningForms>
    <Schemas>
-      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787909952297">
+      <Schema displayAttribute="sAMAccountName" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="User" objectType="account" significantModified="1787910958744">
          <AttributeDefinition name="businessCategory" type="string">
             <Description>business category</Description>
          </AttributeDefinition>
@@ -785,7 +814,7 @@
             <Description>Name of the entity in the format "NetBIOS domain name\sAMAccountName"</Description>
          </AttributeDefinition>
       </Schema>
-      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787909952297">
+      <Schema descriptionAttribute="" displayAttribute="msDS-PrincipalName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group" significantModified="1787910958744">
          <AttributeDefinition name="cn" type="string">
             <Description>common name(s) for which the entity is known by</Description>
          </AttributeDefinition>
@@ -829,5 +858,5 @@
          </Attributes>
       </Schema>
    </Schemas>
-   <ApplicationScorecard significantModified="1787909952296"/>
+   <ApplicationScorecard significantModified="1787910958744"/>
 </Application>
